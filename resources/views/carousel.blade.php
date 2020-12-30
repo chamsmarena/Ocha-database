@@ -21,7 +21,11 @@
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('slick/slick-theme.css') }}"/>
         <script type="text/javascript" src="{{ URL::asset('slick/slick.min.js') }}"></script>
-        <script src="{{ URL::asset('js/jquery.table2excel.js') }}"></script>
+
+        <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
+        <script src="{{ URL::asset('js/tableExport/js/FileSaver.js') }}"></script>
+        <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
+        
     
         <style>
             .downloadImage{

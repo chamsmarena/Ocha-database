@@ -713,13 +713,23 @@ function hideDisclamer(disclaimer){
     $("#"+disclaimer).hide();
 }
 
-function download(table,typeData){
-    $("#"+table).table2excel({
+function download(tableName,typeData){
+   /* $("#"+table).table2excel({
         exclude:".noExl",
         name:typeData,
         filename:typeData,//do not include extension
         fileext:".xls" // file extension
-    });
+    });*/
+    var table = TableExport(document.getElementById(tableName));
+
+    
+    var exportData = table.getExportData(); 
+    console.log(exportData);
+    var xlsxData = exportData[tableName].xlsx; 
+    console.log(xlsxData);
+    // Replace with the kind of file you want from the exportData
+    //table.export2file(xlsxData.data, xlsxData.mimeType, xlsxData.filename, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, xlsxData.sheetname)
+    table.export2file(xlsxData.data, xlsxData.mimeType, typeData, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, typeData)
 
 }
 	
