@@ -28,6 +28,14 @@
                 </button>
             </div>
             @endif
+            @if (Session::has('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Danger!</strong> {{session('error')}}.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @endif
         </div>
         <div class="row">
                 <div class="card float-left m-1 shadow-sm mb-5 bg-white rounded" style="width: 15rem;">

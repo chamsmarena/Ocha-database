@@ -21,6 +21,7 @@ use App\Imports\caseloads_sahel_Import;
 use App\Imports\caseloads_sahel_central_Import;
 use App\Imports\caseloads_wca_Import;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Facades\Storage;
 
 
 class localDataController extends Controller
@@ -86,84 +87,166 @@ class localDataController extends Controller
     }
     public function import_caseloads() 
     {
-        DB::statement('TRUNCATE caseloads CASCADE');
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/caseloads/lcb.xlsx', 'backup data/caseloads/lcb backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/caseloads/sahel.xlsx', 'backup data/caseloads/sahel backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/caseloads/sahel_central.xlsx', 'backup data/caseloads/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/caseloads/wca.xlsx', 'backup data/caseloads/wca backup '.date("Y-m-d H i s").'.xlsx');
 
-        DB::table('data_by_years')->where('t_category', '=', 'people_in_need')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'people_targeted')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'people_reached')->delete();
+			/***************************/
+			
+            DB::statement('TRUNCATE caseloads CASCADE');
 
-        Excel::import(new caseloads_lcb_Import, 'caseloads/lcb.xlsx');
-        Excel::import(new caseloads_sahel_Import, 'caseloads/sahel.xlsx');
-        Excel::import(new caseloads_sahel_central_Import, 'caseloads/sahel_central.xlsx');
-        Excel::import(new caseloads_wca_Import, 'caseloads/wca.xlsx');
-        return redirect('/import')->with('success', 'All good!');
+            DB::table('data_by_years')->where('t_category', '=', 'people_in_need')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'people_targeted')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'people_reached')->delete();
+    
+            Excel::import(new caseloads_lcb_Import, 'input data/caseloads/lcb.xlsx');
+            Excel::import(new caseloads_sahel_Import, 'input data/caseloads/sahel.xlsx');
+            Excel::import(new caseloads_sahel_central_Import, 'input data/caseloads/sahel_central.xlsx');
+            Excel::import(new caseloads_wca_Import, 'input data/caseloads/wca.xlsx');
+            return redirect('/import')->with('success', 'All good!');
+			
+			/***************************/
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
+
+       
     }
     public function import_inform_sahel() 
     {
-        DB::statement('TRUNCATE inform_sahel_risks CASCADE');
-        Excel::import(new informsahelrisksImport, 'inform_sahel.xlsx');
-        return redirect('/import')->with('success', 'All good!');
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/inform_sahel.xlsx', 'backup data/inform_sahel backup '.date("Y-m-d H i s").'.xlsx');
+
+			/***************************/
+			
+			DB::statement('TRUNCATE inform_sahel_risks CASCADE');
+            Excel::import(new informsahelrisksImport, 'input data/inform_sahel.xlsx');
+            return redirect('/import')->with('success', 'All good!');
+			
+			/***************************/
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
+        
     }
 
-    public function import_internally_displaced_person() 
+    /**** delete ***/public function import_internally_displaced_person() 
     {
+        //old
         DB::statement('TRUNCATE internally_displaced_peoples CASCADE');
         Excel::import(new internallydisplacedpersonsImport, 'Internaly_displaced_persons.xlsx');
         return redirect('/import')->with('success', 'All good!');
     }
     public function import_nutrition() 
     {
-        DB::statement('TRUNCATE nutrition CASCADE');
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/nutrition.xlsx', 'backup data/nutrition backup '.date("Y-m-d H i s").'.xlsx');
 
-        DB::table('data_by_years')->where('t_category', '=', 'severe_acute_malnutrition')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'global_acute_malnutrition')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'moderate_acute_malnutrition')->delete();
+			/***************************/
+			
+			DB::statement('TRUNCATE nutrition CASCADE');
 
-        Excel::import(new nutritionsImport, 'nutrition.xlsx');
-        return redirect('/import')->with('success', 'All good!');
+            DB::table('data_by_years')->where('t_category', '=', 'severe_acute_malnutrition')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'global_acute_malnutrition')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'moderate_acute_malnutrition')->delete();
+
+            Excel::import(new nutritionsImport, 'input data/nutrition.xlsx');
+            return redirect('/import')->with('success', 'All good!');
+			
+			/***************************/
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
+        
     }
     public function import_cadre_harmonise() 
     {
-        DB::statement('TRUNCATE cadre_harmonises CASCADE');
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/cadre_harmonise.xlsx', 'backup data/cadre_harmonise backup '.date("Y-m-d H i s").'.xlsx');
 
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase1')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase2')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase3')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase3_plus')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase4')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase5')->delete();
+			/***************************/
+			
+			DB::statement('TRUNCATE cadre_harmonises CASCADE');
 
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase1')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase2')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase3')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase3_plus')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase4')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase5')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase1')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase2')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase3')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase3_plus')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase4')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase5')->delete();
+
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase1')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase2')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase3')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase3_plus')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase4')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'ch_Projected_phase5')->delete();
 
 
-        Excel::import(new cadre_harmonisesImport, 'cadre_harmonise.xlsx');
-        return redirect('/import')->with('success', 'All good!');
+            Excel::import(new cadre_harmonisesImport, 'input data/cadre_harmonise.xlsx');
+            return redirect('/import')->with('success', 'All good!');
+			
+			/***************************/
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
+        
     }
-    public function import_food_security() 
+    /**** delete ***/public function import_food_security() 
     {
-        DB::statement('TRUNCATE food_securities CASCADE');
-        Excel::import(new foodsecuritiesImport, 'food_security.xlsx');
-        return redirect('/import')->with('success', 'All good!');
+        //delete
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/food_security.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
+
+			/***************************/
+			
+			DB::statement('TRUNCATE food_securities CASCADE');
+            Excel::import(new foodsecuritiesImport, 'food_security.xlsx');
+            return redirect('/import')->with('success', 'All good!');
+			
+			/***************************/
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
+
+        
     }
     public function import_displacement() 
     {
-        DB::statement('TRUNCATE displacements CASCADE');
+        try {
+            date_default_timezone_set('UTC');
+            Storage::copy('input data/displacements/lcb.xlsx', 'backup data/displacements/lcb backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/displacements/sahel.xlsx', 'backup data/displacements/sahel backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/displacements/sahel_central.xlsx', 'backup data/displacements/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
+            Storage::copy('input data/displacements/wca.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
 
-        DB::table('data_by_years')->where('t_category', '=', 'Refugee')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'IDP')->delete();
-        DB::table('data_by_years')->where('t_category', '=', 'Returnee')->delete();
+            DB::statement('TRUNCATE displacements CASCADE');
 
-        Excel::import(new displacements_lcb_Import, 'displacements/lcb.xlsx');
-        Excel::import(new displacements_sahel_Import, 'displacements/sahel.xlsx');
-        Excel::import(new displacements_sahel_central_Import, 'displacements/sahel_central.xlsx');
-        Excel::import(new displacements_wca_Import, 'displacements/wca.xlsx');
-
-        return redirect('/import')->with('success', 'All good!');
+            DB::table('data_by_years')->where('t_category', '=', 'Refugee')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'IDP')->delete();
+            DB::table('data_by_years')->where('t_category', '=', 'Returnee')->delete();
+    
+            Excel::import(new displacements_lcb_Import, 'input data/displacements/lcb.xlsx');
+            Excel::import(new displacements_sahel_Import, 'input data/displacements/sahel.xlsx');
+            Excel::import(new displacements_sahel_central_Import, 'input data/displacements/sahel_central.xlsx');
+            Excel::import(new displacements_wca_Import, 'input data/displacements/wca.xlsx');
+    
+            return redirect('/import')->with('success', 'All good!');
+        } catch (\Throwable $th) {
+            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
+        }
     }
 
     public function guide_import()

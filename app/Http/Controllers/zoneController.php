@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\zone as zone;
 use App\liste_localite as liste_localite;
 use App\keyfigure_caseload as keyfigure_caseload;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -23,6 +24,9 @@ class zoneController extends Controller
      */
     public function liste()
     {
+
+
+        
         DB::connection('pgsql');
         $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
         $dataByZone = array();

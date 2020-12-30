@@ -694,9 +694,14 @@ $(document).ready(function(){
 
     $(".cardList").show();
 
+    $winWidth = $(window).width();
+
     $( window ).resize(function() {
-        $(".cardList").hide();
-        location.reload();
+        if($winWidth != $(window).width()){
+            $(".cardList").hide();
+            location.reload();
+        }
+        
     });
 });
 
