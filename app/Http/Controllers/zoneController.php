@@ -24,9 +24,27 @@ class zoneController extends Controller
     public function liste()
     {
         DB::connection('pgsql');
-        //$zones = zone::all();
         $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
-        return view('zone.liste',['datas'=>$zones]);
+        $dataByZone = array();
+
+
+        foreach ($zones as $zone) {
+            
+            
+            $liste_localites = liste_localite::where('zone_id', $zone->zone_id)->orderBy('local_name', 'asc')->get();
+            $keyfigure_caseloads = keyfigure_caseload::where('zone_id', $zone->zone_id)->get();
+            $keyfigure_displacements = DB::table('keyfigure_displacements')->where('zone_id', '=', $zone->zone_id)->where('dis_crise', '=', $zone->zone_code)->get();
+            $keyfigure_cadre_harmonises_projected = DB::table('keyfigure_cadre_harmonises')->where('zone_id', '=', $zone->zone_id)->where('ch_situation', '=', 'Projected')->get();
+            $keyfigure_cadre_harmonises_current = DB::table('keyfigure_cadre_harmonises')->where('zone_id', '=', $zone->zone_id)->where('ch_situation', '=', 'Current')->get();
+            $keyfigure_nutritions = DB::table('keyfigure_nutritions')->where('zone_id', '=', $zone->zone_id)->get();
+
+            $dataZone=array("zone"=>$zone,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises_projected"=>$keyfigure_cadre_harmonises_projected,"cadre_harmonises_current"=>$keyfigure_cadre_harmonises_current,"nutrition"=>$keyfigure_nutritions);
+            array_push($dataByZone,$dataZone);
+        }
+
+        //var_dump($dataByZone);
+
+        return view('zone.liste',['datas'=>$dataByZone]);
     }
     public function manageliste()
     {

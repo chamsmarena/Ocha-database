@@ -269,9 +269,6 @@
             }
         //AS OF DATES END
     }
-
-    
-   
 ?>
     <div class="col">
         <div class="row">
