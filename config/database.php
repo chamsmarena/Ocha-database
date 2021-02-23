@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 if (file_exists('C:/wamp64/www/sharedchams/ConfigDatabase.php')) {
     global $config;
     require_once('C:/wamp64/www/sharedchams/ConfigDatabase.php');
+    
 
     return [
 
