@@ -96,7 +96,7 @@ class localDataController extends Controller
 
 			/***************************/
 			
-            DB::statement('TRUNCATE caseloads CASCADE');
+            DB::statement('TRUNCATE caseloads ');
 
             DB::table('data_by_years')->where('t_category', '=', 'people_in_need')->delete();
             DB::table('data_by_years')->where('t_category', '=', 'people_targeted')->delete();
@@ -124,7 +124,7 @@ class localDataController extends Controller
 
 			/***************************/
 			
-			DB::statement('TRUNCATE inform_sahel_risks CASCADE');
+			DB::statement('TRUNCATE inform_sahel_risks ');
             Excel::import(new informsahelrisksImport, 'input data/inform_sahel.xlsx');
             return redirect('/import')->with('success', 'All good!');
 			
@@ -139,7 +139,7 @@ class localDataController extends Controller
     /**** delete ***/public function import_internally_displaced_person() 
     {
         //old
-        DB::statement('TRUNCATE internally_displaced_peoples CASCADE');
+        DB::statement('TRUNCATE internally_displaced_peoples ');
         Excel::import(new internallydisplacedpersonsImport, 'Internaly_displaced_persons.xlsx');
         return redirect('/import')->with('success', 'All good!');
     }
@@ -151,7 +151,7 @@ class localDataController extends Controller
 
 			/***************************/
 			
-			DB::statement('TRUNCATE nutrition CASCADE');
+			DB::statement('TRUNCATE nutrition ');
 
             DB::table('data_by_years')->where('t_category', '=', 'severe_acute_malnutrition')->delete();
             DB::table('data_by_years')->where('t_category', '=', 'global_acute_malnutrition')->delete();
@@ -175,7 +175,7 @@ class localDataController extends Controller
 
 			/***************************/
 			
-			DB::statement('TRUNCATE cadre_harmonises CASCADE');
+			DB::statement('TRUNCATE cadre_harmonises ');
 
             DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase1')->delete();
             DB::table('data_by_years')->where('t_category', '=', 'ch_Current_phase2')->delete();
@@ -211,7 +211,7 @@ class localDataController extends Controller
 
 			/***************************/
 			
-			DB::statement('TRUNCATE food_securities CASCADE');
+			DB::statement('TRUNCATE food_securities ');
             Excel::import(new foodsecuritiesImport, 'food_security.xlsx');
             return redirect('/import')->with('success', 'All good!');
 			
@@ -232,7 +232,7 @@ class localDataController extends Controller
             Storage::copy('input data/displacements/sahel_central.xlsx', 'backup data/displacements/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/wca.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
 
-            DB::statement('TRUNCATE displacements CASCADE');
+            DB::statement('TRUNCATE displacements');
 
             DB::table('data_by_years')->where('t_category', '=', 'Refugee')->delete();
             DB::table('data_by_years')->where('t_category', '=', 'IDP')->delete();
