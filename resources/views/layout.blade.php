@@ -41,6 +41,10 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="/logout">Logout</a>
                     </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/accessimport">login</a>
+                    </li>
                 @endif
             </ul>
         </div>
