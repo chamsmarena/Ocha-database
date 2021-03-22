@@ -3,17 +3,6 @@
 @section('content')
     <div class="col">
         <div class="row">
-            <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item " aria-current="page"><a href="/database">Database</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Security</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-12">
                 <img src="{{asset('images/shield.png')}}" class="rounded mx-auto d-block" alt="logo ocha"/>
             </div>

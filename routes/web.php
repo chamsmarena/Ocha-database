@@ -67,10 +67,10 @@ Route::get('/accessmanage',[localDataController::class, 'show_view_access_manage
 Route::get('/import',[localDataController::class, 'show_view_import']);
 Route::get('/import/caseloads',[localDataController::class, 'import_caseloads']);
 Route::get('/import/informSahel',[localDataController::class, 'import_inform_sahel']);
-Route::get('/import/idps',[localDataController::class, 'import_internally_displaced_person']);
+//Route::get('/import/idps',[localDataController::class, 'import_internally_displaced_person']);
 Route::get('/import/nutrition',[localDataController::class, 'import_nutrition']);
 Route::get('/import/ch',[localDataController::class, 'import_cadre_harmonise']);
-Route::get('/import/fs',[localDataController::class, 'import_food_security']);
+//Route::get('/import/fs',[localDataController::class, 'import_food_security']);
 Route::get('/import/disp',[localDataController::class, 'import_displacement']);
 
 Route::get('/zones',[zoneController::class, 'liste']);
@@ -83,6 +83,7 @@ Route::get('/managezone/{id}', [zoneController::class, 'show_view_manage_consult
 Route::get('/edit/zone/{id}', [zoneController::class, 'show_view_modifier']);
 Route::get('/add/zone',  [zoneController::class, 'show_view_ajouter']);
 Route::get('/delete/zone/{id}', [zoneController::class, 'show_view_delete']);
+Route::get('/filter/{category}/{items}', [zoneController::class, 'show_view_filter']);
 
 Route::get('/localites', [localiteController::class, 'liste']);
 Route::get('/localite/{id}', [localiteController::class, 'show_view_consulter']);

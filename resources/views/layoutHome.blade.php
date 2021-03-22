@@ -21,32 +21,12 @@
     
     
     </head>
-    <body >
-        <div class="row " style="background-color:#418fde;">
-            <ul class="nav justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/database">Database</a>
-                </li>
-               
-                @if (request()->session()->get('authenticated')!=null)
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/import">Import</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/managezones">Manage crisis zones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/logout">Logout</a>
-                    </li>
-                @endif
-            </ul>
-        </div>
-        <div class="row">
-            <div class="col">
-                @yield('content')
+    <body style="background-color:#418fde;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    @yield('content')
+                </div>
             </div>
         </div>
     </body>

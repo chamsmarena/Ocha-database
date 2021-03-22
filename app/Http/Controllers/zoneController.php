@@ -26,8 +26,7 @@ class zoneController extends Controller
     {
 
 
-        
-        DB::connection('pgsql');
+
         $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
         $dataByZone = array();
 
@@ -60,7 +59,6 @@ class zoneController extends Controller
 
     public function show_view_consulter($id)
     {
-        DB::connection('pgsql');
         $zone = zone::where('zone_id', $id)->first();
         $liste_localites = liste_localite::where('zone_id', $id)->orderBy('local_name', 'asc')->get();
         $keyfigure_caseloads = keyfigure_caseload::where('zone_id', $id)->get();
@@ -81,6 +79,63 @@ class zoneController extends Controller
             //'trend_crisis_caseload_by_years'=>$trend_crisis_caseload_by_years,
             ]);
     }
+
+    public function show_view_filter($category,$items)
+    {
+        $countriesList = array();
+        $dataByZone = array();
+
+        
+        if($category=="crisis"){
+            $crisisList = explode("_", $items);
+
+        }else{
+            $crisisList = ["WCA"];
+            $countriesList = explode("_", $items);
+        }
+        
+        $zones = DB::table('zones')->whereIn('zone_code', $crisisList)->orderBy('zone_name', 'asc')->get();
+
+
+        if($category=="crisis"){
+            foreach ($zones as $zone) {
+                $liste_localites = liste_localite::where('zone_id', $zone->zone_id)->orderBy('local_name', 'asc')->get();
+                $keyfigure_caseloads = keyfigure_caseload::where('zone_id', $zone->zone_id)->get();
+                $keyfigure_displacements = DB::table('keyfigure_displacements')->where('zone_id', '=', $zone->zone_id)->get();
+                $keyfigure_cadre_harmonises_projected = DB::table('keyfigure_cadre_harmonises')->select(DB::raw('zone_code, zone_name, local_name, local_pcode, local_admin_level, local_id, zone_id, ch_country, ch_adm0_pcode_iso3,  sum(ch_phase1) as ch_phase1, sum(ch_phase2) as ch_phase2, sum(ch_phase3) as ch_phase3, sum(ch_phase4) as ch_phase4, sum(ch_phase5) as ch_phase5, sum(ch_phase35) as ch_phase35, ch_exercise_month, ch_exercise_year, ch_situation, ch_date'))->where('zone_id', '=', $zone->zone_id)->where('ch_situation', '=', 'Projected')->groupBy('zone_code', 'zone_name', 'local_name', 'local_pcode', 'local_admin_level', 'local_id', 'zone_id', 'ch_country', 'ch_adm0_pcode_iso3',    'ch_exercise_month', 'ch_exercise_year', 'ch_situation', 'ch_date')->get();
+                $keyfigure_cadre_harmonises_current = DB::table('keyfigure_cadre_harmonises')->select(DB::raw('zone_code, zone_name, local_name, local_pcode, local_admin_level, local_id, zone_id, ch_country, ch_adm0_pcode_iso3, sum(ch_phase1) as ch_phase1, sum(ch_phase2) as ch_phase2, sum(ch_phase3) as ch_phase3, sum(ch_phase4) as ch_phase4, sum(ch_phase5) as ch_phase5, sum(ch_phase35) as ch_phase35, ch_exercise_month, ch_exercise_year, ch_situation, ch_date'))->where('zone_id', '=', $zone->zone_id)->where('ch_situation', '=', 'Current')->groupBy('zone_code', 'zone_name', 'local_name', 'local_pcode', 'local_admin_level', 'local_id', 'zone_id', 'ch_country', 'ch_adm0_pcode_iso3',   'ch_exercise_month', 'ch_exercise_year', 'ch_situation', 'ch_date')->get();
+                $keyfigure_nutritions = DB::table('keyfigure_nutritions')->where('zone_id', '=', $zone->zone_id)->get();
+    
+                $dataZone=array("zone"=>$zone,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises_projected"=>$keyfigure_cadre_harmonises_projected,"cadre_harmonises_current"=>$keyfigure_cadre_harmonises_current,"nutrition"=>$keyfigure_nutritions);
+                array_push($dataByZone,$dataZone);
+            }
+        }else{
+            foreach ($zones as $zone) {
+                $liste_localites = liste_localite::where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->orderBy('local_name', 'asc')->get();
+                $keyfigure_caseloads = keyfigure_caseload::where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
+                $keyfigure_displacements = DB::table('keyfigure_displacements')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
+                $keyfigure_cadre_harmonises_projected = DB::table('keyfigure_cadre_harmonises')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->where('ch_situation', '=', 'Projected')->get();
+                $keyfigure_cadre_harmonises_current = DB::table('keyfigure_cadre_harmonises')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->where('ch_situation', '=', 'Current')->get();
+                $keyfigure_nutritions = DB::table('keyfigure_nutritions')->whereIn('local_pcode', $countriesList)->where('zone_id', '=', $zone->zone_id)->get();
+    
+                $dataZone=array("zone"=>$zone,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises_projected"=>$keyfigure_cadre_harmonises_projected,"cadre_harmonises_current"=>$keyfigure_cadre_harmonises_current,"nutrition"=>$keyfigure_nutritions);
+                array_push($dataByZone,$dataZone);
+            }
+        }
+        
+       
+        
+
+        
+
+        //var_dump($dataByZone);
+
+        return view('zone.filter',['datas'=>$dataByZone]);
+
+
+
+    }
+
     public function show_view_analyser($id)
     {
         DB::connection('pgsql');

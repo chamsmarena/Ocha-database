@@ -2,21 +2,11 @@
 @section('title', 'Manage crisis zones')
 @section('content')
 <div class='col'>
-    <div class="row">
-        <div class="col">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/database">Database</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Manage crisis zones</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
 
-    <div class="row">
+
+    <div class="row pt-5">
         <div class='col'>
-            <p><em>Crisis zones in the <strong>West and Central Africa</strong></em></p>
+        <p class="h1 mb-3">Crisis zones</p>
         </div>
     </div>
     <div class="row">

@@ -5,21 +5,6 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/database">Database</a></li>
-                        <li class="breadcrumb-item"><a href="/managezones">Manage crisis zones</a></li>
-                        <li class="breadcrumb-item"><a href="/managezone/{{ $zone[0]->zone_id }}">{{ $zone[0]->zone_name }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit {{ $datas->local_name }}</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col">
                 <form action="/update/localite" method="POST">
                 @csrf
                     <div class="form-group">

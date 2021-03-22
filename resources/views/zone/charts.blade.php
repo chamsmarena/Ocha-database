@@ -9,19 +9,6 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/database">Database</a></li>
-                        <li class="breadcrumb-item"><a href="/zones">Crisis zones</a></li>
-                        <li class="breadcrumb-item"><a href="/zone/{{ $datas->zone_id }}">{{ $datas->zone_name }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">View {{ $datas->zone_name }} charts</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
                 <p>
                     <em>
                        Analyse data for the {{ $datas->zone_name }}<br/>
@@ -136,6 +123,7 @@
         $(function(){
 
             var trends_by_years = {!! json_encode($trends_by_years) !!}
+            
             data_idps = [];
             data_ref = [];
             data_ret = [];
@@ -185,6 +173,7 @@
             categ_gam = [];
 
             for (i = 0; i < trends_by_years.length; i++) {
+                zone_code=trends_by_years[i].zone_code;
                 switch(trends_by_years[i].t_category) {
                     case "IDP":
                         data_idps.push(trends_by_years[i].t_value);
@@ -322,7 +311,7 @@
                         width: 5
                     },
                 title: {
-                    text: 'Internally displaced persons',
+                    text: zone_code+' : Internally displaced persons',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -370,7 +359,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'Refugees',
+                    text: zone_code+' : Refugees',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -415,7 +404,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'Returnees',
+                    text: zone_code+' : Returnees',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -461,7 +450,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 1 current',
+                    text: zone_code+' : CH phase 1 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -506,7 +495,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 2 current',
+                    text: zone_code+' : CH phase 2 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -551,7 +540,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 3 current',
+                    text: zone_code+' : CH phase 3 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -597,7 +586,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 3,5 current',
+                    text: zone_code+' : CH phase 3,5 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -643,7 +632,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 4 current',
+                    text: zone_code+' : CH phase 4 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -690,7 +679,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 5 current',
+                    text: zone_code+' : CH phase 5 current',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -737,7 +726,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 1 projected',
+                    text: zone_code+' : CH phase 1 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -782,7 +771,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 2 projected',
+                    text: zone_code+' : CH phase 2 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -827,7 +816,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 3 projected',
+                    text: zone_code+' : CH phase 3 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -873,7 +862,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 3,5 projected',
+                    text: zone_code+' : CH phase 3,5 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -919,7 +908,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 4 projected',
+                    text: zone_code+' : CH phase 4 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -966,7 +955,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'CH phase 5 projected',
+                    text: zone_code+' : CH phase 5 projected',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1012,7 +1001,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'People in need',
+                    text: zone_code+' : People in need',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1058,7 +1047,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'People targeted',
+                    text: zone_code+' : People targeted',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1104,7 +1093,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'People reached',
+                    text: zone_code+' : People reached',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1150,7 +1139,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'Severe acute marnutrition',
+                    text: zone_code+' : Severe acute marnutrition',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1196,7 +1185,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'Moderate acute marnutrition',
+                    text: zone_code+' : Moderate acute marnutrition',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
@@ -1242,7 +1231,7 @@
                     show: false,
                 },
                 title: {
-                    text: 'Global acute marnutrition',
+                    text: zone_code+' : Global acute marnutrition',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,

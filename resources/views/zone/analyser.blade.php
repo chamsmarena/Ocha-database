@@ -28,19 +28,6 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/database">Database</a></li>
-                        <li class="breadcrumb-item"><a href="/zones">Crisis zones</a></li>
-                        <li class="breadcrumb-item"><a href="/zone/{{ $datas->zone_id }}">{{ $datas->zone_name }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Analyze</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
                 <p>
                     <em>
                        Analyse data for the {{ $datas->zone_name }}<br/>

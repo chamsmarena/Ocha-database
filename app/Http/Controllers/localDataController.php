@@ -50,11 +50,14 @@ class localDataController extends Controller
     }
     public function show_view_import() 
     {
-        return view('localdata.import');
+        $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
+        return view('localdata.import',['zones'=>$zones]);
     }
     public function show_view_database() 
     {
-        return view('localdata.database');
+        $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
+        $pays = DB::table('liste_localites')->where('zone_code', '=', 'WCA')->orderBy('local_name', 'asc')->get();
+        return view('localdata.database',['datas'=>$zones,'listepays'=>$pays]);
     }
     public function show_view_confirm_import($element) 
     {
@@ -66,9 +69,9 @@ class localDataController extends Controller
             case "informSahel":
                 $elementName = "Inform sahel";
             break;
-            case "idps":
+            /*case "idps":
                 $elementName = "Internally displaced persons";
-            break;
+            break;*/
             case "disp":
                 $elementName = "Displacements";
             break;
@@ -78,22 +81,24 @@ class localDataController extends Controller
             case "ch":
                 $elementName = "Cadre harmonisé";
             break;
-            case "fs":
+            /*case "fs":
                 $elementName = "Food security";
-            break;
+            break;*/
         }
         
-        return view('localdata.confirmimport',['elementName'=>$elementName,'element'=>$element]);
+        $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
+        return view('localdata.confirmimport',['elementName'=>$elementName,'element'=>$element,'zones'=>$zones]);
     }
     public function import_caseloads() 
     {
         try {
+            /*
             date_default_timezone_set('UTC');
             Storage::copy('input data/caseloads/lcb.xlsx', 'backup data/caseloads/lcb backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/caseloads/sahel.xlsx', 'backup data/caseloads/sahel backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/caseloads/sahel_central.xlsx', 'backup data/caseloads/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/caseloads/wca.xlsx', 'backup data/caseloads/wca backup '.date("Y-m-d H i s").'.xlsx');
-
+*/
 			/***************************/
 			
             DB::statement('TRUNCATE caseloads ');
@@ -113,15 +118,10 @@ class localDataController extends Controller
         } catch (\Throwable $th) {
             return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
         }
-
-       
     }
     public function import_inform_sahel() 
     {
         try {
-            date_default_timezone_set('UTC');
-            Storage::copy('input data/inform_sahel.xlsx', 'backup data/inform_sahel backup '.date("Y-m-d H i s").'.xlsx');
-
 			/***************************/
 			
 			DB::statement('TRUNCATE inform_sahel_risks ');
@@ -146,9 +146,7 @@ class localDataController extends Controller
     public function import_nutrition() 
     {
         try {
-            date_default_timezone_set('UTC');
-            Storage::copy('input data/nutrition.xlsx', 'backup data/nutrition backup '.date("Y-m-d H i s").'.xlsx');
-
+            
 			/***************************/
 			
 			DB::statement('TRUNCATE nutrition ');
@@ -170,9 +168,7 @@ class localDataController extends Controller
     public function import_cadre_harmonise() 
     {
         try {
-            date_default_timezone_set('UTC');
-            Storage::copy('input data/cadre_harmonise.xlsx', 'backup data/cadre_harmonise backup '.date("Y-m-d H i s").'.xlsx');
-
+            
 			/***************************/
 			
 			DB::statement('TRUNCATE cadre_harmonises ');
@@ -206,9 +202,8 @@ class localDataController extends Controller
     {
         //delete
         try {
-            date_default_timezone_set('UTC');
-            Storage::copy('input data/food_security.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
-
+            
+            
 			/***************************/
 			
 			DB::statement('TRUNCATE food_securities ');
@@ -226,12 +221,13 @@ class localDataController extends Controller
     public function import_displacement() 
     {
         try {
+            /*
             date_default_timezone_set('UTC');
             Storage::copy('input data/displacements/lcb.xlsx', 'backup data/displacements/lcb backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/sahel.xlsx', 'backup data/displacements/sahel backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/sahel_central.xlsx', 'backup data/displacements/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/wca.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
-
+*/
             DB::statement('TRUNCATE displacements');
 
             DB::table('data_by_years')->where('t_category', '=', 'Refugee')->delete();
@@ -249,14 +245,53 @@ class localDataController extends Controller
         }
     }
 
-    public function guide_import()
+    public function guide_import(Request $request)
     {
-        if($_POST['import']=="IMPORT"){
-            $url="/import"."/".$_POST['element'];
+            $url="/import"."/".$request->input('dataCategory');
+            $fileCrisis = "";
+            date_default_timezone_set('UTC');
+
+            switch ($request->input('zoneCode')) {
+                case "SAH":
+                    $fileCrisis = "sahel.xlsx";
+                    break;
+                case "SAHC":
+                    $fileCrisis = "sahel_central.xlsx";
+                    break;
+                case "LCB":
+                    $fileCrisis = "lcb.xlsx";
+                    break;
+                case "WCA":
+                    $fileCrisis = "wca.xlsx";
+                    break;
+            }
+
+        
+
+            switch ($request->input('dataCategory')) {
+                case "caseloads":
+                    Storage::copy("input data/caseloads/".$fileCrisis, "backup data/caseloads/".$fileCrisis." backup ".date("Y-m-d H i s").'.xlsx');
+                    $path = $request->importedfile->storeAs('input data/caseloads',$fileCrisis);
+                    break;
+                case "informSahel":
+                    Storage::copy('input data/inform_sahel.xlsx', 'backup data/inform_sahel backup '.date("Y-m-d H i s").'.xlsx');
+                    $path = $request->importedfile->storeAs('input data','inform_sahel.xlsx');
+                    break;
+                case "disp":
+                    Storage::copy("input data/displacements/".$fileCrisis, "backup data/displacements/".$fileCrisis." backup ".date("Y-m-d H i s").'.xlsx');
+                    $path = $request->importedfile->storeAs('input data/displacements',$fileCrisis);
+                    break;
+                case "ch":
+                    Storage::copy('input data/cadre_harmonise.xlsx', 'backup data/cadre_harmonise backup '.date("Y-m-d H i s").'.xlsx');
+                    $path = $request->importedfile->storeAs('input data','cadre_harmonise.xlsx');
+                    break;
+                case "nutrition":
+                    Storage::copy('input data/nutrition.xlsx', 'backup data/nutrition backup '.date("Y-m-d H i s").'.xlsx');
+                    $path = $request->importedfile->storeAs('input data','nutrition.xlsx');
+                    break;
+            }
             return redirect($url);
-        }else{
-            return back()->with('msg', 'Type IMPORT in all caps !');
-        }
+
     }
 
     public function verifyaccessimport(Request $request)

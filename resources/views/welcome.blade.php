@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layoutHome')
 @section('title', 'Welcome to OCHA ROWCA IMU')
 @section('content')
     <div class="col">
@@ -9,7 +9,7 @@
                     <blockquote class="blockquote">
                         <p>OCHA database</p>
                         
-                        <h1 class="display-3">Explore, Find, Analyze latest Keyfigures and trends <br/>among crisis in the region</h1>
+                        <h1 class="display-3">Explore, Find, Analyze and Download <br/>latest Keyfigures and trends <br/>among crisis in the region</h1>
                     </blockquote>
                     <br/>
                     <figcaption class="blockquote-footer text-white">

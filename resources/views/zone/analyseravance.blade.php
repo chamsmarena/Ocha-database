@@ -6,18 +6,6 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/database">Database</a></li>
-                        <li class="breadcrumb-item"><a href="/zones">Crisis zones</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Advanced Analysis</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
                 <p>
                     <em>
                        Show by <a href='#' onclick='showTable("bloc_displ")' >displacements</a>, <a href='#' onclick='showTable("bloc_caseload")'>caseloads</a>, <a href='#' onclick='showTable("bloc_ch")'>cadre harmonisé </a>, <a href='#' onclick='showTable("bloc_nutrition")'>nutrition</a>
