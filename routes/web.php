@@ -84,6 +84,8 @@ Route::get('/edit/zone/{id}', [zoneController::class, 'show_view_modifier']);
 Route::get('/add/zone',  [zoneController::class, 'show_view_ajouter']);
 Route::get('/delete/zone/{id}', [zoneController::class, 'show_view_delete']);
 Route::get('/filter/{category}/{items}', [zoneController::class, 'show_view_filter']);
+Route::get('/filterV2/{category}/{items}/{periodFrom}/{periodTo}/{adminLevel}', [zoneController::class, 'show_view_filterV2']);
+
 
 Route::get('/localites', [localiteController::class, 'liste']);
 Route::get('/localite/{id}', [localiteController::class, 'show_view_consulter']);

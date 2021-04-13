@@ -11,6 +11,7 @@
                         <label for="zone_code">Name</label>
                         <input type="text" class="form-control" id="local_name"  name="local_name" aria-describedby="zone_codeHelp" value="{{ $datas->local_name }}" autocomplete="off">
                     </div>
+
                     <div class="form-group">
                         <label for="zone_name">Pcode</label>
                         <input type="text" class="form-control" id="local_pcode" name="local_pcode" aria-describedby="zone_nameHelp"  value="{{ $datas->local_pcode}}" autocomplete="off">
@@ -23,6 +24,10 @@
                             <option value="2" <?php echo ($datas->local_admin_level==2) ? "selected='selected'" : ""; ?>>2</option>
                             <option value="3" <?php echo ($datas->local_admin_level==3) ? "selected='selected'" : ""; ?>>3</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="zone_code">Country name</label>
+                        <input type="text" class="form-control" id="local_country"  name="local_country" aria-describedby="zone_codeHelp" value="{{ $datas->local_country }}" autocomplete="off">
                     </div>
                     <input type="text" hidden name="local_id" value="{{ $datas->local_id }}">
                     <button type="submit" class="btn btn-primary">Submit</button>

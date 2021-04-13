@@ -32,7 +32,7 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->first();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->first();
         //$keyfigure_caseloads = keyfigure_caseload::where('local_id', $id)->get();
         $keyfigure_caseloads = DB::table('keyfigure_caseloads')->where('local_id', '=', $id)->get();
         $keyfigure_displacements = DB::table('keyfigure_displacements')->where('dis_crise', '=', $zone->zone_code)->where('local_id', '=', $localite->local_id)->get();
@@ -57,7 +57,7 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->first();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->first();
         //$keyfigure_caseloads = keyfigure_caseload::where('local_id', $id)->get();
         $keyfigure_caseloads = DB::table('keyfigure_caseloads')->where('local_id', '=', $id)->get();
         $keyfigure_displacements = DB::table('keyfigure_displacements')->where('dis_crise', '=', $zone->zone_code)->where('local_id', '=', $localite->local_id)->get();
@@ -80,7 +80,7 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->first();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->first();
         $trends_by_years = DB::table('trends_by_years')
         ->select(DB::raw('local_pcode, local_name, local_id,t_category,t_year,SUM(t_value) as t_value'))
         ->where('local_id', '=', $id)->orderBy('t_year', 'asc')->groupBy("local_pcode","local_name","local_id","t_category","t_year")->get();
@@ -98,7 +98,8 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->get();
+
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->get();
         return view('localite.manageconsulter',['datas'=>$localite,'zone'=>$zone]);
     }
 
@@ -113,7 +114,7 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->get();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->get();
 
         return view('localite.modifier',['datas'=>$localite,'zone'=>$zone]);
     }
@@ -123,7 +124,7 @@ class localiteController extends Controller
         DB::connection('pgsql');
         $localite = localite::where('local_id', $id)->first();
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->get();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->get();
         return view('localite.delete',['datas'=>$localite,'zone'=>$zone]);
     }
 
@@ -134,11 +135,12 @@ class localiteController extends Controller
         $localite->local_name = $_POST['local_name'];
         $localite->local_pcode = $_POST['local_pcode'];
         $localite->local_admin_level = $_POST['local_admin_level'];
+        $localite->local_country = $_POST['local_country'];
         $localite->save();
         $localiteUpdated = localite::where('local_id', $_POST['local_id'])->first();
 
         $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=',  $localite->local_id)->get();
-        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->zone_id)->get();
+        $zone = DB::table('zones')->where('zone_id', '=',  $zoneAvoirLoc[0]->ZONE_ID)->get();
         return view('localite.manageconsulter',['datas'=>$localiteUpdated,'zone'=>$zone]);
     }
     
@@ -147,7 +149,7 @@ class localiteController extends Controller
         if($_POST['delete']=="DELETE"){
             DB::connection('pgsql');
             $zoneAvoirLoc = DB::table('zone_avoir_localites')->where('local_id', '=', $_POST['local_id'])->get();
-            $zoneID = $zoneAvoirLoc[0]->zone_id;
+            $zoneID = $zoneAvoirLoc[0]->ZONE_ID;
             DB::table('zone_avoir_localites')->where('local_id', '=', $_POST['local_id'])->delete();
             DB::table('localites')->where('local_id', '=', $_POST['local_id'])->delete();
             return redirect('managezone/'.$zoneID);
@@ -187,7 +189,7 @@ class localiteController extends Controller
         $localite->save();
 
         $zone_avoir_localite = new zone_avoir_localite;
-        $zone_avoir_localite->zone_id = $_POST['zone_id'];
+        $zone_avoir_localite->ZONE_ID = $_POST['zone_id'];
         $zone_avoir_localite->local_id = $id;
         $zone_avoir_localite->save();
 

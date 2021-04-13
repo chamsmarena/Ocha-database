@@ -123,17 +123,54 @@ class zoneController extends Controller
             }
         }
         
-       
-        
-
-        
-
         //var_dump($dataByZone);
 
         return view('zone.filter',['datas'=>$dataByZone]);
+    }
+
+    public function show_view_filterV2($category,$items,$periodFrom,$periodTo,$adminLevel)
+    {
+        $countriesList = array();
+        $dataByZone = array();
+
+        
+        if($category=="crisis"){
+            $crisisList = explode("_", $items);
+        }else{
+            $crisisList = ["WCA"];
+            $countriesList = explode("_", $items);
+        }
+        
+        $zones = DB::table('zones')->whereIn('zone_code', $crisisList)->orderBy('zone_name', 'asc')->get();
 
 
+        if($category=="crisis"){
+            foreach ($zones as $zone) {
+                $liste_localites = DB::table('liste_localites')->where('zone_id', '=', $zone->zone_id)->get();
+                $keyfigure_caseloads =  DB::table('caseloads_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('caseload_date', 'asc')->get();
+                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('dis_date', 'asc')->get();
+                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('ch_date', 'asc')->get();
+                $keyfigure_nutritions = DB::table('nutrition_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('nut_date', 'asc')->get();
+    
+                $dataZone=array("zone"=>$zone,"adminLevel"=>$adminLevel,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises"=>$keyfigure_cadre_harmonises,"nutrition"=>$keyfigure_nutritions);
+                array_push($dataByZone,$dataZone);
+            }
+        }else{
+            foreach ($zones as $zone) {
+                $liste_localites = DB::table('liste_localites')->where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->orderBy('local_name', 'asc')->get();
+                $keyfigure_caseloads = DB::table('caseloads_by_regions')->where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
+                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
+                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
+                $keyfigure_nutritions = DB::table('nutrition_by_regions')->whereIn('local_pcode', $countriesList)->where('zone_id', '=', $zone->zone_id)->get();
+    
+                $dataZone=array("zone"=>$zone,"adminLevel"=>$adminLevel,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises"=>$keyfigure_cadre_harmonises,"nutrition"=>$keyfigure_nutritions,"adminLevel"=>$adminLevel);
+                array_push($dataByZone,$dataZone);
+            }
+        }
+        
+        //var_dump($dataByZone);
 
+        return view('zone.filterV2',['datas'=>$dataByZone,"adminLevel"=>$adminLevel]);
     }
 
     public function show_view_analyser($id)

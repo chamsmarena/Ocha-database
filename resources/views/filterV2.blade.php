@@ -17,8 +17,15 @@
         <script src="{{ URL::asset('js/jquery-3.6.0.min.js') }}" ></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" ></script>
         <script src="{{ URL::asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
+        <script src="{{ URL::asset('d3/d3.min.js') }}" ></script>
+        <script src="{{ URL::asset('js/html2canvas.js') }}" ></script>
+        <script src="{{ URL::asset('js/FileSaver.min.js') }}" ></script>
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+        <script src="https://unpkg.com/topojson-client@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
   
-        
+        <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
+        <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
    
 
 
@@ -26,6 +33,10 @@
         
     
         <style>
+            body{
+                background-color:#e6f3ff;
+            }
+
             .downloadImage{
                 cursor: pointer;
                 color:#418fde;
@@ -37,11 +48,11 @@
 
             .keyfigure{
                 color:#418fde;
-                font-size: 25px;
+                font-size: 20px;
             }
             .keyfigure-selected{
                 color:#E56A54;
-                font-size: 25px;
+                font-size: 20px;
             }
 
             .labelkeyfigure{
@@ -57,10 +68,9 @@
             }
 
             .cards-selected{
-                background-color:#F2F2F2;
-                border:1px solid;
-                border-color:#F2F2F2;
-                padding-bottom:10px;
+                background-color:#fff;
+                border-bottom:7px solid;
+                border-color:#E56A54;
             }
 
             .cards:hover{
@@ -71,10 +81,13 @@
                 margin-bottom:10px;
             }
 
-            .bloc-data{
-                background-color:#F2F2F2;
+            .white-blocs{
+                background-color:#ffffff;
                 border:1px solid;
-                border-color:#F2F2F2;
+                border-color:#ffffff;
+            }
+
+            .bloc-data{
             }
         </style>
     
