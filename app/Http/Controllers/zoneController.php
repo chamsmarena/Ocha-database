@@ -132,7 +132,8 @@ class zoneController extends Controller
     {
         $countriesList = array();
         $dataByZone = array();
-
+        $dateFrom = $periodFrom."-01-01";
+        $dateTo = $periodTo."-12-31";
         
         if($category=="crisis"){
             $crisisList = explode("_", $items);
@@ -147,10 +148,10 @@ class zoneController extends Controller
         if($category=="crisis"){
             foreach ($zones as $zone) {
                 $liste_localites = DB::table('liste_localites')->where('zone_id', '=', $zone->zone_id)->get();
-                $keyfigure_caseloads =  DB::table('caseloads_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('caseload_date', 'asc')->get();
-                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('dis_date', 'asc')->get();
-                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('ch_date', 'asc')->get();
-                $keyfigure_nutritions = DB::table('nutrition_by_regions')->where('zone_id', '=', $zone->zone_id)->orderBy('nut_date', 'asc')->get();
+                $keyfigure_caseloads =  DB::table('caseloads_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('caseload_date', [$dateFrom, $dateTo])->orderBy('caseload_date', 'asc')->get();
+                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('dis_date', [$dateFrom, $dateTo])->orderBy('dis_date', 'asc')->get();
+                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('ch_date', [$dateFrom, $dateTo])->orderBy('ch_date', 'asc')->get();
+                $keyfigure_nutritions = DB::table('nutrition_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('nut_date', [$dateFrom, $dateTo])->orderBy('nut_date', 'asc')->get();
     
                 $dataZone=array("zone"=>$zone,"adminLevel"=>$adminLevel,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises"=>$keyfigure_cadre_harmonises,"nutrition"=>$keyfigure_nutritions);
                 array_push($dataByZone,$dataZone);
@@ -158,10 +159,10 @@ class zoneController extends Controller
         }else{
             foreach ($zones as $zone) {
                 $liste_localites = DB::table('liste_localites')->where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->orderBy('local_name', 'asc')->get();
-                $keyfigure_caseloads = DB::table('caseloads_by_regions')->where('zone_id', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
-                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
-                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->whereIn('local_pcode', $countriesList)->get();
-                $keyfigure_nutritions = DB::table('nutrition_by_regions')->whereIn('local_pcode', $countriesList)->where('zone_id', '=', $zone->zone_id)->get();
+                $keyfigure_caseloads = DB::table('caseloads_by_regions')->where('zone_id', $zone->zone_id)->whereBetween('caseload_date', [$dateFrom, $dateTo])->whereIn('local_pcode', $countriesList)->orderBy('caseload_date', 'asc')->get();
+                $keyfigure_displacements = DB::table('displacements_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('dis_date', [$dateFrom, $dateTo])->whereIn('local_pcode', $countriesList)->orderBy('dis_date', 'asc')->get();
+                $keyfigure_cadre_harmonises = DB::table('cadre_harmonises_by_regions')->where('zone_id', '=', $zone->zone_id)->whereBetween('ch_date', [$dateFrom, $dateTo])->whereIn('local_pcode', $countriesList)->orderBy('ch_date', 'asc')->get();
+                $keyfigure_nutritions = DB::table('nutrition_by_regions')->whereIn('local_pcode', $countriesList)->where('zone_id', '=', $zone->zone_id)->whereBetween('nut_date', [$dateFrom, $dateTo])->orderBy('nut_date', 'asc')->get();
     
                 $dataZone=array("zone"=>$zone,"adminLevel"=>$adminLevel,"localites"=>$liste_localites,"caseloads"=>$keyfigure_caseloads,"displacements"=>$keyfigure_displacements,"cadre_harmonises"=>$keyfigure_cadre_harmonises,"nutrition"=>$keyfigure_nutritions,"adminLevel"=>$adminLevel);
                 array_push($dataByZone,$dataZone);
@@ -170,7 +171,7 @@ class zoneController extends Controller
         
         //var_dump($dataByZone);
 
-        return view('zone.filterV2',['datas'=>$dataByZone,"adminLevel"=>$adminLevel]);
+        return view('zone.filterV2',['datas'=>$dataByZone,"adminLevel"=>$adminLevel,"periodFrom"=>$periodFrom,"periodTo"=>$periodTo,"countriesList"=>$countriesList]);
     }
 
     public function show_view_analyser($id)

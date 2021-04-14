@@ -92,27 +92,36 @@
         </style>
     
     </head>
-    <body>
-    <div class="container-fluid">
-            <div class="row text-white" style="background-color:#418fde;">
-                <div class="col">
-                    <h1 class="display-6">
-                        <img src="{{asset('images/logoOchaBlanc.png')}}" style="height:50px;"  alt="logo ocha"/> @yield('title')
-                    </h1>
-
-                    <?php 
-                        if (request()->session()->get('authenticated')!=null) {
-                            ?>
-                            <a class="nav-link active"  style="background-color:#418fde;border:none;" href="/logout">Logout</a>
-                            <?php 
-                        }
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    @yield('content')
-                </div>
+    <body >
+        <div class="row " style="background-color:#418fde;">
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/database">Filter</a>
+                </li>
+               
+                @if (request()->session()->get('authenticated')!=null)
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/import">Import</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/managezones">Manage crisis zones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/logout">Logout</a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/accessimport">login</a>
+                    </li>
+                @endif
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col">
+                @yield('content')
             </div>
         </div>
     </body>

@@ -501,12 +501,12 @@
     $trendDisplacement_IDP = getTrendData($trendDisplacement_IDP_Raw);
     $mapDisplacement_IDP = getMapData($KeyFigureDisplacementsByAdmin,"idp");
 
-   
+  
 
 ?>
 
-<div class='col-12'>
-    <h5>Key figures</h5>
+<div class='col-12 pt-3'>
+    <p>Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em></p>
     <div class="row">
         <div class="col-3 keyFigure-card cards-selected rounded me-1 ms-1" id="keyFigure-caseloads" onclick="showData('caseloads')">
             <p>Caseloads</p>
@@ -598,7 +598,7 @@
 
 
     <div class="row">
-        <div class="col-12 bloc-data" id="bloc-data-caseloads" style = "display:none;">
+        <div class="col-12 bloc-data" id="bloc-data-caseloads" style = "displayf:none;">
             <div class="row">
                 <div class="col-8">
                     
@@ -612,6 +612,27 @@
                             <a href="#" class="btn-link" onclick="downloadTrend('caseloads')"><em>image</em></a>
                             <div class="trend-caseloads" id="trend-caseloads">
                             </div>
+
+                            <table class="table" id="trend-data-caseloads" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">AdminName</th>
+                                        <th scope="col">AdminName</th>
+                                        <th scope="col">In need</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($TrendsCaseLoadsByAdmin as $caseload)
+                                        <tr>
+                                            <th >{{$caseload["date"]}}</th>
+                                            <th >{{$caseload["adminName"]}}</th>
+                                            <th >{{$adminLevel}}</th>
+                                            <td>{{$caseload["pin"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
                             <a href="#" class="btn-link" onclick="downloadData('caseloads')"><em>excel</em></a>
@@ -675,6 +696,7 @@
                             <a href="#" class="btn-link" onclick="downloadTrend('displacements')"><em>image</em></a>
                             <div class="trend-displacements" id="trend-displacements">
                             </div>
+
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
                             <a href="#" class="btn-link" onclick="downloadData('displacements')"><em>Excel</em></a>
@@ -948,7 +970,7 @@
 $(document).ready(function(){
     
     adminLevel = {!! json_encode($adminLevel) !!};
-
+    zoneCode = {!! json_encode($zone->zone_code) !!};
     //trend data
     trendCaseloads_pin = {!! json_encode($trendCaseloads_PIN) !!};
     caseloadColumns = {!! json_encode($caseloadColumns) !!};
@@ -983,9 +1005,9 @@ $(document).ready(function(){
     //map call functions
    // AddCaseloadPinMap(mapCaseloads_PIN)
 
-    addTestMap("map-caseloads","LCB",adminLevel,mapCaseloads_PIN,"People in need")
-    addTestMap("map-displacements","LCB",adminLevel,mapDisplacement_IDP,"Internally displaced persons")
-    addTestMap("map-nutrition","LCB",adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
+    addTestMap("map-caseloads",zoneCode,adminLevel,mapCaseloads_PIN,"People in need")
+    addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
+    addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
 
         
 });
@@ -1076,7 +1098,7 @@ function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
     ${format(data.get(d.properties.adminName))}`);
 
     svg.append("path")
-        .datum(topojson.mesh(us, us.objects.test6, (a, b) => a !== b))
+        .datum(topojson.mesh(us, us.objects.admin, (a, b) => a !== b))
         .attr("fill", "none")
         .attr("stroke", "white")
         .attr("stroke-linejoin", "round")

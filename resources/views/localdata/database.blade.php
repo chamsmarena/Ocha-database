@@ -1,15 +1,15 @@
 @extends('layout')
 @section('title', 'Database')
 @section('content')
-    <div class="col pt-5">
-        <div class="row" >
-            <div class="col" id='buttonOk'>
+    <div class="col pt-3">
+        <div class="row " >
+            <div class="col d-flex justify-content-center" id='buttonOk'>
                 <a href="#" class="btn btn-primary" style="background-color:#E56A54;border:none;" id="buttonDone">Done</a>
             </div>
         </div>
-        <div class="row" >
-            <div class="col" id='page1'>
-                <p class="h4 mb-3">How do you want to explore</p>
+        <div class="row pt-3" >
+            <div class="col ms-5" id='page1'>
+                <p class="h4  mb-3">How do you want to explore</p>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioByCrisis" >
                     <label class="form-check-label" for="flexRadioDefault1">
@@ -26,15 +26,25 @@
                 <!--a href="#" class="btn btn-primary" id="buttonShowBlocs"  style="display:none;background-color:#E56A54;border:none;">Continue</a-->
             </div>
 
-            <div class="col" id='page2' style="display:none;">
+            <div class="col" id='page2'>
                 <!--a href="#" id="buttonGoBack" class="  mb-3" >Go back</a-->
                 <div id="blocCrisis" class="mb-3" style="display:none;">
                     <p class="h4 mb-3">Choose crisis</p>
                     @foreach ($datas as $data)
-                        <div class="form-check form-switch ">
-                            <input class="form-check-input " type="checkbox" onchange="FilterByCrisis('{{$data->zone_code}}')" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">{{$data->zone_name}}</label>
-                        </div>
+                        @if ($data->zone_code != "WCA")
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefaultcrise" onchange="FilterByCrisisV2('{{$data->zone_code}}')"  id="flexRadioDefault2{{$data->zone_code}}">
+                                <label class="form-check-label" for="flexRadioDefault2{{$data->zone_code}}">
+                                    {{$data->zone_name}}
+                                </label>
+                            </div>
+
+
+                            <!--div class="form-check form-switch ">
+                                <input class="form-check-input " type="checkbox" onchange="FilterByCrisis('{{$data->zone_code}}')" id="flexSwitchCheckDefault{{$data->zone_code}}">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">{{$data->zone_name}}</label>
+                            </div-->
+                        @endif
                     @endforeach
                 </div>
                 <div id="blocCountry" class="mb-3" style="display:none;">
@@ -49,9 +59,9 @@
                 
             </div>
 
-            <div class="col" id='page3' style="displayw:none;">
+            <div class="col" id='page3' >
                 <!--a href="#" id="buttonGoBack" class="  mb-3" >Go back</a-->
-                <div id="blocPeriod" class="mb-3" style="displayw:none;">
+                <div id="blocPeriod" class="mb-3">
                     <p class="h4 mb-3">Choose period</p>
                     <div class="input-group">
                         <span class="input-group-text">From to</span>
@@ -86,18 +96,18 @@
                 
             </div>
 
-            <div class="col" id='page3' style="displayw:none;">
+            <div class="col" id='page3'>
                 <!--a href="#" id="buttonGoBack" class="  mb-3" >Go back</a-->
-                <div id="blocPeriod" class="mb-3" style="displayw:none;">
+                <div id="blocPeriod" class="mb-3" >
                     <p class="h4 mb-3">Desired administrative division </p>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefaultzz" id="radioAdmin0">
+                        <input class="form-check-input" type="radio" name="flexRadioDefaultzz" id="radioAdmin0" checked>
                         <label class="form-check-label" for="flexRadioDefault3">
                             Admin 0
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefaultzz" id="radioAdmin1" checked>
+                        <input class="form-check-input" type="radio" name="flexRadioDefaultzz" id="radioAdmin1">
                         <label class="form-check-label" for="flexRadioDefault4">
                             Admin 1
                         </label>
@@ -111,7 +121,10 @@
 
         zonesList = "";
         countriesList = "";
-        adminLevel = "";
+        adminLevel = "admin0";
+        periodFrom = "2012";
+        periodTo = "2021";
+        crise = "";
         
         filterBy = "";
         $(document).ready(function () {
@@ -166,8 +179,17 @@
                 periodFrom = $('#period_from').val();
                 periodTo = $('#period_to').val();
 
+                if(periodFrom == "From"){
+                    periodFrom = "2012"
+                }
+
+                if(periodTo == "To"){
+                    periodTo = "2021"
+                }
+
+
                 if(filterBy == "crisis"){
-                    window.location = "/filterV2/"+filterBy+"/"+zonesList+"/"+periodFrom+"/"+periodTo+"/"+adminLevel;
+                    window.location = "/filterV2/"+filterBy+"/"+crise+"/"+periodFrom+"/"+periodTo+"/"+adminLevel;
                 }else{
                     window.location = "/filterV2/"+filterBy+"/"+countriesList+"/"+periodFrom+"/"+periodTo+"/"+adminLevel;
                 }
@@ -181,6 +203,9 @@
             }else{
                 zonesList = zonesList.replace(search, "");
             }
+        }
+        function FilterByCrisisV2(code_zone){
+            crise = code_zone;
         }
 
         function FilterByCoutries(pcode){

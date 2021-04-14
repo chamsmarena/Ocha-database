@@ -28,7 +28,7 @@
                     <a class="nav-link text-white" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/database">Database</a>
+                    <a class="nav-link text-white" href="/database">Filter</a>
                 </li>
                
                 @if (request()->session()->get('authenticated')!=null)
