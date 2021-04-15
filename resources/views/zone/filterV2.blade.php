@@ -21,11 +21,12 @@
         return $result;
     }
 
-    function getTrendData($datas){
+    function getTrendDataOld($datas){
         $dates = array();
         $locations = array();
         $trendsData = array();
         $arrayModel = array("year"=>0);
+
         foreach ($datas as $data){
             $year = intval(substr($data["date"],0,4));
 
@@ -72,6 +73,58 @@
             }
             
             array_push($trendsData,$arrayTemp);
+        }
+        return $trendsData;
+    }
+
+    function getTrendData($datas){
+        $locations = array();
+        $trendsData = array();
+        $dates = array();
+
+        
+        foreach ($datas as $data){
+            $year = intval(substr($data["date"],0,4));
+
+            //recuperation des années
+            if (!in_array($year, $dates) && $year!="")
+            {
+                array_push($dates,$year);
+            }
+
+            //recuperation des localites
+            if (!in_array($data["adminName"], $locations) && $data["adminName"]!="")
+            {
+                array_push($locations,$data["adminName"]);
+            }
+        }
+
+
+        foreach ($locations as $location){
+            $dataTemp = array();
+            foreach ($dates as $date){
+                $lastDate = "1900-01-01";
+                $lastValue = 0;
+                
+
+                foreach ($datas as $data){
+                    $year = intval(substr($data["date"],0,4));
+                    if($date==$year && $location==$data["adminName"] && $data["value"]!=0 && $data["value"]!=""){
+                        
+                        if($data["date"]==$lastDate){
+                            $lastValue = $lastValue + $data["value"];
+                        }else{
+                            if($data["date"] > $lastDate){
+                                $lastDate = $data["date"];
+                                $lastValue = $data["value"];
+                            }
+                        }
+                    }
+                }
+                array_push($dataTemp,array($date,$lastValue));
+            }
+            array_push($trendsData,array("name"=>$location,"data"=>$dataTemp));
+            
         }
         return $trendsData;
     }
@@ -966,6 +1019,8 @@
     </div>
 </div>
 
+<div id='chart'>ygfhgf</div>
+
 <script>
 $(document).ready(function(){
     
@@ -993,11 +1048,11 @@ $(document).ready(function(){
     mapNutrition_SAM = {!! json_encode($mapNutrition_SAM) !!};
 
     //trends call functions
-    AddChart(trendCaseloads_pin,caseloadColumns,"trend-caseloads","People in need")
-    AddChart(trendDisplacement_IDP,displacementColumns,"trend-displacements","Internally displaced persons")
-    AddChart(trendNutrition_SAM,nutritionColumns,"trend-nutrition","Severe Acuted Malnourished")
-    AddChart(trendCh_Current,ch_CurrentColumns,"trend-ch-current","Current food insecure")
-    AddChart(trendCh_Projected,ch_ProjectedColumns,"trend-ch-projected","Projected food insecure")
+    AddChart(trendCaseloads_pin,"trend-caseloads","People in need")
+    AddChart(trendDisplacement_IDP,"trend-displacements","Internally displaced persons")
+    AddChart(trendNutrition_SAM,"trend-nutrition","Severe Acuted Malnourished")
+    AddChart(trendCh_Current,"trend-ch-current","Current food insecure")
+    AddChart(trendCh_Projected,"trend-ch-projected","Projected food insecure")
 
     //console.log(trendNutrition_SAM);
 
@@ -1009,7 +1064,8 @@ $(document).ready(function(){
     addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
     addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
 
-        
+    console.log(trendCaseloads_pin);
+    testChart(trendCaseloads_pin)
 });
 
 function showData(bloc) {
@@ -1064,6 +1120,81 @@ function saveAs(uri, filename) {
     }
 }
 
+function AddChart(series,element,title){
+    series2 = [
+          {
+            name: 'South',
+            data: [
+                [1327359600000,30.95],
+                [1327446000000,31.34],
+                [1327532400000,2.18],
+                [1327618800000,31.05],
+            ]
+          },
+          {
+            name: 'North',
+            data: [
+                [1327359600000,1.95],
+                [1327446000000,23.34],
+                [1327532400000,44.18],
+                [1327618800000,22.05],
+            ]
+          }
+        ]
+
+        console.log(series2)
+        console.log(series)
+    var options = {
+        title: {
+            text: title,
+            align: 'left',
+            margin: 10,
+            offsetX: 0,
+            offsetY: 0,
+            floating: false,
+            style: {
+            fontSize:  '14px',
+            fontWeight:  'bold',
+            fontFamily:  undefined,
+            color:  '#263238'
+            },
+        },
+          series: series,
+          chart: {
+          type: 'area',
+          height: 350,
+          stacked: true,
+          events: {
+            selection: function (chart, e) {
+              console.log(new Date(e.xaxis.min))
+            }
+          },
+        },
+        colors: ['#008FFB', '#00E396', '#CED4DC', '#CEDfDC'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        fill: {
+          type: 'solid',
+          opacity: 1,
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left'
+        },
+        xaxis: {
+          type: 'category'
+        },
+        };
+
+        blocId = "#"+element;
+        var chart = new ApexCharts(document.querySelector(blocId), options);
+        chart.render();
+}
+
 function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
 
 
@@ -1107,7 +1238,7 @@ function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
 }
 
 
-function AddChart(data,Columns,element,title){
+function AddChartOld(data,Columns,element,title){
 
     //caseloads
     data = Object.assign(data, {y: title})

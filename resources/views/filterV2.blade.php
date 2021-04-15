@@ -26,6 +26,7 @@
   
         <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
         <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
    
 
 
