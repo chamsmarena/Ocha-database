@@ -27,6 +27,10 @@
         <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
         <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <!-- html to powerpoint -->
+        <script src="{{ URL::asset('pptxgen/jszip.min.js') }}"></script>
+        <script src="{{ URL::asset('pptxgen/pptxgen.min.js') }}"></script>  
    
 
 

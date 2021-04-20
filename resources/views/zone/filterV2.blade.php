@@ -559,7 +559,11 @@
 ?>
 
 <div class='col-12 pt-3'>
-    <p>Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em></p>
+    <p>
+        Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br>
+        <a href="#" class="btn-link" onclick="ExportPowerPoint()"><em>Exporter une présentation</em></a>
+                    
+    </p>
     <div class="row">
         <div class="col-3 keyFigure-card cards-selected rounded me-1 ms-1" id="keyFigure-caseloads" onclick="showData('caseloads')">
             <p>Caseloads</p>
@@ -662,7 +666,8 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-12 white-blocs rounded m-1">
-                            <a href="#" class="btn-link" onclick="downloadTrend('caseloads')"><em>image</em></a>
+                            <p>Trend by year</p>
+                            <!--a href="#" class="btn-link" onclick="downloadTrend('caseloads')"><em>image</em></a-->
                             <div class="trend-caseloads" id="trend-caseloads">
                             </div>
 
@@ -688,6 +693,7 @@
                             </table>
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
+                            <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('caseloads')"><em>excel</em></a>
                             <table class="table">
                                 <thead>
@@ -746,12 +752,14 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-12 white-blocs rounded m-1">
-                            <a href="#" class="btn-link" onclick="downloadTrend('displacements')"><em>image</em></a>
+                            <p>Trend by year</p>
+                            <!--a href="#" class="btn-link" onclick="downloadTrend('displacements')"><em>image</em></a-->
                             <div class="trend-displacements" id="trend-displacements">
                             </div>
 
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
+                            <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('displacements')"><em>Excel</em></a>
                             <table class="table">
                                 <thead>
@@ -810,11 +818,13 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-12 white-blocs rounded m-1">
-                            <a href="#" class="btn-link" onclick="downloadTrend('nutrition')"><em>image</em></a>
+                            <p>Trend by year</p>
+                            <!--a href="#" class="btn-link" onclick="downloadTrend('nutrition')"><em>image</em></a-->
                             <div class="trend-nutrition" id="trend-nutrition">
                             </div>
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
+                            <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('nutrition')"><em>excel</em></a>
                             <table class="table">
                                 <thead>
@@ -871,10 +881,12 @@
                     <div class="map-ch" id="map-ch-current"></div>
                 </div>
                 <div class="col  white-blocs rounded m-1">
-                    <a href="#" class="btn-link" onclick="downloadTrend('ch-current')"><em>image</em></a>
+                    <p>Trend by year</p>
+                    <!--a href="#" class="btn-link" onclick="downloadTrend('ch-current')"><em>image</em></a-->
                     <div class="trend-ch" id="trend-ch-current"></div>
                 </div>
                 <div class="col white-blocs rounded m-1">
+                    <p>Key figures by country</p>
                     <a href="#" class="btn-link" onclick="downloadData('ch-current')"><em>excel</em></a>
                     <table class="table">
                         <thead>
@@ -947,10 +959,12 @@
                     <div class="map-ch" id="map-ch-projected"></div>
                 </div>
                 <div class="col  white-blocs rounded m-1">
-                    <a href="#" class="btn-link" onclick="downloadTrend('ch-projected')"><em>image</em></a>
+                    <p>Trend by year</p>
+                    <!--a href="#" class="btn-link" onclick="downloadTrend('ch-projected')"><em>image</em></a-->
                     <div class="trend-ch" id="trend-ch-projected"></div>
                 </div>
                 <div class="col white-blocs rounded m-1">
+                    <p>Key figures by country</p>
                     <a href="#" class="btn-link" onclick="downloadData('ch-projected')"><em>excel</em></a>
                     <table class="table">
                         <thead>
@@ -1026,12 +1040,15 @@ $(document).ready(function(){
     
     adminLevel = {!! json_encode($adminLevel) !!};
     zoneCode = {!! json_encode($zone->zone_code) !!};
+    zoneName = {!! json_encode($zone->zone_name) !!};
     //trend data
     trendCaseloads_pin = {!! json_encode($trendCaseloads_PIN) !!};
     caseloadColumns = {!! json_encode($caseloadColumns) !!};
+    KeyFigureCaseLoads = {!! json_encode($KeyFigureCaseLoads) !!};
 
     trendDisplacement_IDP = {!! json_encode($trendDisplacement_IDP) !!};
     displacementColumns = {!! json_encode($displacementColumns) !!};
+    KeyFigureDisplacements = {!! json_encode($KeyFigureDisplacements) !!};
 
     trendNutrition_SAM = {!! json_encode($trendNutrition_SAM) !!};
     nutritionColumns = {!! json_encode($nutritionColumns) !!};
@@ -1048,11 +1065,11 @@ $(document).ready(function(){
     mapNutrition_SAM = {!! json_encode($mapNutrition_SAM) !!};
 
     //trends call functions
-    AddChart(trendCaseloads_pin,"trend-caseloads","People in need")
-    AddChart(trendDisplacement_IDP,"trend-displacements","Internally displaced persons")
-    AddChart(trendNutrition_SAM,"trend-nutrition","Severe Acuted Malnourished")
-    AddChart(trendCh_Current,"trend-ch-current","Current food insecure")
-    AddChart(trendCh_Projected,"trend-ch-projected","Projected food insecure")
+    AddChart(trendCaseloads_pin,"trend-caseloads",zoneName+": People in need")
+    AddChart(trendDisplacement_IDP,"trend-displacements",zoneName+": Internally displaced persons")
+    AddChart(trendNutrition_SAM,"trend-nutrition",zoneName+": Severe Acuted Malnourished")
+    AddChart(trendCh_Current,"trend-ch-current",zoneName+": Current food insecure")
+    AddChart(trendCh_Projected,"trend-ch-projected",zoneName+": Projected food insecure")
 
     //console.log(trendNutrition_SAM);
 
@@ -1064,9 +1081,104 @@ $(document).ready(function(){
     addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
     addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
 
-    console.log(trendCaseloads_pin);
-    testChart(trendCaseloads_pin)
+  
+    image1= 0;
+    console.log(KeyFigureDisplacements);
 });
+
+
+
+
+
+
+
+
+function ExportPowerPoint(){
+    $(".bloc-data").show();
+    umg = "";
+    html2canvas(document.querySelector("#trend-caseloads")).then(function(caseloads) {
+        html2canvas(document.querySelector("#trend-displacements")).then(function(displacements) {
+            html2canvas(document.querySelector("#trend-nutrition")).then(function(nutrition) {
+                html2canvas(document.querySelector("#trend-ch-current")).then(function(chCurrent) {
+                    html2canvas(document.querySelector("#trend-ch-projected")).then(function(chProjected) {
+                        caseloadImage = caseloads.toDataURL()
+                        displacementsImage = displacements.toDataURL()
+                        nutritionImage = nutrition.toDataURL()
+                        chCurrentImage = chCurrent.toDataURL()
+                        chProjectedImage = chProjected.toDataURL()
+
+                        var pptx = new PptxGenJS();
+
+                        // STEP 2: Add a new Slide to the Presentation
+                        var slide = pptx.addSlide();
+                        var slide_caseLoad = pptx.addSlide();
+                        var slide_disp = pptx.addSlide();
+                        var slide_nutrition = pptx.addSlide();
+                        var slide_foodSec = pptx.addSlide();
+
+                        slide.addText('Presentation for', { x:3.8, y:1.44, fontSize:18, color:'418fde' });
+                        slide.addText(zoneName, { x:3.8, y:1.86, fontSize:18, color:'418fde' });
+
+                        //CASELOADS
+                        slide_caseLoad.addText('Caseloads', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                        slide_caseLoad.addText('People in need', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pin,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                        slide_caseLoad.addText('People targeted', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pt,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_caseLoad.addText('People reached', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pr,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_caseLoad.addImage({ path: "/images/People-in-need.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                        slide_caseLoad.addImage({ path: "/images/People-targeted.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                        slide_caseLoad.addImage({ path: "/images/Person-2.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                        slide_caseLoad.addImage({ data: caseloadImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+
+
+                        //DISPLACEMENTS
+                        slide_disp.addText('Displacements', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                        slide_disp.addText('IDPs', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.idp,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                        slide_disp.addText('Refugees', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.refugees,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_disp.addText('Returnees', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.returnees,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_disp.addImage({ path: "/images/Internally-displaced.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                        slide_disp.addImage({ path: "/images/Refugee.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                        slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                        slide_disp.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+
+
+              
+                        slide.addImage({ data: nutritionImage });
+                        slide.addImage({ data: chCurrentImage });
+                        slide.addImage({ data: chProjectedImage });
+
+                        // STEP 4: Send the PPTX Presentation to the user, using your choice of file name
+                        pptx.writeFile('PptxGenJs-Basic-Slide-Demo');
+                        $(".bloc-data").hide();
+                        showData("caseloads");
+
+                    });
+                });
+            });
+        });
+    });
+
+    
+
+
+
+
+    
+        
+       
+
+
+       //saveAs(canvas.toDataURL(), 'file-name.png');
+  
+
+
+   
+}
 
 function showData(bloc) {
     $(".bloc-data").hide();
@@ -1120,31 +1232,34 @@ function saveAs(uri, filename) {
     }
 }
 
-function AddChart(series,element,title){
-    series2 = [
-          {
-            name: 'South',
-            data: [
-                [1327359600000,30.95],
-                [1327446000000,31.34],
-                [1327532400000,2.18],
-                [1327618800000,31.05],
-            ]
-          },
-          {
-            name: 'North',
-            data: [
-                [1327359600000,1.95],
-                [1327446000000,23.34],
-                [1327532400000,44.18],
-                [1327618800000,22.05],
-            ]
-          }
-        ]
+function convertToUnit(val,decimal){
+        result = "";
+        if(val<1000){
+            result = val;
+        }else{
+            if(val<1000000){
+                calc = val/1000
+                result = calc.toFixed(decimal)+"K";
+            }else{
+                if(val<1000000000){
+                    calc = val/1000000
+                    result = calc.toFixed(decimal)+"M";
+                }else{
+                    calc = val/1000000000
+                    result = calc.toFixed(decimal)+"B";
+                }
+            }
+        }
+        return result;
+    }
 
-        console.log(series2)
-        console.log(series)
+function AddChart(series,element,title){
+    array_color = d3.schemeBlues[4]
+
     var options = {
+        zoom: {
+            enabled: false,
+        },
         title: {
             text: title,
             align: 'left',
@@ -1170,7 +1285,7 @@ function AddChart(series,element,title){
             }
           },
         },
-        colors: ['#008FFB', '#00E396', '#CED4DC', '#CEDfDC'],
+        colors: array_color,
         dataLabels: {
           enabled: false
         },
@@ -1188,11 +1303,17 @@ function AddChart(series,element,title){
         xaxis: {
           type: 'category'
         },
-        };
+        yaxis: {
+            show: true,
+            labels: {
+                formatter: (value) => { return convertToUnit(value,0) },
+            },
+        },
+    };
 
-        blocId = "#"+element;
-        var chart = new ApexCharts(document.querySelector(blocId), options);
-        chart.render();
+    blocId = "#"+element;
+    var chart = new ApexCharts(document.querySelector(blocId), options);
+    chart.render();
 }
 
 function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
