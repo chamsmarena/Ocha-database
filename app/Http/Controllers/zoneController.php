@@ -24,12 +24,8 @@ class zoneController extends Controller
      */
     public function liste()
     {
-
-
-
         $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
         $dataByZone = array();
-
 
         foreach ($zones as $zone) {
             

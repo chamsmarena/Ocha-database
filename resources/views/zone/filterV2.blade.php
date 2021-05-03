@@ -106,7 +106,6 @@
                 $lastDate = "1900-01-01";
                 $lastValue = 0;
                 
-
                 foreach ($datas as $data){
                     $year = intval(substr($data["date"],0,4));
                     if($date==$year && $location==$data["adminName"] && $data["value"]!=0 && $data["value"]!=""){
@@ -129,6 +128,332 @@
         return $trendsData;
     }
 
+
+    //TRENDS FOR EXCEL EXPORT
+    function getTrendDataCaseloads($datas){
+        $locations = array();
+        $trendsData = array();
+        $years = array();
+
+        
+        foreach ($datas as $data){
+            $year = intval(substr($data["date"],0,4));
+
+            if (!in_array($year, $years) && $year!="")
+            {
+                array_push($years,$year);
+            }
+
+            if (!in_array($data["admin0"]."*".$data["adminName"], $locations) && $data["adminName"]!="")
+            {
+                array_push($locations,$data["admin0"]."*".$data["adminName"]);
+            }
+        }
+
+        
+        foreach ($years as $year){
+            
+            
+
+            foreach ($locations as $location){
+                $lastDate = "1900-01-01";
+                $locationArray = explode("*",$location);
+                $adminName = $locationArray[1];
+                $dataTemp = array();
+                
+                $pin = 0;
+                $pt = 0;
+                $pr = 0;
+
+                foreach ($datas as $data){
+                    $year_tmp = intval(substr($data["date"],0,4));
+                    if($year==$year_tmp && $adminName==$data["adminName"]){
+                        if($data["date"]==$lastDate){
+                            if ($data["pin"]!=0 && $data["pin"]!="") {
+                                $pin = $pin + $data["pin"];
+                            }
+                            if ($data["pt"]!=0 && $data["pt"]!="") {
+                                $pt = $pt + $data["pt"];
+                            }
+                            if ($data["pr"]!=0 && $data["pr"]!="") {
+                                $pr = $pr + $data["pr"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDate){
+                                if ($data["pin"]!=0 && $data["pin"]!="") {
+                                    $pin = $data["pin"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["pt"]!=0 && $data["pt"]!="") {
+                                    $pt = $data["pt"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["pr"]!=0 && $data["pr"]!="") {
+                                    $pr = $data["pr"];
+                                    $lastDate = $data["date"];
+                                }
+                            }
+                        }
+                    }
+                }
+                array_push($trendsData,array("year"=>$year,"admin0"=>$locationArray[0],"adminName"=>$locationArray[1],"pin"=>$pin,"pt"=>$pt,"pr"=>$pr));
+            }
+        }
+        return $trendsData;
+    }
+
+    function getTrendDataNutrition($datas){
+        $locations = array();
+        $trendsData = array();
+        $years = array();
+
+        
+        foreach ($datas as $data){
+            $year = intval(substr($data["date"],0,4));
+
+            if (!in_array($year, $years) && $year!="")
+            {
+                array_push($years,$year);
+            }
+
+            if (!in_array($data["admin0"]."*".$data["adminName"], $locations) && $data["adminName"]!="")
+            {
+                array_push($locations,$data["admin0"]."*".$data["adminName"]);
+            }
+        }
+
+        
+        foreach ($years as $year){
+            
+            foreach ($locations as $location){
+                $locationArray = explode("*",$location);
+                $adminName = $locationArray[1];
+                $dataTemp = array();
+                $lastDate = "1900-01-01";
+                $gam = 0;
+                $mam = 0;
+                $sam = 0;
+                
+                foreach ($datas as $data){
+                    $year_tmp = intval(substr($data["date"],0,4));
+                    if($year==$year_tmp && $adminName==$data["adminName"]){
+                        if($data["date"]==$lastDate){
+                            if ($data["gam"]!=0 && $data["gam"]!="") {
+                                $gam = $gam + $data["gam"];
+                            }
+                            if ($data["mam"]!=0 && $data["mam"]!="") {
+                                $mam = $mam + $data["mam"];
+                            }
+                            if ($data["sam"]!=0 && $data["sam"]!="") {
+                                $sam = $sam + $data["sam"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDate){
+                                if ($data["gam"]!=0 && $data["gam"]!="") {
+                                    $gam = $data["gam"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["mam"]!=0 && $data["mam"]!="") {
+                                    $mam = $data["mam"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["sam"]!=0 && $data["sam"]!="") {
+                                    $sam = $data["sam"];
+                                    $lastDate = $data["date"];
+                                }
+                            }
+                        }
+                    }
+                }
+                array_push($trendsData,array("year"=>$year,"admin0"=>$locationArray[0],"adminName"=>$locationArray[1],"gam"=>$gam,"mam"=>$mam,"sam"=>$sam));
+            }
+        }
+        return $trendsData;
+    }
+
+    function getTrendDataCh($datas){
+        $locations = array();
+        $trendsData = array();
+        $years = array();
+
+        
+        foreach ($datas as $data){
+            $year = intval(substr($data["date"],0,4));
+
+            if (!in_array($year, $years) && $year!="")
+            {
+                array_push($years,$year);
+            }
+
+            if (!in_array($data["admin0"]."*".$data["adminName"], $locations) && $data["adminName"]!="")
+            {
+                array_push($locations,$data["admin0"]."*".$data["adminName"]);
+            }
+        }
+
+        
+        foreach ($years as $year){
+            foreach ($locations as $location){
+                $locationArray = explode("*",$location);
+                $adminName = $locationArray[1];
+                $dataTemp = array();
+                $lastDate = "1900-01-01";
+                $ch1 = 0;
+                $ch2 = 0;
+                $ch3 = 0;
+                $ch35 = 0;
+                $ch4 = 0;
+                $ch5 = 0;
+                
+                foreach ($datas as $data){
+                    $year_tmp = intval(substr($data["date"],0,4));
+                    if($year==$year_tmp && $adminName==$data["adminName"]){
+                        if($data["date"]==$lastDate){
+                            if ($data["ch1"]!=0 && $data["ch1"]!="") {
+                                $ch1 = $ch1 + $data["ch1"];
+                            }
+                            if ($data["ch2"]!=0 && $data["ch2"]!="") {
+                                $ch2 = $ch2 + $data["ch2"];
+                            }
+                            if ($data["ch3"]!=0 && $data["ch3"]!="") {
+                                $ch3 = $ch3 + $data["ch3"];
+                            }
+                            if ($data["ch35"]!=0 && $data["ch35"]!="") {
+                                $ch35 = $ch35 + $data["ch35"];
+                            }
+                            if ($data["ch4"]!=0 && $data["ch4"]!="") {
+                                $ch4 = $ch4 + $data["ch4"];
+                            }
+                            if ($data["ch5"]!=0 && $data["ch5"]!="") {
+                                $ch5 = $ch5 + $data["ch5"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDate){
+                                
+                                if ($data["ch1"]!=0 && $data["ch1"]!="") {
+                                    $ch1 = $data["ch1"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["ch2"]!=0 && $data["ch2"]!="") {
+                                    $ch2 = $data["ch2"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["ch3"]!=0 && $data["ch3"]!="") {
+                                    $ch3 = $data["ch3"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["ch35"]!=0 && $data["ch35"]!="") {
+                                    $ch35 = $data["ch35"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["ch4"]!=0 && $data["ch4"]!="") {
+                                    $ch4 = $data["ch4"];
+                                    $lastDate = $data["date"];
+                                }
+                                if ($data["ch5"]!=0 && $data["ch5"]!="") {
+                                    $ch5 = $data["ch5"];
+                                    $lastDate = $data["date"];
+                                }
+                            }
+                        }
+                    }
+                }
+                array_push($trendsData,array("year"=>$year,"admin0"=>$locationArray[0],"adminName"=>$locationArray[1],"ch1"=>$ch1,"ch2"=>$ch2,"ch3"=>$ch3,"ch35"=>$ch35,"ch4"=>$ch4,"ch5"=>$ch5));
+            }
+        }
+        return $trendsData;
+    }
+
+    function getTrendDataDisplacement($datas){
+        $locations = array();
+        $trendsData = array();
+        $years = array();
+
+        
+        foreach ($datas as $data){
+            $year = intval(substr($data["date"],0,4));
+
+            if (!in_array($year, $years) && $year!="")
+            {
+                array_push($years,$year);
+            }
+
+            if (!in_array($data["admin0"]."*".$data["adminName"], $locations) && $data["adminName"]!="")
+            {
+                array_push($locations,$data["admin0"]."*".$data["adminName"]);
+            }
+        }
+
+        
+        foreach ($years as $year){
+            
+            foreach ($locations as $location){
+                $locationArray = explode("*",$location);
+                $adminName = $locationArray[1];
+                $dataTemp = array();
+                $lastDateIdp = "1900-01-01";
+                $lastDateRef = "1900-01-01";
+                $lastDateRet = "1900-01-01";
+                $idp = 0;
+                $ref = 0;
+                $ret = 0;
+                
+                foreach ($datas as $data){
+                    $year_tmp = intval(substr($data["date"],0,4));
+                    if($year==$year_tmp && $adminName==$data["adminName"]){
+
+                        if($data["date"]==$lastDateIdp){
+                            if ($data["idp"]!=0 && $data["idp"]!="") {
+                                $idp = $idp + $data["idp"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDateIdp){
+                                if ($data["idp"]!=0 && $data["idp"]!="") {
+                                    $idp = $data["idp"];
+                                    $lastDateIdp = $data["date"];
+                                }
+                            }
+                        }
+
+                        if($data["date"]==$lastDateRef){
+                            if ($data["ref"]!=0 && $data["ref"]!="") {
+                                $ref = $ref + $data["ref"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDateRef){
+                                if ($data["ref"]!=0 && $data["ref"]!="") {
+                                    $ref = $data["ref"];
+                                    $lastDateRef = $data["date"];
+                                }
+                            }
+                        }
+
+                        if($data["date"]==$lastDateRet){
+                            if ($data["ret"]!=0 && $data["ret"]!="") {
+                                $ret = $ret + $data["ret"];
+                            }
+                        }else{
+                            if($data["date"] > $lastDateRet){
+                                if ($data["ret"]!=0 && $data["ret"]!="") {
+                                    $ret = $data["ret"];
+                                    $lastDateRet = $data["date"];
+                                }
+                            }
+                        }
+                    }
+                }
+                array_push($trendsData,array("year"=>$year,"admin0"=>$locationArray[0],"adminName"=>$locationArray[1],"idp"=>$idp,"ref"=>$ref,"ret"=>$ret));
+            }
+        }
+        return $trendsData;
+    }
+
+
+
+
+
+
+
     function getMapDataOld($datas,$dataFieldName){
         $mapData = array();
         foreach ($datas as $data){
@@ -140,7 +465,7 @@
     function getMapData($datas,$dataFieldName){
         $mapData = array();
         foreach ($datas as $data){
-            array_push($mapData,array($data['adminName'], $data[$dataFieldName]));
+            array_push($mapData,array($data['adminName']."*".$data['adminPcode'], $data[$dataFieldName]));
         }
         return $mapData;
     }
@@ -160,24 +485,33 @@
     $KeyFigureCaseLoadsByAdmin = array();
     $TrendsCaseLoadsByAdmin = array();
     $adminName = "";
-    $KeyFigureCaseLoads = array("pin"=>0,"pt"=>0,"pr"=>0);
 
+    $KeyFigureCaseLoads = array("pin"=>0,"pt"=>0,"pr"=>0);
+    $trendCaseloads_PIN = array();
     $trendCaseloads_PIN_Raw = array();
+    $trendCaseloads_Raw = array();
+
+    
     $trendDisplacement_IDP_Raw = array();
+    $trendDisplacement_Raw = array();
+    $trendDisplacement = array();
     
 
-    $trendCaseloads_PIN = array();
-
     $trendNutrition_SAM_Raw = array();
+    $trendNutrition_Raw = array();
     $trendNutrition_SAM = array();
     $nutritionColumns = array();
 
     $trendCh_Current_Raw = array();
+    $trendCh_Current2_Raw = array();
     $trendCh_Current = array();
+    $trendCh_Current2 = array();
     $ch_CurrentColumns = array();
 
     $trendCh_Projected_Raw = array();
+    $trendCh_Projected2_Raw = array();
     $trendCh_Projected = array();
+    $trendCh_Projected2 = array();
     $ch_ProjectedColumns = array();
 
     $caseloadColumns = array();
@@ -186,33 +520,36 @@
 
 
     foreach ($caseloads as $caseload){
-       
-
         array_push($TrendsCaseLoadsByAdmin, array("adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached));
         
 
         //traitement key figure
         if ($adminLevel=="admin0") {
             $adminName = $caseload->caseload_country;
+            $adminPcode = $caseload->admin0_pcode_iso3;
         } else {
             $adminName = $caseload->caseload_admin1_name;
+            $adminPcode = $caseload->caseload_admin1_pcode;
         }
+        
+        //traitement trend
 
-         //traitement trend
          array_push($trendCaseloads_PIN_Raw, array("adminName"=>$adminName,"date"=>$caseload->caseload_date, "value"=>$caseload->caseload_people_in_need));
+         array_push($trendCaseloads_Raw, array("admin0"=>$caseload->caseload_country,"adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached));
          
          if (!in_array($adminName, $caseloadColumns) && $adminName!="")
          {
              array_push($caseloadColumns,$adminName);
          }
-
-         
          //traitement trend fin
+         
         
         if(array_key_exists($adminName,$KeyFigureCaseLoadsByAdmin)){
             if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]==$caseload->caseload_date) {
                 $KeyFigureCaseLoadsByAdmin[$adminName] = array( 
                     "adminName"=>$adminName,
+                    "adminPcode"=>$adminPcode,
+                    "admin0"=>$caseload->caseload_country,
                     "date"=>$caseload->caseload_date, 
                     "pin"=>($caseload->caseload_people_in_need + $KeyFigureCaseLoadsByAdmin[$adminName]["pin"]),  
                     "pt"=>($caseload->caseload_people_targeted + $KeyFigureCaseLoadsByAdmin[$adminName]["pt"]), 
@@ -220,14 +557,15 @@
                 );
             }else{
                 if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]<$caseload->caseload_date) {
-                    $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
+                    $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
                 }
             }
         }else{
-            $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
+            $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
         }
     }
 
+    $trendCaseloads = getTrendDataCaseloads($trendCaseloads_Raw);
     $trendCaseloads_PIN = getTrendData($trendCaseloads_PIN_Raw);
     $mapCaseloads_PIN = getMapData($KeyFigureCaseLoadsByAdmin,"pin");
 
@@ -251,8 +589,11 @@
     foreach ($cadre_harmonises as $ch){
         if ($adminLevel=="admin0") {
             $adminName = $ch->ch_country;
+            $adminPcode = $ch->ch_adm0_pcode_iso3;
         } else {
             $adminName = $ch->ch_admin1_name;
+            $adminPcode = $ch->ch_admin1_pcode_iso3
+            ;
         }
 
         
@@ -260,6 +601,8 @@
         if ($ch->ch_situation=="Current") {
             //traitement trend
             array_push($trendCh_Current_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
+            array_push($trendCh_Current2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
+         
             
             if (!in_array($adminName, $ch_CurrentColumns) && $adminName!="")
             {
@@ -272,6 +615,8 @@
                 if ($KeyFigureCHByAdminCurrent[$adminName]["date"]==$ch->ch_date) {
                     $KeyFigureCHByAdminCurrent[$adminName] = array( 
                         "adminName"=>$adminName,
+                        "adminPcode"=>$adminPcode,
+                        "admin0"=>$ch->ch_country,
                         "month"=>$ch->ch_exercise_month, 
                         "year"=>$ch->ch_exercise_year, 
                         "date"=>$ch->ch_date, 
@@ -284,17 +629,19 @@
                     );
                 }else{
                     if ($KeyFigureCHByAdminCurrent[$adminName]["date"]<$ch->ch_date) {
-                        $KeyFigureCHByAdminCurrent[$adminName] = array("adminName"=>$adminName, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
+                        $KeyFigureCHByAdminCurrent[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
                     }
                 }
             }else{
-                $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+                $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
             }
         } else {
             //projected
 
             //traitement trend
             array_push($trendCh_Projected_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
+            array_push($trendCh_Projected2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
+         
             
             if (!in_array($adminName, $ch_ProjectedColumns) && $adminName!="")
             {
@@ -306,6 +653,8 @@
                 if ($KeyFigureCHByAdminProjeted[$adminName]["date"]==$ch->ch_date) {
                     $KeyFigureCHByAdminProjeted[$adminName] = array( 
                         "adminName"=>$adminName,
+                        "adminPcode"=>$adminPcode,
+                        "admin0"=>$ch->ch_country,
                         "month"=>$ch->ch_exercise_month, 
                         "year"=>$ch->ch_exercise_year,
                         "date"=>$ch->ch_date, 
@@ -318,17 +667,19 @@
                     );
                 }else{
                     if ($KeyFigureCHByAdminProjeted[$adminName]["date"]<$ch->ch_date) {
-                        $KeyFigureCHByAdminProjeted[$adminName] = array("adminName"=>$adminName, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
+                        $KeyFigureCHByAdminProjeted[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
                     }
                 }
             }else{
-                $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+                $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName, "admin0"=>$ch->ch_country,"month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
             }
         }
     }
 
     $trendCh_Current = getTrendData($trendCh_Current_Raw);
+    $trendCh_Current2 = getTrendDataCh($trendCh_Current2_Raw);
     $trendCh_Projected = getTrendData($trendCh_Projected_Raw);
+    $trendCh_Projected2 = getTrendDataCh($trendCh_Projected2_Raw);
 	
     foreach ($KeyFigureCHByAdminCurrent as $KeyFigure){
         $KeyFigureCHCurrent["ch_phase1"] = $KeyFigureCHCurrent["ch_phase1"] + $KeyFigure["ch_phase1"];
@@ -361,13 +712,17 @@
     foreach ($nutritions as $nutrition){
         if ($adminLevel=="admin0") {
             $adminName = $nutrition->nut_country;
-        } else {
+            $adminPcode = $nutrition->nut_admin0_pcode;
+        }else{
             $adminName = $nutrition->nut_admin1;
+            $adminPcode = $nutrition->nut_admin1_pcode;
         }
 
         //traitement trend
+        
         array_push($trendNutrition_SAM_Raw, array("adminName"=>$adminName,"date"=>$nutrition->nut_date, "value"=>$nutrition->nut_sam));
-         
+        array_push($trendNutrition_Raw, array("admin0"=>$nutrition->nut_country,"adminName"=>$adminName,"date"=>$nutrition->nut_date, "gam"=>$nutrition->nut_gam, "mam"=>$nutrition->nut_sam, "sam"=>$nutrition->nut_sam));
+          
         if (!in_array($adminName, $nutritionColumns) && $adminName!="")
         {
             array_push($nutritionColumns,$adminName);
@@ -377,6 +732,8 @@
             if ($KeyFigurenutritionsByAdmin[$adminName]["date"]==$nutrition->nut_date) {
                 $KeyFigurenutritionsByAdmin[$adminName] = array( 
                     "adminName"=>$adminName,
+                    "adminPcode"=>$adminPcode,
+                    "admin0"=>$nutrition->nut_country,
                     "date"=>$nutrition->nut_date, 
                     "sam"=>($nutrition->nut_sam + $KeyFigurenutritionsByAdmin[$adminName]["sam"]),  
                     "mam"=>($nutrition->nut_gam + $KeyFigurenutritionsByAdmin[$adminName]["mam"]), 
@@ -384,11 +741,11 @@
                 );
             }else{
                 if ($KeyFigurenutritionsByAdmin[$adminName]["date"]<$nutrition->nut_date) {
-                    $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
+                    $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
                 }
             }
         }else{
-            $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
+            $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
         }
     }
 
@@ -398,6 +755,7 @@
         $KeyFigurenutritions["gam"] = $KeyFigurenutritions["gam"] + $KeyFigure["gam"];
     }
 
+    $trendNutrition = getTrendDataNutrition($trendNutrition_Raw);
     $trendNutrition_SAM = getTrendData($trendNutrition_SAM_Raw);
     $mapNutrition_SAM = getMapData($KeyFigurenutritionsByAdmin,"sam");
 
@@ -407,13 +765,16 @@
 
     $KeyFigureDisplacementsByAdmin = array();
     $adminName = "";
+    $adminPcode = "";
     $KeyFigureDisplacements = array("idp"=>0, "refugees"=>0, "returnees"=>0);
 
     foreach ($displacements as $displacement){
         if ($adminLevel=="admin0") {
             $adminName = $displacement->dis_country;
+            $adminPcode = $displacement->dis_admin0_pcode;
         } else {
             $adminName = $displacement->dis_admin1_name;
+            $adminPcode = $displacement->dis_admin1_pcode;
         }
 
        
@@ -425,7 +786,8 @@
                 case 'IDP':
                      //traitement trend
                     array_push($trendDisplacement_IDP_Raw, array("adminName"=>$adminName,"date"=>$displacement->dis_date, "value"=>$displacement->dis_value));
-         
+                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>$displacement->dis_value, "ref"=>0, "ret"=>0));
+        
                     if (!in_array($adminName, $displacementColumns) && $adminName!="")
                     {
                         array_push($displacementColumns,$adminName);
@@ -434,6 +796,8 @@
                     if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]==$displacement->dis_date) {
                         $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["idp"]),
                             "idp_date"=>$displacement->dis_date,  
                             "refugees"=>$temp["refugees"], 
@@ -445,6 +809,8 @@
                         if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]<$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
                                 "idp"=>$displacement->dis_value,
                                 "idp_date"=>$displacement->dis_date,  
                                 "refugees"=>$temp["refugees"], 
@@ -456,9 +822,12 @@
                     }
                     break;
                 case 'Refugee':
+                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>$displacement->dis_value, "ret"=>0));
                     if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]==$displacement->dis_date) {
                         $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>$temp["idp"], 
                             "idp_date"=>$temp["idp_date"],
                             "refugees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["refugees"]),
@@ -470,6 +839,8 @@
                         if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]<$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
                                 "idp"=>$temp["idp"], 
                                 "idp_date"=>$temp["idp_date"],
                                 "refugees"=>$displacement->dis_value,
@@ -481,9 +852,12 @@
                     }
                     break;
                 case 'Returnee':
+                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>0, "ret"=>$displacement->dis_value));
                     if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]==$displacement->dis_date) {
                         $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>$temp["idp"], 
                             "idp_date"=>$temp["idp_date"],
                             "refugees"=>$temp["refugees"],
@@ -495,6 +869,8 @@
                         if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]<$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
                                 "idp"=>$temp["idp"],
                                 "idp_date"=>$temp["idp_date"], 
                                 "refugees"=>$temp["refugees"], 
@@ -511,6 +887,8 @@
                 case 'IDP':
                     $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>$displacement->dis_value,
                             "idp_date"=>$displacement->dis_date,  
                             "refugees"=>0, 
@@ -522,6 +900,8 @@
                 case 'Refugee':
                     $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>0, 
                             "idp_date"=>"",
                             "refugees"=>$displacement->dis_value,
@@ -533,6 +913,8 @@
                 case 'Returnee':
                     $KeyFigureDisplacementsByAdmin[$adminName] = array(
                             "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$displacement->dis_country,
                             "idp"=>0,
                             "idp_date"=>"", 
                             "refugees"=>0, 
@@ -552,6 +934,7 @@
     }
 
     $trendDisplacement_IDP = getTrendData($trendDisplacement_IDP_Raw);
+    $trendDisplacement = getTrendDataDisplacement($trendDisplacement_Raw);
     $mapDisplacement_IDP = getMapData($KeyFigureDisplacementsByAdmin,"idp");
 
   
@@ -561,7 +944,9 @@
 <div class='col-12 pt-3'>
     <p>
         Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br>
-        <a href="#" class="btn-link" onclick="ExportPowerPoint()"><em>Exporter une présentation</em></a>
+        <a href="#" class="btn-link" onclick="ExportPowerPoint()"><em>Exporter vers Power Point</em></a>
+        <a href="#" class="btn-link" onclick="ExportExcel()"><em>Exporter vers Excel</em></a>
+
                     
     </p>
     <div class="row">
@@ -658,9 +1043,8 @@
         <div class="col-12 bloc-data" id="bloc-data-caseloads" style = "displayf:none;">
             <div class="row">
                 <div class="col-8">
-                    
                     <a href="#" class="btn-link" onclick="downloadMap('caseloads')"><em>download map</em></a>
-                    <div class="map-caseloads" id="map-caseloads">
+                    <div class="map-caseloads" id="map-caseloads" style="width:auto;height:500px;">
                     </div>
                 </div>
                 <div class="col-4">
@@ -671,26 +1055,7 @@
                             <div class="trend-caseloads" id="trend-caseloads">
                             </div>
 
-                            <table class="table" id="trend-data-caseloads" style="display:none;">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">AdminName</th>
-                                        <th scope="col">AdminName</th>
-                                        <th scope="col">In need</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($TrendsCaseLoadsByAdmin as $caseload)
-                                        <tr>
-                                            <th >{{$caseload["date"]}}</th>
-                                            <th >{{$caseload["adminName"]}}</th>
-                                            <th >{{$adminLevel}}</th>
-                                            <td>{{$caseload["pin"]}}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+
                         </div>
                         <div class="col-12 white-blocs rounded m-1">
                             <p>Key figures by country</p>
@@ -698,37 +1063,115 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">In need</th>
-                                    <th scope="col">Targeted</th>
-                                    <th scope="col">Reached</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">In need</th>
+                                        <th scope="col">Targeted</th>
+                                        <th scope="col">Reached</th>
                                     </tr>
                                 </thead>
+                                <?php 
+                                    $totalPin= 0;
+                                    $totalPt= 0;
+                                    $totalPr= 0;
+                                ?>
                                 <tbody>
                                     @foreach ($KeyFigureCaseLoadsByAdmin as $caseload)
                                         <tr>
-                                            <th scope="row">{{$caseload["adminName"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="col">{{$caseload["adminName"]}}</th>
+                                            @else
+                                                <th scope="col">{{$caseload["admin0"]}}</th>
+                                                <th scope="col">{{$caseload["adminName"]}}</th>
+                                            @endif
+                                            
                                             <td>{{convertToUnit($caseload["pin"],1)}}</td>
                                             <td>{{convertToUnit($caseload["pt"],1)}}</td>
                                             <td>{{convertToUnit($caseload["pr"],1)}}</td>
                                         </tr>
+                                        <?php 
+                                            $totalPin+= $caseload["pin"];
+                                            $totalPt+= $caseload["pt"];
+                                            $totalPr+= $caseload["pr"];
+                                        ?>
                                     @endforeach
+                                    <tr>
+                                        
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="row">Total</th>
+                                        @else
+                                            <th scope="row">Total</th>
+                                            <th scope="col"></th>
+                                        @endif
+                                        <th scope="row">{{convertToUnit($totalPin,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalPt,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalPr,1)}}</th>
+                                    </tr>
                                 </tbody>
                             </table>
 
                             <table class="table" id="keyFigure-data-caseloads" style="display:none;">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">In need</th>
-                                    <th scope="col">Targeted</th>
-                                    <th scope="col">Reached</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">In need</th>
+                                        <th scope="col">Targeted</th>
+                                        <th scope="col">Reached</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($KeyFigureCaseLoadsByAdmin as $caseload)
                                         <tr>
-                                            <th scope="row">{{$caseload["adminName"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$caseload["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$caseload["admin0"]}}</th>
+                                                <th scope="row">{{$caseload["adminName"]}}</th>
+                                            @endif
+                                            
+                                            <td>{{$caseload["pin"]}}</td>
+                                            <td>{{$caseload["pt"]}}</td>
+                                            <td>{{$caseload["pr"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                         
+                            <table class="table" id="trend-data-caseloads" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Year</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">In need</th>
+                                        <th scope="col">Targeted</th>
+                                        <th scope="col">Reached</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trendCaseloads as $caseload)
+                                        <tr>
+                                            <th scope="row">{{$caseload["year"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$caseload["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$caseload["admin0"]}}</th>
+                                                <th scope="row">{{$caseload["adminName"]}}</th>
+                                            @endif
+                                            
                                             <td>{{$caseload["pin"]}}</td>
                                             <td>{{$caseload["pt"]}}</td>
                                             <td>{{$caseload["pr"]}}</td>
@@ -742,11 +1185,11 @@
             </div>
         </div>
 
-        <div class="col-12 bloc-data" id="bloc-data-disp" style = "display:none;">
+        <div class="col-12 bloc-data" id="bloc-data-disp" style = "displayff:none;">
             <div class="row">
                 <div class="col-8">
                     <a href="#" class="btn-link" onclick="downloadMap('displacements')"><em>download map</em></a>
-                    <div class="map-displacements" id="map-displacements">
+                    <div class="map-displacements" id="map-displacements"  style="width:auto;height:500px;">
                     </div>
                 </div>
                 <div class="col-4">
@@ -764,28 +1207,65 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">IDPs</th>
-                                    <th scope="col">Refugees</th>
-                                    <th scope="col">Returnees</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">IDPs</th>
+                                        <th scope="col">Refugees</th>
+                                        <th scope="col">Returnees</th>
                                     </tr>
                                 </thead>
+                                <?php 
+                                    $totalIdps= 0;
+                                    $totalRef= 0;
+                                    $totalRet= 0;
+                                ?>
                                 <tbody>
                                     @foreach ($KeyFigureDisplacementsByAdmin as $displacement)
                                         <tr>
-                                            <th scope="row">{{$displacement["adminName"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$displacement["adminName"]}}</th>
+                                            @else
+                                                <th scope="row">{{$displacement["admin0"]}}</th>
+                                                <th scope="row">{{$displacement["adminName"]}}</th>
+                                            @endif
+                                            
                                             <td>{{convertToUnit($displacement["idp"],1)}}</td>
                                             <td>{{convertToUnit($displacement["refugees"],1)}}</td>
                                             <td>{{convertToUnit($displacement["returnees"],1)}}</td>
                                         </tr>
+                                        <?php 
+                                            $totalIdps+= $displacement["idp"];
+                                            $totalRef+= $displacement["refugees"];
+                                            $totalRet+= $displacement["returnees"];
+                                        ?>
                                     @endforeach
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="row">Total</th>
+                                        @else
+                                            <th scope="row">Total</th>
+                                            <th scope="col"></th>
+                                        @endif
+                                        <th scope="row">{{convertToUnit($totalIdps,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalRef,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalRet,1)}}</th>
+                                    </tr>
                                 </tbody>
                             </table>
 
                             <table class="table" id="keyFigure-data-displacements" style="display:none;">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Country</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
                                         <th scope="col">IDPs</th>
                                         <th scope="col">Refugees</th>
                                         <th scope="col">Returnees</th>
@@ -802,17 +1282,50 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <table class="table" id="trend-data-displacements" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Year</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">IDPs</th>
+                                        <th scope="col">Refugees</th>
+                                        <th scope="col">Returnees</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trendDisplacement as $data)
+                                        <tr>
+                                            <th scope="row">{{$data["year"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$data["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$data["admin0"]}}</th>
+                                                <th scope="row">{{$data["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$data["idp"]}}</td>
+                                            <td>{{$data["ref"]}}</td>
+                                            <td>{{$data["ret"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 bloc-data" id="bloc-data-nutrition" style = "display:none;">
+        <div class="col-12 bloc-data" id="bloc-data-nutrition" style = "displayff:none;">
             <div class="row">
                 <div class="col-8">
                     <a href="#" class="btn-link" onclick="downloadMap('nutrition')"><em>download map</em></a>
-                    <div class="map-nutrition" id="map-nutrition">
+                    <div class="map-nutrition" id="map-nutrition"  style="width:auto;height:500px;">
                     </div>
                 </div>
                 <div class="col-4">
@@ -829,28 +1342,65 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">GAM</th>
-                                    <th scope="col">MAM</th>
-                                    <th scope="col">SAM</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">GAM</th>
+                                        <th scope="col">MAM</th>
+                                        <th scope="col">SAM</th>
                                     </tr>
                                 </thead>
+                                <?php 
+                                    $totalGam= 0;
+                                    $totalmam= 0;
+                                    $totalSam= 0;
+                                ?>
+
                                 <tbody>
                                     @foreach ($KeyFigurenutritionsByAdmin as $nutrition)
                                         <tr>
-                                            <th scope="row">{{$nutrition["adminName"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$nutrition["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$nutrition["admin0"]}}</th>
+                                                <th scope="row">{{$nutrition["adminName"]}}</th>
+                                            @endif
                                             <td>{{convertToUnit($nutrition["gam"],1)}}</td>
                                             <td>{{convertToUnit($nutrition["mam"],1)}}</td>
                                             <td>{{convertToUnit($nutrition["sam"],1)}}</td>
                                         </tr>
+                                        <?php 
+                                            $totalGam+= $nutrition["gam"];
+                                            $totalmam+= $nutrition["mam"];
+                                            $totalSam+= $nutrition["sam"];
+                                        ?>
                                     @endforeach
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="row">Total</th>
+                                        @else
+                                            <th scope="row">Total</th>
+                                            <th scope="col"></th>
+                                        @endif
+                                        <th scope="row">{{convertToUnit($totalGam,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalmam,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalSam,1)}}</th>
+                                    </tr>
                                 </tbody>
                             </table>
 
                             <table class="table" id="keyFigure-data-nutrition" style="display:none;">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Country</th>
+                                    @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                    @else
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
+                                    @endif
                                     <th scope="col">GAM</th>
                                     <th scope="col">MAM</th>
                                     <th scope="col">SAM</th>
@@ -859,6 +1409,12 @@
                                 <tbody>
                                     @foreach ($KeyFigurenutritionsByAdmin as $nutrition)
                                         <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$nutrition["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$nutrition["admin0"]}}</th>
+                                                <th scope="row">{{$nutrition["adminName"]}}</th>
+                                            @endif
                                             <th scope="row">{{$nutrition["adminName"]}}</th>
                                             <td>{{$nutrition["gam"]}}</td>
                                             <td>{{$nutrition["mam"]}}</td>
@@ -867,6 +1423,45 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            
+
+        
+                            <table class="table" id="trend-data-nutrition" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Year</th>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">GAM</th>
+                                        <th scope="col">MAM</th>
+                                        <th scope="col">SAM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trendNutrition as $data)
+                                        <tr>
+                                            <th scope="row">{{$data["year"]}}</th>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$data["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$data["admin0"]}}</th>
+                                                <th scope="row">{{$data["adminName"]}}</th>
+                                            @endif
+                                            
+                                            <td>{{$data["gam"]}}</td>
+                                            <td>{{$data["mam"]}}</td>
+                                            <td>{{$data["sam"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+
+                            
                         </div>
                     </div>
                 </div>
@@ -878,7 +1473,7 @@
             <div class="row">
                 <h5>Current</h5>
                 <div class="col">
-                    <div class="map-ch" id="map-ch-current"></div>
+                    <div class="map-ch" id="map-ch-current"  style="width:auto;height:500px;"></div>
                 </div>
                 <div class="col  white-blocs rounded m-1">
                     <p>Trend by year</p>
@@ -889,23 +1484,41 @@
                     <p>Key figures by country</p>
                     <a href="#" class="btn-link" onclick="downloadData('ch-current')"><em>excel</em></a>
                     <table class="table">
+                        <?php 
+                            $totalChP1= 0;
+                            $totalChP2= 0;
+                            $totalChP3= 0;
+                            $totalChP35= 0;
+                            $totalChP4= 0;
+                            $totalChP5= 0;
+                        ?>
                         <thead>
                             <tr>
-                            <th scope="col">Country</th>
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Phase 1</th>
-                            <th scope="col">Phase 2</th>
-                            <th scope="col">Phase 3</th>
-                            <th scope="col">Phase 3+</th>
-                            <th scope="col">Phase 4</th>
-                            <th scope="col">Phase 5</th>
+                                @if ($adminLevel == "admin0")
+                                                <th scope="col">Country</th>
+                                @else
+                                    <th scope="col">Country</th>
+                                    <th scope="col">Admin1</th>
+                                @endif
+                                <th scope="col">Year</th>
+                                <th scope="col">Month</th>
+                                <th scope="col">Phase 1</th>
+                                <th scope="col">Phase 2</th>
+                                <th scope="col">Phase 3</th>
+                                <th scope="col">Phase 3+</th>
+                                <th scope="col">Phase 4</th>
+                                <th scope="col">Phase 5</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
                                 <tr>
-                                    <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
                                     <td>{{$foodSec["year"]}}</td>
                                     <td>{{$foodSec["month"]}}</td>
                                     <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
@@ -915,14 +1528,45 @@
                                     <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
                                     <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
                                 </tr>
+                                <?php 
+                                    $totalChP1+= $foodSec["ch_phase1"];
+                                    $totalChP2+= $foodSec["ch_phase2"];
+                                    $totalChP3+= $foodSec["ch_phase3"];
+                                    $totalChP35+= $foodSec["ch_phase35"];
+                                    $totalChP4+= $foodSec["ch_phase4"];
+                                    $totalChP5+= $foodSec["ch_phase5"];
+                                ?>
+
                             @endforeach
+
+                            <tr>
+                                @if ($adminLevel == "admin0")
+                                    <th scope="row">Total</th>
+                                @else
+                                    <th scope="row">Total</th>
+                                    <th scope="col"></th>
+                                @endif
+                                <td> </td>
+                                <td> </td>
+                                <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
+                            </tr>
                         </tbody>
                     </table>
 
                     <table class="table" id="keyFigure-data-ch-current"  style="display:none;">
                         <thead>
                             <tr>
-                            <th scope="col">Country</th>
+                            @if ($adminLevel == "admin0")
+                                <th scope="col">Country</th>
+                            @else
+                                <th scope="col">Country</th>
+                                <th scope="col">Admin1</th>
+                            @endif
                             <th scope="col">Year</th>
                             <th scope="col">Month</th>
                             <th scope="col">Phase_1 </th>
@@ -936,7 +1580,12 @@
                         <tbody>
                             @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
                                 <tr>
-                                    <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
                                     <td>{{$foodSec["year"]}}</td>
                                     <td>{{$foodSec["month"]}}</td>
                                     <td>{{$foodSec["ch_phase1"]}}</td>
@@ -949,6 +1598,47 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    
+                    <table class="table" id="trend-data-ch-current"  style="display:none;">
+                        <thead>
+                            <tr>
+                            @if ($adminLevel == "admin0")
+                                <th scope="col">Country</th>
+                            @else
+                                <th scope="col">Country</th>
+                                <th scope="col">Admin1</th>
+                            @endif
+                            <th scope="col">Year</th>
+                            <th scope="col">Phase_1 </th>
+                            <th scope="col">Phase_2 </th>
+                            <th scope="col">Phase_3 </th>
+                            <th scope="col">Phase_3+</th>
+                            <th scope="col">Phase_4 </th>
+                            <th scope="col">Phase_5 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($trendCh_Current2 as $foodSec)
+                                <tr>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
+                                    <td>{{$foodSec["year"]}}</td>
+                                    <td>{{$foodSec["ch1"]}}</td>
+                                    <td>{{$foodSec["ch2"]}}</td>
+                                    <td>{{$foodSec["ch3"]}}</td>
+                                    <td>{{$foodSec["ch35"]}}</td>
+                                    <td>{{$foodSec["ch4"]}}</td>
+                                    <td>{{$foodSec["ch5"]}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
 
@@ -956,7 +1646,7 @@
             <div class="row">
                 <h5>Projected</h5>
                 <div class="col">
-                    <div class="map-ch" id="map-ch-projected"></div>
+                    <div class="map-ch" id="map-ch-projected"  style="width:auto;height:500px;"></div>
                 </div>
                 <div class="col  white-blocs rounded m-1">
                     <p>Trend by year</p>
@@ -969,7 +1659,12 @@
                     <table class="table">
                         <thead>
                             <tr>
-                            <th scope="col">Country</th>
+                            @if ($adminLevel == "admin0")
+                                <th scope="col">Country</th>
+                            @else
+                                <th scope="col">Country</th>
+                                <th scope="col">Admin1</th>
+                            @endif
                             <th scope="col">Year</th>
                             <th scope="col">Month</th>
                             <th scope="col">Phase 1</th>
@@ -981,9 +1676,22 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php 
+                                $totalChP1= 0;
+                                $totalChP2= 0;
+                                $totalChP3= 0;
+                                $totalChP35= 0;
+                                $totalChP4= 0;
+                                $totalChP5= 0;
+                            ?>
                             @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
                                 <tr>
-                                    <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
                                     <td>{{$foodSec["year"]}}</td>
                                     <td>{{$foodSec["month"]}}</td>
                                     <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
@@ -993,14 +1701,44 @@
                                     <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
                                     <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
                                 </tr>
+                                
+                                <?php 
+                                    $totalChP1+= $foodSec["ch_phase1"];
+                                    $totalChP2+= $foodSec["ch_phase2"];
+                                    $totalChP3+= $foodSec["ch_phase3"];
+                                    $totalChP35+= $foodSec["ch_phase35"];
+                                    $totalChP4+= $foodSec["ch_phase4"];
+                                    $totalChP5+= $foodSec["ch_phase5"];
+                                ?>
                             @endforeach
+                            <tr>
+                                @if ($adminLevel == "admin0")
+                                    <th scope="row">Total</th>
+                                @else
+                                    <th scope="row">Total</th>
+                                    <th scope="col"></th>
+                                @endif
+                                <td> </td>
+                                <td> </td>
+                                <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
+                                <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
+                            </tr>
                         </tbody>
                     </table>
 
                     <table class="table" id="keyFigure-data-ch-projected"  style="display:none;">
                         <thead>
                             <tr>
-                            <th scope="col">Country</th>
+                            @if ($adminLevel == "admin0")
+                                <th scope="col">Country</th>
+                            @else
+                                <th scope="col">Country</th>
+                                <th scope="col">Admin1</th>
+                            @endif
                             <th scope="col">Year</th>
                             <th scope="col">Month</th>
                             <th scope="col">Phase_1 </th>
@@ -1012,9 +1750,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
                             @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
                                 <tr>
-                                    <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
                                     <td>{{$foodSec["year"]}}</td>
                                     <td>{{$foodSec["month"]}}</td>
                                     <td>{{$foodSec["ch_phase1"]}}</td>
@@ -1027,17 +1771,65 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    
+                    <table class="table" id="trend-data-ch-projected"  style="display:none;">
+                        <thead>
+                            <tr>
+                            @if ($adminLevel == "admin0")
+                                <th scope="col">Country</th>
+                            @else
+                                <th scope="col">Country</th>
+                                <th scope="col">Admin1</th>
+                            @endif
+                            <th scope="col">Year</th>
+                            <th scope="col">Phase_1 </th>
+                            <th scope="col">Phase_2 </th>
+                            <th scope="col">Phase_3 </th>
+                            <th scope="col">Phase_3+</th>
+                            <th scope="col">Phase_4 </th>
+                            <th scope="col">Phase_5 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($trendCh_Projected2 as $foodSec)
+                                <tr>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                    @else
+                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                    @endif
+                                    <td>{{$foodSec["year"]}}</td>
+                                    <td>{{$foodSec["ch1"]}}</td>
+                                    <td>{{$foodSec["ch2"]}}</td>
+                                    <td>{{$foodSec["ch3"]}}</td>
+                                    <td>{{$foodSec["ch35"]}}</td>
+                                    <td>{{$foodSec["ch4"]}}</td>
+                                    <td>{{$foodSec["ch5"]}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div id='chart'>ygfhgf</div>
-
+<div id='chart'></div>
+<div class="col-12">
+    <div id='chart-test' style="width:800px;height:500px;">jjj</div>
+</div>
 <script>
 $(document).ready(function(){
+
     
+    
+
+
+
     adminLevel = {!! json_encode($adminLevel) !!};
     zoneCode = {!! json_encode($zone->zone_code) !!};
     zoneName = {!! json_encode($zone->zone_name) !!};
@@ -1052,6 +1844,7 @@ $(document).ready(function(){
 
     trendNutrition_SAM = {!! json_encode($trendNutrition_SAM) !!};
     nutritionColumns = {!! json_encode($nutritionColumns) !!};
+    KeyFigurenutritions = {!! json_encode($KeyFigurenutritions) !!};
 
     trendCh_Current = {!! json_encode($trendCh_Current) !!};
     ch_CurrentColumns = {!! json_encode($ch_CurrentColumns) !!};
@@ -1077,19 +1870,259 @@ $(document).ready(function(){
     //map call functions
    // AddCaseloadPinMap(mapCaseloads_PIN)
 
-    addTestMap("map-caseloads",zoneCode,adminLevel,mapCaseloads_PIN,"People in need")
-    addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
-    addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
-
-  
+    //addTestMap("map-caseloads",zoneCode,adminLevel,mapCaseloads_PIN,"People in need")
+    //addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
+    //addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
+    adminCoordinatesFile = "/maps/admin1_coordinates.json"
+    if (adminLevel=="admin0") {
+        adminCoordinatesFile = "/maps/admin0_coordinates.json"
+    }
+    
+    admin_coordinates = []
+    d3.json(adminCoordinatesFile).then(function(adminCoordinatesTemp){
+        admin_coordinates = adminCoordinatesTemp
+        addMap2(adminLevel,mapCaseloads_PIN,"map-caseloads")
+        addMap2(adminLevel,mapDisplacement_IDP,"map-displacements")
+        addMap2(adminLevel,mapNutrition_SAM,"map-nutrition")
+    });
     image1= 0;
-    console.log(KeyFigureDisplacements);
+
+    //addMap2(adminLevel,mapCaseloads_PIN,"chart-test");
 });
 
+function ExportExcel() {
+    tablesToExcel(
+        [
+            'keyFigure-data-caseloads',
+            'keyFigure-data-displacements',
+            'keyFigure-data-nutrition',
+            'keyFigure-data-ch-current',
+            'keyFigure-data-ch-projected',
+            'trend-data-caseloads',
+            'trend-data-displacements',
+            'trend-data-nutrition',
+            'trend-data-ch-current',
+            'trend-data-ch-projected',
+        ], 
+        [
+            'KF caseloads',
+            'KF displacements',
+            'KF nutrition',
+            'KF ch-current',
+            'KF ch-projected',
+            'Trend by year caseloads',
+            'Trend by year displacements',
+            'Trend by year nutrition',
+            'Trend by year ch-current',
+            'Trend by year ch-projected',
+        ], 'export.xls', 'Excel')
+}
+
+function getColor(adminPcode,mapData, grades) {
+
+    dcc= mapData
+    d=0;
+    for(var i = 0; i < dcc.length; i++){
+        arrayAdmin = dcc[i][0].split("*")
+        if(adminPcode==arrayAdmin[1]){
+            d=dcc[i][1]
+        }
+    }
+
+    couleur = getColorsAt(0);
+    for(var i = 0; i < grades.length; i++){
+        if(d>=grades[i]){
+            couleur=getColorsAt(i)
+            
+        }
+    }
+
+    return couleur;
+}
+
+function stylekk(feature) {
+    return {
+        fillColor: getColor(feature.properties.adminName),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+function filter(feature) {
+    include = false;
+    for(var i = 0; i < mapCaseloads_PIN.length; i++){
+        arrayAdmin = mapCaseloads_PIN[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+            //console.log(feature.properties.adminPcode+" ==== "+arrayAdmin[0])
+        }
+    }
+    return include;
+}
+
+
+function addMap2(adminLevel,dataMap,place){
+    geoJsonFile = "/maps/wca_admin1.json"
+    if (adminLevel=="admin0") {
+        geoJsonFile = "/maps/wca_admin0.json"
+    }
+
+    
+        d3.json(geoJsonFile).then(function(us){
+        
+            var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+            var map = L.map(place).setView([37.8, -96], 4);
+            grades2  =GetGrades(dataMap)
+        
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+                id: 'mapbox/light-v9',
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map);
+            area  = new L.geoJSON(us, {
+                style: function (feature) {
+                    return {
+                        fillColor: getColor(feature.properties.adminPcode,dataMap,grades2),
+                        weight: 1,
+                        opacity: 1,
+                        color: '#ccc',
+                        dashArray: '3',
+                        fillOpacity: 1};
+                    },
+                filter: filter})
+
+            //légende
+            var legend = L.control({position: 'bottomright'});
+            legend.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'info legend'),
+                    grades = GetGrades(dataMap),
+                    labels = [];
+                    
+                // loop through our density intervals and generate a label with a colored square for each interval
+                for (var i = 0; i < grades.length; i++) {
+                    div.innerHTML +=
+                        '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                        convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+                }
+                return div;
+            };
+            legend.addTo(map);
+            
+            //labels
+            console.log(admin_coordinates)
+            console.log(dataMap)
+            var markers = new L.FeatureGroup();
+            for (var i = 0; i < dataMap.length; i++) {
+                for (var j = 0; j < admin_coordinates.length; j++) {
+                    arrayAdmin = dataMap[i][0].split("*")
+                    if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
+                        var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
+                        // you can set .my-div-icon styles in CSS
+                        markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
+
+                        //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
+                        markers.addLayer(markerTemp);
+                    }
+                }
+            }
+
+            
+
+            map.addLayer(markers);
+
+
+            area.addTo(map);
+            map.fitBounds(area.getBounds());
+
+            $(".leaflet-popup-content").width('30px')
+            $(".leaflet-popup-close-button").hide()
+        });
+    
+   
+}
+
+function addMap3(adminLevel,dataMap,place){
+    geoJsonFile = "/maps/wca_admin1.json"
+    if (adminLevel=="admin0") {
+        geoJsonFile = "/maps/wca_admin0.json"
+    }
+
+    d3.json(geoJsonFile).then(function(us){
+      
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        var map2 = L.map(place).setView([37.8, -96], 4);
+        grades2  =GetGrades(dataMap)
+        
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map2);
+        area  = new L.geoJSON(us, {
+            style: function (feature) {
+                return {
+                    fillColor: getColor(feature.properties.adminName,dataMap,grades2),
+                    weight: 1,
+                    opacity: 1,
+                    color: '#ccc',
+                    dashArray: '3',
+                    fillOpacity: 0.7};
+                },
+            filter: filter})
+
+        //légende
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map2) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = GetGrades(dataMap),
+                labels = [];
+                
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                    convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+            }
+            return div;
+        };
+
+        legend.addTo(map2);
+        
+        area.addTo(map2);
+        map2.fitBounds(area.getBounds());
+    });
+   
+}
+
+function GetGrades(dataGrades){
+    var dataArray = []
+    for (var i = 0; i < dataGrades.length; i++) {
+        dataArray.push(dataGrades[i][1]);
+    }
+
+    nbGrades = 4;
+    minVal = d3.min(dataArray)
+    maxVal = d3.max(dataArray)
+    gradeStepTmp = Math.round((maxVal - minVal)/(nbGrades - 1)).toString()
+    
+    gradeStep = gradeStepTmp.substring(0, 1);
+    for (var i = 0; i < (gradeStepTmp.length-1); i++) {
+        gradeStep+="0"
+    }
+
+    minRange = gradeStep
+    maxRange = gradeStep*nbGrades
+
+    grades = d3.range(minRange,maxRange,gradeStep)
 
 
 
-
+    return grades
+}
 
 
 
@@ -1114,7 +2147,8 @@ function ExportPowerPoint(){
                         var slide_caseLoad = pptx.addSlide();
                         var slide_disp = pptx.addSlide();
                         var slide_nutrition = pptx.addSlide();
-                        var slide_foodSec = pptx.addSlide();
+                        var slide_foodSecCurrent = pptx.addSlide();
+                        var slide_foodSecProjected = pptx.addSlide();
 
                         slide.addText('Presentation for', { x:3.8, y:1.44, fontSize:18, color:'418fde' });
                         slide.addText(zoneName, { x:3.8, y:1.86, fontSize:18, color:'418fde' });
@@ -1146,6 +2180,27 @@ function ExportPowerPoint(){
                         slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
                         slide_disp.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
 
+                        //NUTRITION
+                        slide_nutrition.addText('Nutrition', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                        slide_nutrition.addText('SAM', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.sam,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                        slide_nutrition.addText('MAM', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.mam,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_nutrition.addText('GAM', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                        slide_nutrition.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+                        
+                        //CH CURRENT
+                        slide_foodSecCurrent.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                        slide_foodSecCurrent.addText('Current Food Insecure', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                        slide_foodSecCurrent.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                        slide_foodSecCurrent.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
 
               
                         slide.addImage({ data: nutritionImage });
@@ -1195,12 +2250,24 @@ function showData(bloc) {
 
 function downloadMap(categ){
     mapName = "#map-"+categ
-    html2canvas(document.querySelector(mapName)).then(function(canvas) {
+    element = document.querySelector(mapName)
+    width=$(mapName).width();
+    height=$(mapName).height();
+
+    width=$(mapName).width();
+    height=$(mapName).height();
+    html2canvas(element,{
+        width:width,
+        height:height,
+        removeContainer:true,
+        scale:0.9,
+        }).then(function(canvas) {
         saveAs(canvas.toDataURL(), 'file-name.png');
     });
 }
 
 function downloadTrend(categ){
+   
     mapName = "#trend-"+categ
     html2canvas(document.querySelector(mapName)).then(function(canvas) {
         saveAs(canvas.toDataURL(), 'file-name.png');
@@ -1253,8 +2320,46 @@ function convertToUnit(val,decimal){
         return result;
     }
 
+function getColors(numberOfColors){
+    colors = [
+        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
+        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
+        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
+        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
+        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
+        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
+        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
+        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
+    ]
+
+    palette = []
+
+    for (let index = 0; index < numberOfColors; index++) {
+        if(index>colors.length){
+            palette.push("#418fde");
+        }else{
+            palette.push(colors[index]);
+        }
+        
+    }
+    return palette
+}
+function getColorsAt(index){
+    colors = [
+        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
+        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
+        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
+        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
+        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
+        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
+        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
+        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
+    ]
+
+    return colors[index]
+}
 function AddChart(series,element,title){
-    array_color = d3.schemeBlues[4]
+    array_color = getColors(series.length)
 
     var options = {
         zoom: {
@@ -1281,7 +2386,7 @@ function AddChart(series,element,title){
           stacked: true,
           events: {
             selection: function (chart, e) {
-              console.log(new Date(e.xaxis.min))
+              //console.log(new Date(e.xaxis.min))
             }
           },
         },
@@ -1321,7 +2426,7 @@ function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
 
     d3.json("/maps/"+layerName+"_"+adminLevel+".json").then(function(us){
 
-        console.log(us)
+
     states = new Map(us.objects.admin.geometries.map(d => [d.properties.OBJECTID, d.properties]))
 
     data = Object.assign(new Map(mapCaseloads_PIN), {title: title})
@@ -1905,9 +3010,9 @@ function downloadData(typeData){
     var tableToExport = TableExport(document.getElementById(tableName));
 
     var exportData = tableToExport.getExportData(); 
-    console.log(exportData);
+
     var xlsxData = exportData[tableName].xlsx; 
-    console.log(xlsxData);
+
     tableToExport.export2file(xlsxData.data, xlsxData.mimeType, typeData, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, typeData)
 
 }

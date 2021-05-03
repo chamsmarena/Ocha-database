@@ -18,6 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" ></script>
         <script src="{{ URL::asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
         <script src="{{ URL::asset('d3/d3.min.js') }}" ></script>
+        <script src="{{ URL::asset('leaflet/leaflet.js') }}" ></script>
         <script src="{{ URL::asset('js/html2canvas.js') }}" ></script>
         <script src="{{ URL::asset('js/FileSaver.min.js') }}" ></script>
         <script src="https://d3js.org/d3-array.v2.min.js"></script>
@@ -26,6 +27,7 @@
   
         <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
         <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
+        <script src="{{ URL::asset('js/exportToExcel.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
         <!-- html to powerpoint -->
@@ -33,7 +35,9 @@
         <script src="{{ URL::asset('pptxgen/pptxgen.min.js') }}"></script>  
    
 
-
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
 
         
     
@@ -93,6 +97,21 @@
             }
 
             .bloc-data{
+            }
+
+            .legend {
+                line-height: 18px;
+                color: #555;
+            }
+            .legend i {
+                width: 18px;
+                height: 18px;
+                float: left;
+                margin-right: 8px;
+                opacity: 0.7;
+            }
+            .labelCarte{
+                font-size: 14px;
             }
         </style>
     
