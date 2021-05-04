@@ -152,9 +152,6 @@
 
         
         foreach ($years as $year){
-            
-            
-
             foreach ($locations as $location){
                 $lastDate = "1900-01-01";
                 $locationArray = explode("*",$location);
@@ -533,36 +530,39 @@
         }
         
         //traitement trend
-
-         array_push($trendCaseloads_PIN_Raw, array("adminName"=>$adminName,"date"=>$caseload->caseload_date, "value"=>$caseload->caseload_people_in_need));
-         array_push($trendCaseloads_Raw, array("admin0"=>$caseload->caseload_country,"adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached));
-         
-         if (!in_array($adminName, $caseloadColumns) && $adminName!="")
-         {
-             array_push($caseloadColumns,$adminName);
-         }
-         //traitement trend fin
-         
-        
-        if(array_key_exists($adminName,$KeyFigureCaseLoadsByAdmin)){
-            if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]==$caseload->caseload_date) {
-                $KeyFigureCaseLoadsByAdmin[$adminName] = array( 
-                    "adminName"=>$adminName,
-                    "adminPcode"=>$adminPcode,
-                    "admin0"=>$caseload->caseload_country,
-                    "date"=>$caseload->caseload_date, 
-                    "pin"=>($caseload->caseload_people_in_need + $KeyFigureCaseLoadsByAdmin[$adminName]["pin"]),  
-                    "pt"=>($caseload->caseload_people_targeted + $KeyFigureCaseLoadsByAdmin[$adminName]["pt"]), 
-                    "pr"=>($caseload->caseload_people_reached + $KeyFigureCaseLoadsByAdmin[$adminName]["pr"])
-                );
-            }else{
-                if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]<$caseload->caseload_date) {
-                    $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
-                }
+        if($adminPcode !=null){
+            array_push($trendCaseloads_PIN_Raw, array("adminName"=>$adminName,"date"=>$caseload->caseload_date, "value"=>$caseload->caseload_people_in_need));
+            array_push($trendCaseloads_Raw, array("admin0"=>$caseload->caseload_country,"adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached));
+            
+            if (!in_array($adminName, $caseloadColumns) && $adminName!="")
+            {
+                array_push($caseloadColumns,$adminName);
             }
-        }else{
-            $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
+            //traitement trend fin
+            
+           
+           if(array_key_exists($adminName,$KeyFigureCaseLoadsByAdmin)){
+               if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]==$caseload->caseload_date) {
+                   $KeyFigureCaseLoadsByAdmin[$adminName] = array( 
+                       "adminName"=>$adminName,
+                       "adminPcode"=>$adminPcode,
+                       "admin0"=>$caseload->caseload_country,
+                       "date"=>$caseload->caseload_date, 
+                       "pin"=>($caseload->caseload_people_in_need + $KeyFigureCaseLoadsByAdmin[$adminName]["pin"]),  
+                       "pt"=>($caseload->caseload_people_targeted + $KeyFigureCaseLoadsByAdmin[$adminName]["pt"]), 
+                       "pr"=>($caseload->caseload_people_reached + $KeyFigureCaseLoadsByAdmin[$adminName]["pr"])
+                   );
+               }else{
+                   if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]<$caseload->caseload_date) {
+                       $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
+                   }
+               }
+           }else{
+               $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
+           }
         }
+
+         
     }
 
 
@@ -598,83 +598,85 @@
         }
 
         
-
-        if ($ch->ch_situation=="Current") {
-            //traitement trend
-            array_push($trendCh_Current_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
-            array_push($trendCh_Current2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
-         
-            
-            if (!in_array($adminName, $ch_CurrentColumns) && $adminName!="")
-            {
-                array_push($ch_CurrentColumns,$adminName);
-            }
-            //traitement trend fin 
-
-            //current
-            if(array_key_exists($adminName,$KeyFigureCHByAdminCurrent)){
-                if ($KeyFigureCHByAdminCurrent[$adminName]["date"]==$ch->ch_date) {
-                    $KeyFigureCHByAdminCurrent[$adminName] = array( 
-                        "adminName"=>$adminName,
-                        "adminPcode"=>$adminPcode,
-                        "admin0"=>$ch->ch_country,
-                        "month"=>$ch->ch_exercise_month, 
-                        "year"=>$ch->ch_exercise_year, 
-                        "date"=>$ch->ch_date, 
-                        "ch_phase1"=>($ch->ch_phase1 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase1"]),  
-                        "ch_phase2"=>($ch->ch_phase2 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase2"]), 
-                        "ch_phase3"=>($ch->ch_phase3 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase3"]),
-                        "ch_phase35"=>($ch->ch_phase35 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase35"]),
-                        "ch_phase4"=>($ch->ch_phase4 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase4"]),
-                        "ch_phase5"=>($ch->ch_phase5 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase5"]),
-                    );
-                }else{
-                    if ($KeyFigureCHByAdminCurrent[$adminName]["date"]<$ch->ch_date) {
-                        $KeyFigureCHByAdminCurrent[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
-                    }
+        if($adminPcode !=null){
+            if ($ch->ch_situation=="Current") {
+                //traitement trend
+                array_push($trendCh_Current_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
+                array_push($trendCh_Current2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
+             
+                
+                if (!in_array($adminName, $ch_CurrentColumns) && $adminName!="")
+                {
+                    array_push($ch_CurrentColumns,$adminName);
                 }
-            }else{
-                $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
-            }
-        } else {
-            //projected
-
-            //traitement trend
-            array_push($trendCh_Projected_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
-            array_push($trendCh_Projected2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
-         
-            
-            if (!in_array($adminName, $ch_ProjectedColumns) && $adminName!="")
-            {
-                array_push($ch_ProjectedColumns,$adminName);
-            }
-            //traitement trend fin
-
-            if(array_key_exists($adminName,$KeyFigureCHByAdminProjeted)){
-                if ($KeyFigureCHByAdminProjeted[$adminName]["date"]==$ch->ch_date) {
-                    $KeyFigureCHByAdminProjeted[$adminName] = array( 
-                        "adminName"=>$adminName,
-                        "adminPcode"=>$adminPcode,
-                        "admin0"=>$ch->ch_country,
-                        "month"=>$ch->ch_exercise_month, 
-                        "year"=>$ch->ch_exercise_year,
-                        "date"=>$ch->ch_date, 
-                        "ch_phase1"=>($ch->ch_phase1 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase1"]),  
-                        "ch_phase2"=>($ch->ch_phase2 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase2"]), 
-                        "ch_phase3"=>($ch->ch_phase3 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase3"]),
-                        "ch_phase35"=>($ch->ch_phase35 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase35"]),
-                        "ch_phase4"=>($ch->ch_phase4 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase4"]),
-                        "ch_phase5"=>($ch->ch_phase5 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase5"]),
-                    );
-                }else{
-                    if ($KeyFigureCHByAdminProjeted[$adminName]["date"]<$ch->ch_date) {
-                        $KeyFigureCHByAdminProjeted[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
+                //traitement trend fin 
+    
+                //current
+                if(array_key_exists($adminName,$KeyFigureCHByAdminCurrent)){
+                    if ($KeyFigureCHByAdminCurrent[$adminName]["date"]==$ch->ch_date) {
+                        $KeyFigureCHByAdminCurrent[$adminName] = array( 
+                            "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$ch->ch_country,
+                            "month"=>$ch->ch_exercise_month, 
+                            "year"=>$ch->ch_exercise_year, 
+                            "date"=>$ch->ch_date, 
+                            "ch_phase1"=>($ch->ch_phase1 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase1"]),  
+                            "ch_phase2"=>($ch->ch_phase2 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase2"]), 
+                            "ch_phase3"=>($ch->ch_phase3 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase3"]),
+                            "ch_phase35"=>($ch->ch_phase35 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase35"]),
+                            "ch_phase4"=>($ch->ch_phase4 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase4"]),
+                            "ch_phase5"=>($ch->ch_phase5 + $KeyFigureCHByAdminCurrent[$adminName]["ch_phase5"]),
+                        );
+                    }else{
+                        if ($KeyFigureCHByAdminCurrent[$adminName]["date"]<$ch->ch_date) {
+                            $KeyFigureCHByAdminCurrent[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
+                        }
                     }
+                }else{
+                    $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
                 }
-            }else{
-                $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode, "admin0"=>$ch->ch_country,"month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+            } else {
+                //projected
+    
+                //traitement trend
+                array_push($trendCh_Projected_Raw, array("adminName"=>$adminName,"date"=>$ch->ch_date, "value"=>$ch->ch_phase35));
+                array_push($trendCh_Projected2_Raw, array("admin0"=>$ch->ch_country,"adminName"=>$adminName,"date"=>$ch->ch_date,"ch1"=>$ch->ch_phase1,"ch2"=>$ch->ch_phase2,"ch3"=>$ch->ch_phase3,"ch35"=>$ch->ch_phase35,"ch4"=>$ch->ch_phase4,"ch5"=>$ch->ch_phase5 ));
+             
+                
+                if (!in_array($adminName, $ch_ProjectedColumns) && $adminName!="")
+                {
+                    array_push($ch_ProjectedColumns,$adminName);
+                }
+                //traitement trend fin
+    
+                if(array_key_exists($adminName,$KeyFigureCHByAdminProjeted)){
+                    if ($KeyFigureCHByAdminProjeted[$adminName]["date"]==$ch->ch_date) {
+                        $KeyFigureCHByAdminProjeted[$adminName] = array( 
+                            "adminName"=>$adminName,
+                            "adminPcode"=>$adminPcode,
+                            "admin0"=>$ch->ch_country,
+                            "month"=>$ch->ch_exercise_month, 
+                            "year"=>$ch->ch_exercise_year,
+                            "date"=>$ch->ch_date, 
+                            "ch_phase1"=>($ch->ch_phase1 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase1"]),  
+                            "ch_phase2"=>($ch->ch_phase2 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase2"]), 
+                            "ch_phase3"=>($ch->ch_phase3 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase3"]),
+                            "ch_phase35"=>($ch->ch_phase35 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase35"]),
+                            "ch_phase4"=>($ch->ch_phase4 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase4"]),
+                            "ch_phase5"=>($ch->ch_phase5 + $KeyFigureCHByAdminProjeted[$adminName]["ch_phase5"]),
+                        );
+                    }else{
+                        if ($KeyFigureCHByAdminProjeted[$adminName]["date"]<$ch->ch_date) {
+                            $KeyFigureCHByAdminProjeted[$adminName] = array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_phase1"=>$ch->ch_phase1, "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3,"ch_phase35"=>$ch->ch_phase35,"ch_phase4"=>$ch->ch_phase4,"ch_phase5"=>$ch->ch_phase5);
+                        }
+                    }
+                }else{
+                    $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode, "admin0"=>$ch->ch_country,"month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+                }
             }
         }
+        
     }
 
     $trendCh_Current = getTrendData($trendCh_Current_Raw);
@@ -720,33 +722,34 @@
         }
 
         //traitement trend
-        
-        array_push($trendNutrition_SAM_Raw, array("adminName"=>$adminName,"date"=>$nutrition->nut_date, "value"=>$nutrition->nut_sam));
-        array_push($trendNutrition_Raw, array("admin0"=>$nutrition->nut_country,"adminName"=>$adminName,"date"=>$nutrition->nut_date, "gam"=>$nutrition->nut_gam, "mam"=>$nutrition->nut_sam, "sam"=>$nutrition->nut_sam));
-          
-        if (!in_array($adminName, $nutritionColumns) && $adminName!="")
-        {
-            array_push($nutritionColumns,$adminName);
-        }
-        
-        if(array_key_exists($adminName,$KeyFigurenutritionsByAdmin)){
-            if ($KeyFigurenutritionsByAdmin[$adminName]["date"]==$nutrition->nut_date) {
-                $KeyFigurenutritionsByAdmin[$adminName] = array( 
-                    "adminName"=>$adminName,
-                    "adminPcode"=>$adminPcode,
-                    "admin0"=>$nutrition->nut_country,
-                    "date"=>$nutrition->nut_date, 
-                    "sam"=>($nutrition->nut_sam + $KeyFigurenutritionsByAdmin[$adminName]["sam"]),  
-                    "mam"=>($nutrition->nut_gam + $KeyFigurenutritionsByAdmin[$adminName]["mam"]), 
-                    "gam"=>($nutrition->nut_mam + $KeyFigurenutritionsByAdmin[$adminName]["gam"])
-                );
-            }else{
-                if ($KeyFigurenutritionsByAdmin[$adminName]["date"]<$nutrition->nut_date) {
-                    $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
-                }
+        if($adminPcode !=null){
+            array_push($trendNutrition_SAM_Raw, array("adminName"=>$adminName,"date"=>$nutrition->nut_date, "value"=>$nutrition->nut_sam));
+            array_push($trendNutrition_Raw, array("admin0"=>$nutrition->nut_country,"adminName"=>$adminName,"date"=>$nutrition->nut_date, "gam"=>$nutrition->nut_gam, "mam"=>$nutrition->nut_sam, "sam"=>$nutrition->nut_sam));
+              
+            if (!in_array($adminName, $nutritionColumns) && $adminName!="")
+            {
+                array_push($nutritionColumns,$adminName);
             }
-        }else{
-            $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
+            
+            if(array_key_exists($adminName,$KeyFigurenutritionsByAdmin)){
+                if ($KeyFigurenutritionsByAdmin[$adminName]["date"]==$nutrition->nut_date) {
+                    $KeyFigurenutritionsByAdmin[$adminName] = array( 
+                        "adminName"=>$adminName,
+                        "adminPcode"=>$adminPcode,
+                        "admin0"=>$nutrition->nut_country,
+                        "date"=>$nutrition->nut_date, 
+                        "sam"=>($nutrition->nut_sam + $KeyFigurenutritionsByAdmin[$adminName]["sam"]),  
+                        "mam"=>($nutrition->nut_gam + $KeyFigurenutritionsByAdmin[$adminName]["mam"]), 
+                        "gam"=>($nutrition->nut_mam + $KeyFigurenutritionsByAdmin[$adminName]["gam"])
+                    );
+                }else{
+                    if ($KeyFigurenutritionsByAdmin[$adminName]["date"]<$nutrition->nut_date) {
+                        $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
+                    }
+                }
+            }else{
+                $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
+            }
         }
     }
 
@@ -778,152 +781,152 @@
             $adminPcode = $displacement->dis_admin1_pcode;
         }
 
-       
-        
-        if(array_key_exists($adminName,$KeyFigureDisplacementsByAdmin)){
-            $temp = $KeyFigureDisplacementsByAdmin[$adminName];
-
-            switch ($displacement->dis_type) {
-                case 'IDP':
-                     //traitement trend
-                    array_push($trendDisplacement_IDP_Raw, array("adminName"=>$adminName,"date"=>$displacement->dis_date, "value"=>$displacement->dis_value));
-                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>$displacement->dis_value, "ref"=>0, "ret"=>0));
-        
-                    if (!in_array($adminName, $displacementColumns) && $adminName!="")
-                    {
-                        array_push($displacementColumns,$adminName);
-                    }
-
-                    if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]==$displacement->dis_date) {
-                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["idp"]),
-                            "idp_date"=>$displacement->dis_date,  
-                            "refugees"=>$temp["refugees"], 
-                            "refugees_date"=>$temp["refugees_date"],
-                            "returnees"=>$temp["returnees"],
-                            "returnees_date"=>$temp["returnees_date"],
-                        );
-                    }else{
-                        if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]<$displacement->dis_date) {
+        if($adminPcode !=null){
+            if(array_key_exists($adminName,$KeyFigureDisplacementsByAdmin)){
+                $temp = $KeyFigureDisplacementsByAdmin[$adminName];
+    
+                switch ($displacement->dis_type) {
+                    case 'IDP':
+                         //traitement trend
+                        array_push($trendDisplacement_IDP_Raw, array("adminName"=>$adminName,"date"=>$displacement->dis_date, "value"=>$displacement->dis_value));
+                        array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>$displacement->dis_value, "ref"=>0, "ret"=>0));
+            
+                        if (!in_array($adminName, $displacementColumns) && $adminName!="")
+                        {
+                            array_push($displacementColumns,$adminName);
+                        }
+    
+                        if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]==$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
                                 "adminPcode"=>$adminPcode,
                                 "admin0"=>$displacement->dis_country,
-                                "idp"=>$displacement->dis_value,
+                                "idp"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["idp"]),
                                 "idp_date"=>$displacement->dis_date,  
                                 "refugees"=>$temp["refugees"], 
                                 "refugees_date"=>$temp["refugees_date"],
                                 "returnees"=>$temp["returnees"],
                                 "returnees_date"=>$temp["returnees_date"],
                             );
+                        }else{
+                            if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]<$displacement->dis_date) {
+                                $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                    "adminName"=>$adminName,
+                                    "adminPcode"=>$adminPcode,
+                                    "admin0"=>$displacement->dis_country,
+                                    "idp"=>$displacement->dis_value,
+                                    "idp_date"=>$displacement->dis_date,  
+                                    "refugees"=>$temp["refugees"], 
+                                    "refugees_date"=>$temp["refugees_date"],
+                                    "returnees"=>$temp["returnees"],
+                                    "returnees_date"=>$temp["returnees_date"],
+                                );
+                            }
                         }
-                    }
-                    break;
-                case 'Refugee':
-                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>$displacement->dis_value, "ret"=>0));
-                    if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]==$displacement->dis_date) {
-                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>$temp["idp"], 
-                            "idp_date"=>$temp["idp_date"],
-                            "refugees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["refugees"]),
-                            "refugees_date"=>$displacement->dis_date,  
-                            "returnees"=>$temp["returnees"],
-                            "returnees_date"=>$temp["returnees_date"],
-                        );
-                    }else{
-                        if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]<$displacement->dis_date) {
+                        break;
+                    case 'Refugee':
+                        array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>$displacement->dis_value, "ret"=>0));
+                        if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]==$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
                                 "adminPcode"=>$adminPcode,
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>$temp["idp"], 
                                 "idp_date"=>$temp["idp_date"],
-                                "refugees"=>$displacement->dis_value,
+                                "refugees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["refugees"]),
                                 "refugees_date"=>$displacement->dis_date,  
                                 "returnees"=>$temp["returnees"],
                                 "returnees_date"=>$temp["returnees_date"],
                             );
+                        }else{
+                            if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]<$displacement->dis_date) {
+                                $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                    "adminName"=>$adminName,
+                                    "adminPcode"=>$adminPcode,
+                                    "admin0"=>$displacement->dis_country,
+                                    "idp"=>$temp["idp"], 
+                                    "idp_date"=>$temp["idp_date"],
+                                    "refugees"=>$displacement->dis_value,
+                                    "refugees_date"=>$displacement->dis_date,  
+                                    "returnees"=>$temp["returnees"],
+                                    "returnees_date"=>$temp["returnees_date"],
+                                );
+                            }
                         }
-                    }
-                    break;
-                case 'Returnee':
-                    array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>0, "ret"=>$displacement->dis_value));
-                    if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]==$displacement->dis_date) {
-                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>$temp["idp"], 
-                            "idp_date"=>$temp["idp_date"],
-                            "refugees"=>$temp["refugees"],
-                            "refugees_date"=>$temp["refugees_date"],
-                            "returnees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["returnees"]),
-                            "returnees_date"=>$displacement->dis_date
-                        );
-                    }else{
-                        if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]<$displacement->dis_date) {
+                        break;
+                    case 'Returnee':
+                        array_push($trendDisplacement_Raw, array("admin0"=>$displacement->dis_country,"adminName"=>$adminName,"date"=>$displacement->dis_date, "idp"=>0, "ref"=>0, "ret"=>$displacement->dis_value));
+                        if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]==$displacement->dis_date) {
                             $KeyFigureDisplacementsByAdmin[$adminName] = array(
                                 "adminName"=>$adminName,
                                 "adminPcode"=>$adminPcode,
                                 "admin0"=>$displacement->dis_country,
-                                "idp"=>$temp["idp"],
-                                "idp_date"=>$temp["idp_date"], 
-                                "refugees"=>$temp["refugees"], 
+                                "idp"=>$temp["idp"], 
+                                "idp_date"=>$temp["idp_date"],
+                                "refugees"=>$temp["refugees"],
                                 "refugees_date"=>$temp["refugees_date"],
+                                "returnees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["returnees"]),
+                                "returnees_date"=>$displacement->dis_date
+                            );
+                        }else{
+                            if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]<$displacement->dis_date) {
+                                $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                    "adminName"=>$adminName,
+                                    "adminPcode"=>$adminPcode,
+                                    "admin0"=>$displacement->dis_country,
+                                    "idp"=>$temp["idp"],
+                                    "idp_date"=>$temp["idp_date"], 
+                                    "refugees"=>$temp["refugees"], 
+                                    "refugees_date"=>$temp["refugees_date"],
+                                    "returnees"=>$displacement->dis_value,
+                                    "returnees_date"=>$displacement->dis_date,
+                                );
+                            }
+                        }
+                        break;
+                }
+            }else{
+                switch ($displacement->dis_type) {
+                    case 'IDP':
+                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
+                                "idp"=>$displacement->dis_value,
+                                "idp_date"=>$displacement->dis_date,  
+                                "refugees"=>0, 
+                                "refugees_date"=>"",
+                                "returnees"=>0,
+                                "returnees_date"=>"",
+                            );
+                        break;
+                    case 'Refugee':
+                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
+                                "idp"=>0, 
+                                "idp_date"=>"",
+                                "refugees"=>$displacement->dis_value,
+                                "refugees_date"=>$displacement->dis_date,  
+                                "returnees"=>0,
+                                "returnees_date"=>"",
+                            );
+                        break;
+                    case 'Returnee':
+                        $KeyFigureDisplacementsByAdmin[$adminName] = array(
+                                "adminName"=>$adminName,
+                                "adminPcode"=>$adminPcode,
+                                "admin0"=>$displacement->dis_country,
+                                "idp"=>0,
+                                "idp_date"=>"", 
+                                "refugees"=>0, 
+                                "refugees_date"=>"",
                                 "returnees"=>$displacement->dis_value,
                                 "returnees_date"=>$displacement->dis_date,
                             );
-                        }
-                    }
-                    break;
-            }
-        }else{
-            switch ($displacement->dis_type) {
-                case 'IDP':
-                    $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>$displacement->dis_value,
-                            "idp_date"=>$displacement->dis_date,  
-                            "refugees"=>0, 
-                            "refugees_date"=>"",
-                            "returnees"=>0,
-                            "returnees_date"=>"",
-                        );
-                    break;
-                case 'Refugee':
-                    $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>0, 
-                            "idp_date"=>"",
-                            "refugees"=>$displacement->dis_value,
-                            "refugees_date"=>$displacement->dis_date,  
-                            "returnees"=>0,
-                            "returnees_date"=>"",
-                        );
-                    break;
-                case 'Returnee':
-                    $KeyFigureDisplacementsByAdmin[$adminName] = array(
-                            "adminName"=>$adminName,
-                            "adminPcode"=>$adminPcode,
-                            "admin0"=>$displacement->dis_country,
-                            "idp"=>0,
-                            "idp_date"=>"", 
-                            "refugees"=>0, 
-                            "refugees_date"=>"",
-                            "returnees"=>$displacement->dis_value,
-                            "returnees_date"=>$displacement->dis_date,
-                        );
-                    break;
+                        break;
+                }
             }
         }
     }
