@@ -167,7 +167,7 @@ class zoneController extends Controller
         
         //var_dump($dataByZone);
 
-        return view('zone.filterV2',['datas'=>$dataByZone,"adminLevel"=>$adminLevel,"periodFrom"=>$periodFrom,"periodTo"=>$periodTo,"countriesList"=>$countriesList]);
+        return view('zone.filterV2',['datas'=>$dataByZone,"category"=>$category,"items"=>$items,"adminLevel"=>$adminLevel,"periodFrom"=>$periodFrom,"periodTo"=>$periodTo,"countriesList"=>$countriesList]);
     }
 
     public function show_view_analyser($id)

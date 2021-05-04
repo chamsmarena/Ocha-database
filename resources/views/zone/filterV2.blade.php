@@ -465,7 +465,7 @@
     function getMapData($datas,$dataFieldName){
         $mapData = array();
         foreach ($datas as $data){
-            array_push($mapData,array($data['adminName']."*".$data['adminPcode'], $data[$dataFieldName]));
+            array_push($mapData,array(trim($data['adminName'])."*".trim($data['adminPcode']), $data[$dataFieldName]));
         }
         return $mapData;
     }
@@ -942,13 +942,26 @@
 ?>
 
 <div class='col-12 pt-3'>
-    <p>
-        Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br>
-        <a href="#" class="btn-link" onclick="ExportPowerPoint()"><em>Exporter vers Power Point</em></a>
-        <a href="#" class="btn-link" onclick="ExportExcel()"><em>Exporter vers Excel</em></a>
-
-                    
-    </p>
+    <div class="row mb-3" >
+        <div class="col">
+            Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br> 
+        </div>
+        <div class="col d-flex justify-content-center" id='buttonOk'>
+            @if ($adminLevel == "admin0")
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin0" class="btn text-white" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 0</a>
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-black" style="background-color:none;border:none;" id="buttonDone">Admin 1</a>
+            @else
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin0" class="btn text-black" style="background-color:none;border:none;" id="buttonDone">Admin 0</a>
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-white" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 1</a>
+            @endif
+            
+        </div>
+        <div class="col text-end">
+            <img src="{{asset('images/powerpoint.svg')}}" class="exportImage me-3" onclick="ExportPowerPoint()" style="height:30px;"  alt="Exporter vers Power Point"/> 
+            <img src="{{asset('images/excel.svg')}}" class="exportImage me-3" onclick="ExportExcel()" style="height:30px;"  alt="Exporter vers Excel"/> 
+        </div>
+    </div>
+    
     <div class="row">
         <div class="col-3 keyFigure-card cards-selected rounded me-1 ms-1" id="keyFigure-caseloads" onclick="showData('caseloads')">
             <p>Caseloads</p>
@@ -1819,16 +1832,16 @@
 </div>
 
 <div id='chart'></div>
+<canvas id="myCanvas" width="240" height="297"
+style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
 <div class="col-12">
     <div id='chart-test' style="width:800px;height:500px;">jjj</div>
 </div>
 <script>
 $(document).ready(function(){
-
-    
-    
-
-
 
     adminLevel = {!! json_encode($adminLevel) !!};
     zoneCode = {!! json_encode($zone->zone_code) !!};
@@ -1879,16 +1892,20 @@ $(document).ready(function(){
     }
     
     admin_coordinates = []
+    nbMapWriten = 0;
     d3.json(adminCoordinatesFile).then(function(adminCoordinatesTemp){
         admin_coordinates = adminCoordinatesTemp
         addMap2(adminLevel,mapCaseloads_PIN,"map-caseloads")
         addMap2(adminLevel,mapDisplacement_IDP,"map-displacements")
         addMap2(adminLevel,mapNutrition_SAM,"map-nutrition")
+        
     });
     image1= 0;
 
     //addMap2(adminLevel,mapCaseloads_PIN,"chart-test");
 });
+
+
 
 function ExportExcel() {
     tablesToExcel(
@@ -2038,8 +2055,8 @@ function addMap2(adminLevel,dataMap,place){
             area.addTo(map);
             map.fitBounds(area.getBounds());
 
-            $(".leaflet-popup-content").width('30px')
-            $(".leaflet-popup-close-button").hide()
+    
+            nbMapWriten++;
         });
     
    
@@ -2129,16 +2146,43 @@ function GetGrades(dataGrades){
 function ExportPowerPoint(){
     $(".bloc-data").show();
     umg = "";
-    html2canvas(document.querySelector("#trend-caseloads")).then(function(caseloads) {
-        html2canvas(document.querySelector("#trend-displacements")).then(function(displacements) {
-            html2canvas(document.querySelector("#trend-nutrition")).then(function(nutrition) {
-                html2canvas(document.querySelector("#trend-ch-current")).then(function(chCurrent) {
-                    html2canvas(document.querySelector("#trend-ch-projected")).then(function(chProjected) {
-                        caseloadImage = caseloads.toDataURL()
-                        displacementsImage = displacements.toDataURL()
-                        nutritionImage = nutrition.toDataURL()
-                        chCurrentImage = chCurrent.toDataURL()
-                        chProjectedImage = chProjected.toDataURL()
+
+    //DIMENSIONS OF TRENDS
+    width_CL = $("#trend-caseloads").width()
+    height_CL = $("#trend-caseloads").height()
+
+    width_DI = $("#trend-displacements").width()
+    height_DI = $("#trend-displacements").height()
+
+    width_NU = $("#trend-nutrition").width()
+    height_NU = $("#trend-nutrition").height()
+
+    width_CC = $("#trend-ch-current").width()
+    height_CC = $("#trend-ch-current").height()
+
+    width_CP = $("#trend-ch-projected").width()
+    height_CP = $("#trend-ch-projected").height()
+
+    //DIMENSIONS OF MAPS
+    width_m_CL = $("#map-caseloads").width()
+    height_m_CL = $("#map-caseloads").height()
+
+    width_m_DI = $("#map-displacements").width()
+    height_m_DI = $("#map-displacements").height()
+
+    width_m_NU = $("#map-nutrition").width()
+    height_m_NU = $("#map-nutrition").height()
+
+
+    domtoimage.toJpeg(document.getElementById("map-caseloads"), { quality: 1,height:height_m_CL,width:width_m_CL,bgcolor:'#ffffff'}).then(function (caseloadMap) {
+        domtoimage.toJpeg(document.getElementById("map-displacements"), { quality: 1,height:height_m_DI,width:width_m_DI,bgcolor:'#ffffff' }).then(function (displacementsMap) {
+            domtoimage.toJpeg(document.getElementById("map-nutrition"), { quality: 1,height:height_m_NU,width:width_m_NU ,bgcolor:'#ffffff'}).then(function (nutritionMap) {
+                domtoimage.toJpeg(document.getElementById("trend-caseloads"), { quality: 1,height:height_CL,width:width_CL,bgcolor:'#ffffff'}).then(function (caseloadImage) {
+                    domtoimage.toJpeg(document.getElementById("trend-displacements"), { quality: 1,height:height_DI,width:width_DI,bgcolor:'#ffffff' }).then(function (displacementsImage) {
+                        domtoimage.toJpeg(document.getElementById("trend-nutrition"), { quality: 1,height:height_NU,width:width_NU ,bgcolor:'#ffffff'}).then(function (nutritionImage) {
+                            domtoimage.toJpeg(document.getElementById("trend-ch-current"), { quality: 1,height:width_CC,width:width_CC ,bgcolor:'#ffffff'}).then(function (chCurrentImage) {
+                                domtoimage.toJpeg(document.getElementById("trend-ch-projected"), { quality: 1,height:height_CP,width:width_CP,bgcolor:'#ffffff' }).then(function (chProjectedImage) {
+
 
                         var pptx = new PptxGenJS();
 
@@ -2164,7 +2208,8 @@ function ExportPowerPoint(){
                         slide_caseLoad.addImage({ path: "/images/People-in-need.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
                         slide_caseLoad.addImage({ path: "/images/People-targeted.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
                         slide_caseLoad.addImage({ path: "/images/Person-2.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_caseLoad.addImage({ data: caseloadImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+                        slide_caseLoad.addImage({ data: caseloadImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                        slide_caseLoad.addImage({ data: caseloadMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
 
 
                         //DISPLACEMENTS
@@ -2178,7 +2223,8 @@ function ExportPowerPoint(){
                         slide_disp.addImage({ path: "/images/Internally-displaced.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
                         slide_disp.addImage({ path: "/images/Refugee.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
                         slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_disp.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+                        slide_disp.addImage({ data: displacementsImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                        slide_disp.addImage({ data: displacementsMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
 
                         //NUTRITION
                         slide_nutrition.addText('Nutrition', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
@@ -2191,7 +2237,8 @@ function ExportPowerPoint(){
                         slide_nutrition.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
                         slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
                         slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_nutrition.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+                        slide_nutrition.addImage({ data: nutritionImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                        slide_nutrition.addImage({ data: nutritionMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
                         
                         //CH CURRENT
                         slide_foodSecCurrent.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
@@ -2200,23 +2247,41 @@ function ExportPowerPoint(){
                         slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
                         slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
                         slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_foodSecCurrent.addImage({ data: displacementsImage,x: 5.17,y: 1.65,  w: 4.69, h: 3.00 });
+                        slide_foodSecCurrent.addImage({ data: chCurrentImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
 
               
-                        slide.addImage({ data: nutritionImage });
-                        slide.addImage({ data: chCurrentImage });
-                        slide.addImage({ data: chProjectedImage });
+                        //CH PROJECTED
+                        slide_foodSecProjected.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                        slide_foodSecProjected.addText('Current Food Insecure', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                        slide_foodSecProjected.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                        slide_foodSecProjected.addImage({ data: chProjectedImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+
+              
+                      
 
                         // STEP 4: Send the PPTX Presentation to the user, using your choice of file name
                         pptx.writeFile('PptxGenJs-Basic-Slide-Demo');
                         $(".bloc-data").hide();
                         showData("caseloads");
 
+
+                                });
+                            });
+                        });
+
                     });
                 });
             });
         });
     });
+
+
+                        
+
+
 
     
 
@@ -2249,20 +2314,16 @@ function showData(bloc) {
 }
 
 function downloadMap(categ){
-    mapName = "#map-"+categ
-    element = document.querySelector(mapName)
-    width=$(mapName).width();
-    height=$(mapName).height();
+    var mapName = "#map-"+categ
+    id="map-"+categ
+    width = $(mapName).width()
+    height = $(mapName).height()
 
-    width=$(mapName).width();
-    height=$(mapName).height();
-    html2canvas(element,{
-        width:width,
-        height:height,
-        removeContainer:true,
-        scale:0.9,
-        }).then(function(canvas) {
-        saveAs(canvas.toDataURL(), 'file-name.png');
+    domtoimage.toJpeg(document.getElementById(id), { quality: 1,height:height,width:width }).then(function (dataUrl) {
+        var link = document.createElement('a');
+        link.download = 'map_'+categ;
+        link.href = dataUrl;
+        link.click();
     });
 }
 

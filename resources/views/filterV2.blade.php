@@ -20,6 +20,7 @@
         <script src="{{ URL::asset('d3/d3.min.js') }}" ></script>
         <script src="{{ URL::asset('leaflet/leaflet.js') }}" ></script>
         <script src="{{ URL::asset('js/html2canvas.js') }}" ></script>
+        <script src="{{ URL::asset('js/dom-to-image.min.js') }}" ></script>
         <script src="{{ URL::asset('js/FileSaver.min.js') }}" ></script>
         <script src="https://d3js.org/d3-array.v2.min.js"></script>
         <script src="https://unpkg.com/topojson-client@3"></script>
