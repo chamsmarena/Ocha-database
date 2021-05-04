@@ -561,9 +561,10 @@
                 }
             }
         }else{
-            $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
+            $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
         }
     }
+
 
     $trendCaseloads = getTrendDataCaseloads($trendCaseloads_Raw);
     $trendCaseloads_PIN = getTrendData($trendCaseloads_PIN_Raw);
@@ -633,7 +634,7 @@
                     }
                 }
             }else{
-                $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+                $KeyFigureCHByAdminCurrent = array_push_assoc($KeyFigureCHByAdminCurrent, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
             }
         } else {
             //projected
@@ -671,7 +672,7 @@
                     }
                 }
             }else{
-                $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName, "admin0"=>$ch->ch_country,"month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
+                $KeyFigureCHByAdminProjeted = array_push_assoc($KeyFigureCHByAdminProjeted, $adminName, array("adminName"=>$adminName,"adminPcode"=>$adminPcode, "admin0"=>$ch->ch_country,"month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,  "ch_phase1"=>$ch->ch_phase1,  "ch_phase2"=>$ch->ch_phase2, "ch_phase3"=>$ch->ch_phase3, "ch_phase35"=>$ch->ch_phase35, "ch_phase4"=>$ch->ch_phase4, "ch_phase5"=>$ch->ch_phase5));
             }
         }
     }
@@ -745,7 +746,7 @@
                 }
             }
         }else{
-            $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
+            $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
         }
     }
 
