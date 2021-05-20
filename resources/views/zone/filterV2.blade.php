@@ -601,7 +601,7 @@
 
             if($exist){
                 $pos = strpos($disclaimerCaseloads[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos != false) {
+                if ($pos < 0) {
                     $adminNames = $disclaimerCaseloads[$i]["adminName"].", ".$KeyFigure["admin0"];
                     $disclaimerCaseloads[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
@@ -816,7 +816,7 @@
 
             if($exist){
                 $pos = strpos($disclaimerNutrition_SAM[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos != false) {
+                if ($pos < 0) {
                     $adminNames = $disclaimerNutrition_SAM[$i]["adminName"].", ".$KeyFigure["admin0"];
                     $disclaimerNutrition_SAM[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
@@ -1075,7 +1075,7 @@
 
             if($exist){
                 $pos = strpos($disclaimerDisplacement_idp[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos != false) {
+                if ($pos < 0) {
                     $adminNames = $disclaimerDisplacement_idp[$i]["adminName"].", ".$KeyFigure["admin0"];
                     $disclaimerDisplacement_idp[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
@@ -1102,7 +1102,7 @@
 
             if($exist){
                 $pos = strpos($disclaimerDisplacement_ref[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos != false) {
+                if ($pos < 0) {
                     $adminNames = $disclaimerDisplacement_ref[$i]["adminName"].", ".$KeyFigure["admin0"];
                     $disclaimerDisplacement_ref[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
@@ -1129,7 +1129,7 @@
 
             if($exist){
                 $pos = strpos($disclaimerDisplacement_ret[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos != false) {
+                if ($pos < 0) {
                     $adminNames = $disclaimerDisplacement_ret[$i]["adminName"].", ".$KeyFigure["admin0"];
                     $disclaimerDisplacement_ret[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
