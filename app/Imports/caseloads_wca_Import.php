@@ -38,6 +38,7 @@ class caseloads_wca_Import implements ToModel
                 $caseload->caseload_people_reached = floatval($row[8]);
                 $caseload->caseload_date = $date;
                 $caseload->caseload_crise = "WCA";
+                $caseload->caseload_source = isset($row[10]) ? $row[10] : null;
                 $caseload->save();
             }
         }

@@ -114,6 +114,37 @@
             .labelCarte{
                 font-size: 14px;
             }
+            .exportImage{
+                height: 40px;
+                padding: 6px;
+                border-radius: 20px;
+                background-color: #fff;
+            }
+            .exportImage:hover{
+                height: 40px;
+                background-color: #418fde;
+                padding: 6px;
+                border-radius: 20px;
+                cursor:pointer;
+            }
+
+            .disclaimer {
+                font-size: 10px;
+                color: #000;
+                font-style: italic;
+                margin-bottom:8px;
+            }
+
+            .loading {
+                text-align: center;
+                width: 100%;
+                height: 2000px;
+                background-color: #fff;
+                opacity: 0.7;
+                padding-top: 50px;
+                position: absolute;
+                z-index: 2000;
+            }
         </style>
     
     </head>

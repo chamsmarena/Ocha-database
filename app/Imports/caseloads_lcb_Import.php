@@ -18,6 +18,8 @@ class caseloads_lcb_Import implements ToModel
 
     public function model (array $row)
     {
+       
+        
         if (!isset($row[0])) {
             return null;
         }else{
@@ -38,6 +40,7 @@ class caseloads_lcb_Import implements ToModel
                 $caseload->caseload_people_reached = floatval($row[8]);
                 $caseload->caseload_date = $date;
                 $caseload->caseload_crise = "LCB";
+                $caseload->caseload_source = isset($row[10]) ? $row[10] : null;
                 $caseload->save();
             }
         }

@@ -35,6 +35,7 @@ class nutritionsImport implements ToModel
                 $nutrition->nut_gam=$row[5];
                 $nutrition->nut_mam=$row[6];
                 $nutrition->nut_date=$date;
+                $nutrition->nut_source=isset($row[8]) ? $row[8] : null;
 
                 $nutrition->save();
             }

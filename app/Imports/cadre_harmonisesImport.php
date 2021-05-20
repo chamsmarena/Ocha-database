@@ -44,6 +44,7 @@ class cadre_harmonisesImport implements ToModel
                 $cadre_harmonise->ch_exercise_year=$row[14];
                 $cadre_harmonise->ch_situation=$row[15];
                 $cadre_harmonise->ch_date=$date;
+                $cadre_harmonise->ch_source=isset($row[17]) ? $row[17] : null;
 
                 $cadre_harmonise->save();
             }

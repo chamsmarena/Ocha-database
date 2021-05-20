@@ -81,9 +81,6 @@ class localDataController extends Controller
             case "ch":
                 $elementName = "Cadre harmonisé";
             break;
-            /*case "fs":
-                $elementName = "Food security";
-            break;*/
         }
         
         $zones = DB::table('zones')->orderBy('zone_name', 'asc')->get();
@@ -134,14 +131,6 @@ class localDataController extends Controller
             return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
         }
         
-    }
-
-    /**** delete ***/public function import_internally_displaced_person() 
-    {
-        //old
-        DB::statement('TRUNCATE internally_displaced_peoples ');
-        Excel::import(new internallydisplacedpersonsImport, 'Internaly_displaced_persons.xlsx');
-        return redirect('/import')->with('success', 'All good!');
     }
     public function import_nutrition() 
     {
@@ -198,26 +187,6 @@ class localDataController extends Controller
         }
         
     }
-    /**** delete ***/public function import_food_security() 
-    {
-        //delete
-        try {
-            
-            
-			/***************************/
-			
-			DB::statement('TRUNCATE food_securities ');
-            Excel::import(new foodsecuritiesImport, 'food_security.xlsx');
-            return redirect('/import')->with('success', 'All good!');
-			
-			/***************************/
-            return redirect('/import')->with('success', 'All good!');
-        } catch (\Throwable $th) {
-            return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
-        }
-
-        
-    }
     public function import_displacement() 
     {
         try {
@@ -227,7 +196,7 @@ class localDataController extends Controller
             Storage::copy('input data/displacements/sahel.xlsx', 'backup data/displacements/sahel backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/sahel_central.xlsx', 'backup data/displacements/sahel_central backup '.date("Y-m-d H i s").'.xlsx');
             Storage::copy('input data/displacements/wca.xlsx', 'backup data/displacements/wca backup '.date("Y-m-d H i s").'.xlsx');
-*/
+            */
             DB::statement('TRUNCATE displacements');
 
             DB::table('data_by_years')->where('t_category', '=', 'Refugee')->delete();

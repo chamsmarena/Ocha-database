@@ -66,7 +66,6 @@
                                 $lastValue = $data["value"];
                             }
                         }
-                        
                     }
                 }
                 $arrayTemp[$location] = $lastValue;
@@ -450,14 +449,14 @@
 
 
 
-
+/*
     function getMapDataOld($datas,$dataFieldName){
         $mapData = array();
         foreach ($datas as $data){
             array_push($mapData,array("adminName"=>$data['adminName'], "value"=>$data[$dataFieldName]));
         }
         return $mapData;
-    }
+    }*/
 
     function getMapData($datas,$dataFieldName){
         $mapData = array();
@@ -487,17 +486,25 @@
     $trendCaseloads_PIN = array();
     $trendCaseloads_PIN_Raw = array();
     $trendCaseloads_Raw = array();
+    $disclaimerCaseloads = array();
+    $sourcesCaseloads = array();
 
     
     $trendDisplacement_IDP_Raw = array();
     $trendDisplacement_Raw = array();
     $trendDisplacement = array();
+    $disclaimerDisplacement_idp = array();
+    $disclaimerDisplacement_ref = array();
+    $disclaimerDisplacement_ret = array();
+    $sourceDisplacements = array();
     
 
     $trendNutrition_SAM_Raw = array();
     $trendNutrition_Raw = array();
     $trendNutrition_SAM = array();
     $nutritionColumns = array();
+    $disclaimerNutrition_SAM = array();
+    $nutritionSource = array();
 
     $trendCh_Current_Raw = array();
     $trendCh_Current2_Raw = array();
@@ -515,7 +522,7 @@
     
     $displacementColumns = array();
 
-
+    //caseloads
     foreach ($caseloads as $caseload){
         array_push($TrendsCaseLoadsByAdmin, array("adminName"=>$adminName,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached));
         
@@ -548,21 +555,20 @@
                        "adminPcode"=>$adminPcode,
                        "admin0"=>$caseload->caseload_country,
                        "date"=>$caseload->caseload_date, 
+                       "source"=>$caseload->caseload_source, 
                        "pin"=>($caseload->caseload_people_in_need + $KeyFigureCaseLoadsByAdmin[$adminName]["pin"]),  
                        "pt"=>($caseload->caseload_people_targeted + $KeyFigureCaseLoadsByAdmin[$adminName]["pt"]), 
                        "pr"=>($caseload->caseload_people_reached + $KeyFigureCaseLoadsByAdmin[$adminName]["pr"])
                    );
                }else{
                    if ($KeyFigureCaseLoadsByAdmin[$adminName]["date"]<$caseload->caseload_date) {
-                       $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
+                       $KeyFigureCaseLoadsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "source"=>$caseload->caseload_source,"pin"=>$caseload->caseload_people_in_need,  "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached);
                    }
                }
            }else{
-               $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
+               $KeyFigureCaseLoadsByAdmin = array_push_assoc( $KeyFigureCaseLoadsByAdmin,  $adminName,  array("adminName"=>$adminName, "adminPcode"=>$adminPcode,"admin0"=>$caseload->caseload_country,"date"=>$caseload->caseload_date,"source"=>$caseload->caseload_source, "pin"=>$caseload->caseload_people_in_need, "pt"=>$caseload->caseload_people_targeted, "pr"=>$caseload->caseload_people_reached ));
            }
         }
-
-         
     }
 
 
@@ -570,13 +576,47 @@
     $trendCaseloads_PIN = getTrendData($trendCaseloads_PIN_Raw);
     $mapCaseloads_PIN = getMapData($KeyFigureCaseLoadsByAdmin,"pin");
 
-
     foreach ($KeyFigureCaseLoadsByAdmin as $KeyFigure){
+        //récupération des chiffres clés
         $KeyFigureCaseLoads["pin"] = $KeyFigureCaseLoads["pin"] + $KeyFigure["pin"];
         $KeyFigureCaseLoads["pt"] = $KeyFigureCaseLoads["pt"] + $KeyFigure["pt"];
         $KeyFigureCaseLoads["pr"] = $KeyFigureCaseLoads["pr"] + $KeyFigure["pr"];
-    }
 
+        //récupération des disclaimer
+        $datetmp=date_create($KeyFigure["date"]);
+        $moisAnneeTmp = date_format($datetmp,"F Y");
+        
+        if(count($disclaimerCaseloads)==0){
+            array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+        }else{
+
+            $exist = false;
+            for ($i=0; $i < count($disclaimerCaseloads) ; $i++) { 
+                if ($moisAnneeTmp==$disclaimerCaseloads[$i]["Mois"])
+                {
+                    $exist = true;
+                    break;
+                }
+            }
+
+            if($exist){
+                $pos = strpos($disclaimerCaseloads[$i]["adminName"],$KeyFigure["admin0"]);
+                if ($pos != false) {
+                    $adminNames = $disclaimerCaseloads[$i]["adminName"].", ".$KeyFigure["admin0"];
+                    $disclaimerCaseloads[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                }
+            }else{
+                array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            }
+        }
+
+        
+        //recuperation source
+        if (!in_array($KeyFigure["source"], $sourcesCaseloads))
+        {
+            array_push($sourcesCaseloads, $KeyFigure["source"]);
+        }
+    }
  
 
     //cadre harmonisé
@@ -593,8 +633,7 @@
             $adminPcode = $ch->ch_adm0_pcode_iso3;
         } else {
             $adminName = $ch->ch_admin1_name;
-            $adminPcode = $ch->ch_admin1_pcode_iso3
-            ;
+            $adminPcode = $ch->ch_admin1_pcode_iso3;
         }
 
         
@@ -738,17 +777,18 @@
                         "adminPcode"=>$adminPcode,
                         "admin0"=>$nutrition->nut_country,
                         "date"=>$nutrition->nut_date, 
+                        "source"=>$nutrition->nut_source, 
                         "sam"=>($nutrition->nut_sam + $KeyFigurenutritionsByAdmin[$adminName]["sam"]),  
                         "mam"=>($nutrition->nut_gam + $KeyFigurenutritionsByAdmin[$adminName]["mam"]), 
                         "gam"=>($nutrition->nut_mam + $KeyFigurenutritionsByAdmin[$adminName]["gam"])
                     );
                 }else{
                     if ($KeyFigurenutritionsByAdmin[$adminName]["date"]<$nutrition->nut_date) {
-                        $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
+                        $KeyFigurenutritionsByAdmin[$adminName] = array( "adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date,"source"=>$nutrition->nut_source, "sam"=>$nutrition->nut_sam,  "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam);
                     }
                 }
             }else{
-                $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
+                $KeyFigurenutritionsByAdmin = array_push_assoc( $KeyFigurenutritionsByAdmin,  $adminName,  array("adminName"=>$adminName,"adminPcode"=>$adminPcode,"admin0"=>$nutrition->nut_country, "date"=>$nutrition->nut_date, "source"=>$nutrition->nut_source,"sam"=>$nutrition->nut_sam, "mam"=>$nutrition->nut_gam, "gam"=>$nutrition->nut_mam ));
             }
         }
     }
@@ -757,7 +797,42 @@
         $KeyFigurenutritions["sam"] = $KeyFigurenutritions["sam"] + $KeyFigure["sam"];
         $KeyFigurenutritions["mam"] = $KeyFigurenutritions["mam"] + $KeyFigure["mam"];
         $KeyFigurenutritions["gam"] = $KeyFigurenutritions["gam"] + $KeyFigure["gam"];
+
+        //récupération des disclaimer
+        $datetmp=date_create($KeyFigure["date"]);
+        $moisAnneeTmp = date_format($datetmp,"F Y");
+        
+        if(count($disclaimerNutrition_SAM)==0){
+            array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+        }else{
+            $exist = false;
+            for ($i=0; $i < count($disclaimerNutrition_SAM) ; $i++) { 
+                if ($moisAnneeTmp==$disclaimerNutrition_SAM[$i]["Mois"])
+                {
+                    $exist = true;
+                    break;
+                }
+            }
+
+            if($exist){
+                $pos = strpos($disclaimerNutrition_SAM[$i]["adminName"],$KeyFigure["admin0"]);
+                if ($pos != false) {
+                    $adminNames = $disclaimerNutrition_SAM[$i]["adminName"].", ".$KeyFigure["admin0"];
+                    $disclaimerNutrition_SAM[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                }
+            }else{
+                array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            }
+        }
+
+        //recuperation source
+        if (!in_array($KeyFigure["source"], $nutritionSource))
+        {
+            array_push($nutritionSource, $KeyFigure["source"]);
+        }
+        
     }
+
 
     $trendNutrition = getTrendDataNutrition($trendNutrition_Raw);
     $trendNutrition_SAM = getTrendData($trendNutrition_SAM_Raw);
@@ -803,10 +878,14 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["idp"]),
                                 "idp_date"=>$displacement->dis_date,  
+                                "idp_source"=>$displacement->dis_source,
                                 "refugees"=>$temp["refugees"], 
                                 "refugees_date"=>$temp["refugees_date"],
+                                "refugees_source"=>$temp["refugees_source"],
                                 "returnees"=>$temp["returnees"],
                                 "returnees_date"=>$temp["returnees_date"],
+                                "returnees_source"=>$temp["returnees_source"],
+
                             );
                         }else{
                             if ($KeyFigureDisplacementsByAdmin[$adminName]["idp_date"]<$displacement->dis_date) {
@@ -816,10 +895,14 @@
                                     "admin0"=>$displacement->dis_country,
                                     "idp"=>$displacement->dis_value,
                                     "idp_date"=>$displacement->dis_date,  
+                                    "idp_source"=>$displacement->dis_source,
                                     "refugees"=>$temp["refugees"], 
                                     "refugees_date"=>$temp["refugees_date"],
+                                    "refugees_source"=>$temp["refugees_source"],
                                     "returnees"=>$temp["returnees"],
                                     "returnees_date"=>$temp["returnees_date"],
+                                    "returnees_source"=>$temp["returnees_source"],
+
                                 );
                             }
                         }
@@ -833,10 +916,13 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>$temp["idp"], 
                                 "idp_date"=>$temp["idp_date"],
+                                "idp_source"=>$temp["idp_source"],
                                 "refugees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["refugees"]),
                                 "refugees_date"=>$displacement->dis_date,  
+                                "refugees_source"=>$displacement->dis_source,
                                 "returnees"=>$temp["returnees"],
                                 "returnees_date"=>$temp["returnees_date"],
+                                "returnees_source"=>$temp["returnees_source"],
                             );
                         }else{
                             if ($KeyFigureDisplacementsByAdmin[$adminName]["refugees_date"]<$displacement->dis_date) {
@@ -846,10 +932,13 @@
                                     "admin0"=>$displacement->dis_country,
                                     "idp"=>$temp["idp"], 
                                     "idp_date"=>$temp["idp_date"],
+                                    "idp_source"=>$temp["idp_source"],
                                     "refugees"=>$displacement->dis_value,
                                     "refugees_date"=>$displacement->dis_date,  
+                                    "refugees_source"=>$displacement->dis_source,
                                     "returnees"=>$temp["returnees"],
                                     "returnees_date"=>$temp["returnees_date"],
+                                    "returnees_source"=>$temp["returnees_source"],
                                 );
                             }
                         }
@@ -863,10 +952,13 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>$temp["idp"], 
                                 "idp_date"=>$temp["idp_date"],
+                                "idp_source"=>$temp["idp_source"],
                                 "refugees"=>$temp["refugees"],
                                 "refugees_date"=>$temp["refugees_date"],
+                                "refugees_source"=>$temp["refugees_source"],
                                 "returnees"=>($displacement->dis_value + $KeyFigureDisplacementsByAdmin[$adminName]["returnees"]),
-                                "returnees_date"=>$displacement->dis_date
+                                "returnees_date"=>$displacement->dis_date,
+                                "returnees_source"=>$displacement->dis_source,
                             );
                         }else{
                             if ($KeyFigureDisplacementsByAdmin[$adminName]["returnees_date"]<$displacement->dis_date) {
@@ -876,10 +968,13 @@
                                     "admin0"=>$displacement->dis_country,
                                     "idp"=>$temp["idp"],
                                     "idp_date"=>$temp["idp_date"], 
+                                    "idp_source"=>$temp["idp_source"],
                                     "refugees"=>$temp["refugees"], 
                                     "refugees_date"=>$temp["refugees_date"],
+                                    "refugees_source"=>$temp["refugees_source"],
                                     "returnees"=>$displacement->dis_value,
                                     "returnees_date"=>$displacement->dis_date,
+                                    "returnees_source"=>$displacement->dis_source,
                                 );
                             }
                         }
@@ -894,10 +989,13 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>$displacement->dis_value,
                                 "idp_date"=>$displacement->dis_date,  
+                                "idp_source"=>$displacement->dis_source,
                                 "refugees"=>0, 
                                 "refugees_date"=>"",
+                                "refugees_source"=>"",
                                 "returnees"=>0,
                                 "returnees_date"=>"",
+                                "returnees_source"=>"",
                             );
                         break;
                     case 'Refugee':
@@ -907,10 +1005,13 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>0, 
                                 "idp_date"=>"",
+                                "idp_source"=>"",
                                 "refugees"=>$displacement->dis_value,
                                 "refugees_date"=>$displacement->dis_date,  
+                                "refugees_source"=>$displacement->dis_source,
                                 "returnees"=>0,
                                 "returnees_date"=>"",
+                                "returnees_source"=>"",
                             );
                         break;
                     case 'Returnee':
@@ -920,10 +1021,13 @@
                                 "admin0"=>$displacement->dis_country,
                                 "idp"=>0,
                                 "idp_date"=>"", 
+                                "idp_source"=>"",
                                 "refugees"=>0, 
                                 "refugees_date"=>"",
+                                "refugees_source"=>"",
                                 "returnees"=>$displacement->dis_value,
                                 "returnees_date"=>$displacement->dis_date,
+                                "returnees_source"=>$displacement->dis_source,
                             );
                         break;
                 }
@@ -935,7 +1039,107 @@
         $KeyFigureDisplacements["idp"] = $KeyFigureDisplacements["idp"] + $KeyFigure["idp"];
         $KeyFigureDisplacements["refugees"] = $KeyFigureDisplacements["refugees"] + $KeyFigure["refugees"];
         $KeyFigureDisplacements["returnees"] = $KeyFigureDisplacements["returnees"] + $KeyFigure["returnees"];
+
+
+        //Récupération des sources
+        if (!in_array($KeyFigure["idp_source"], $sourceDisplacements))
+        {
+            array_push($sourceDisplacements, $KeyFigure["idp_source"]);
+        }
+
+        if (!in_array($KeyFigure["refugees_source"], $sourceDisplacements))
+        {
+            array_push($sourceDisplacements, $KeyFigure["refugees_source"]);
+        }
+
+        if (!in_array($KeyFigure["returnees_source"], $sourceDisplacements))
+        {
+            array_push($sourceDisplacements, $KeyFigure["returnees_source"]);
+        }
+
+        //récupération des disclaimer idps
+        $datetmp=date_create($KeyFigure["idp_date"]);
+        $moisAnneeTmp = date_format($datetmp,"F Y");
+        
+        if(count($disclaimerDisplacement_idp)==0){
+            array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+        }else{
+            $exist = false;
+            for ($i=0; $i < count($disclaimerDisplacement_idp) ; $i++) { 
+                if ($moisAnneeTmp==$disclaimerDisplacement_idp[$i]["Mois"])
+                {
+                    $exist = true;
+                    break;
+                }
+            }
+
+            if($exist){
+                $pos = strpos($disclaimerDisplacement_idp[$i]["adminName"],$KeyFigure["admin0"]);
+                if ($pos != false) {
+                    $adminNames = $disclaimerDisplacement_idp[$i]["adminName"].", ".$KeyFigure["admin0"];
+                    $disclaimerDisplacement_idp[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                }
+            }else{
+                array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            }
+        }
+
+        //récupération des disclaimer refugees
+        $datetmp=date_create($KeyFigure["refugees_date"]);
+        $moisAnneeTmp = date_format($datetmp,"F Y");
+        
+        if(count($disclaimerDisplacement_ref)==0){
+            array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+        }else{
+            $exist = false;
+            for ($i=0; $i < count($disclaimerDisplacement_ref) ; $i++) { 
+                if ($moisAnneeTmp==$disclaimerDisplacement_ref[$i]["Mois"])
+                {
+                    $exist = true;
+                    break;
+                }
+            }
+
+            if($exist){
+                $pos = strpos($disclaimerDisplacement_ref[$i]["adminName"],$KeyFigure["admin0"]);
+                if ($pos != false) {
+                    $adminNames = $disclaimerDisplacement_ref[$i]["adminName"].", ".$KeyFigure["admin0"];
+                    $disclaimerDisplacement_ref[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                }
+            }else{
+                array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            }
+        }
+
+        //récupération des disclaimer returnees
+        $datetmp=date_create($KeyFigure["returnees_date"]);
+        $moisAnneeTmp = date_format($datetmp,"F Y");
+        
+        if(count($disclaimerDisplacement_ret)==0){
+            array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+        }else{
+            $exist = false;
+            for ($i=0; $i < count($disclaimerDisplacement_ret) ; $i++) { 
+                if ($moisAnneeTmp==$disclaimerDisplacement_ret[$i]["Mois"])
+                {
+                    $exist = true;
+                    break;
+                }
+            }
+
+            if($exist){
+                $pos = strpos($disclaimerDisplacement_ret[$i]["adminName"],$KeyFigure["admin0"]);
+                if ($pos != false) {
+                    $adminNames = $disclaimerDisplacement_ret[$i]["adminName"].", ".$KeyFigure["admin0"];
+                    $disclaimerDisplacement_ret[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                }
+                
+            }else{
+                array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            }
+        }
     }
+
 
     $trendDisplacement_IDP = getTrendData($trendDisplacement_IDP_Raw);
     $trendDisplacement = getTrendDataDisplacement($trendDisplacement_Raw);
@@ -944,6 +1148,11 @@
   
 
 ?>
+<div class="loading" id="loading" style="text-align:center;">
+    <div class="col">
+        <img src="{{asset('images/loading.gif')}}" alt="..." class="img-fluid" style="height:50px;">
+    </div>
+</div>
 
 <div class='col-12 pt-3'>
     <div class="row mb-3" >
@@ -958,14 +1167,16 @@
                 <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin0" class="btn text-black" style="background-color:none;border:none;" id="buttonDone">Admin 0</a>
                 <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-white" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 1</a>
             @endif
-            
         </div>
         <div class="col text-end">
-            <img src="{{asset('images/powerpoint.svg')}}" class="exportImage me-3" onclick="ExportPowerPoint()" style="height:30px;"  alt="Exporter vers Power Point"/> 
-            <img src="{{asset('images/excel.svg')}}" class="exportImage me-3" onclick="ExportExcel()" style="height:30px;"  alt="Exporter vers Excel"/> 
+            <img src="{{asset('images/powerpoint.svg')}}" class="exportImage me-3" onclick="ExportPowerPoint()" style="height:40px;"  alt="Exporter vers Power Point"/> 
+            <img src="{{asset('images/excel.svg')}}" class="exportImage me-3" onclick="ExportExcel()" style="height:40px;"  alt="Exporter vers Excel"/> 
         </div>
     </div>
     
+    
+
+
     <div class="row">
         <div class="col-3 keyFigure-card cards-selected rounded me-1 ms-1" id="keyFigure-caseloads" onclick="showData('caseloads')">
             <p>Caseloads</p>
@@ -990,6 +1201,18 @@
                         <span class="keyfigure">{{convertToUnit($KeyFigureCaseLoads["pr"],1)}}</span>
                     </div>
                     <p class="labelkeyfigure lh-sm mt-2">People reached</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class='col disclaimer'>
+                    <strong>People in need, Targeted and Reached</strong> as of 
+                    @foreach ($disclaimerCaseloads as $disclaimer)
+                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                    @endforeach
+                    <br/><strong>Sources</strong> : 
+                    @foreach ($sourcesCaseloads as $source)
+                         {{$source}},
+                    @endforeach 
                 </div>
             </div>
         </div>
@@ -1019,6 +1242,28 @@
                     <p class="labelkeyfigure lh-sm mt-2">Returnees</p>
                 </div>
             </div>
+            <div class="row">
+                <div class='col disclaimer'>
+                    <strong>IDPs</strong> as of
+                    @foreach ($disclaimerDisplacement_idp as $disclaimer)
+                        {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})  
+                    @endforeach |
+
+                    <strong>Refugees</strong> as of
+                    @foreach ($disclaimerDisplacement_ref as $disclaimer)
+                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                    @endforeach
+                     | 
+                     <strong>Returnees</strong> as of
+                    @foreach ($disclaimerDisplacement_ret as $disclaimer)
+                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                    @endforeach 
+                     <br/><strong>Sources</strong> : 
+                    @foreach ($sourceDisplacements as $source)
+                         {{$source}},
+                    @endforeach 
+                </div>
+            </div>
         </div>
 
         <div class="col-1 keyFigure-card cards rounded me-1 ms-1"  id="keyFigure-nutrition" onclick="showData('nutrition')">
@@ -1032,7 +1277,19 @@
                     <p class="labelkeyfigure lh-sm mt-2">Severe Accure Malnourished</p>
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class='col disclaimer'>
+                    <strong>SAM</strong> as of
+                    @foreach ($disclaimerNutrition_SAM as $disclaimer)
+                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                    @endforeach
+                    <br/><strong>Sources</strong> : 
+                    @foreach ($nutritionSource as $source)
+                         {{$source}},
+                    @endforeach 
+                </div>
+            </div>
+        </div> 
 
         <div class="col-2 keyFigure-card cards rounded me-1 ms-1" id="keyFigure-foodSecurity"  onclick="showData('foodSecurity')">
             <p>Food security</p>
@@ -1052,9 +1309,13 @@
                     <p class="labelkeyfigure lh-sm mt-2">Projected Food Insecure</p>
                 </div>
             </div>
+            <div class="row">
+                <div class='col disclaimer'>
+                    <strong>Source</strong> : Cadre Harmonisé November 2020 Exercise - (Jun - Aug 2021)
+                </div>
+            </div>
         </div>
     </div>
-
 
     <div class="row">
         <div class="col-12 bloc-data" id="bloc-data-caseloads" style = "displayf:none;">
@@ -1906,10 +2167,14 @@ $(document).ready(function(){
     });
     image1= 0;
 
+    window.setTimeout( stopLoading, 5000 );
     //addMap2(adminLevel,mapCaseloads_PIN,"chart-test");
 });
 
-
+function stopLoading(){
+    $('#loading').hide();
+    showData("caseloads");
+};
 
 function ExportExcel() {
     tablesToExcel(
@@ -3081,6 +3346,8 @@ function downloadData(typeData){
     tableToExport.export2file(xlsxData.data, xlsxData.mimeType, typeData, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, typeData)
 
 }
+
+
 
 </script>
     
