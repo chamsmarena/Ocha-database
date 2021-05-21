@@ -585,28 +585,32 @@
         //récupération des disclaimer
         $datetmp=date_create($KeyFigure["date"]);
         $moisAnneeTmp = date_format($datetmp,"F Y");
-        
+
+        $adminNameTmp = $KeyFigure["admin0"].",";
+
         if(count($disclaimerCaseloads)==0){
-            array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
         }else{
 
             $exist = false;
+            $index = null;
             for ($i=0; $i < count($disclaimerCaseloads) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerCaseloads[$i]["Mois"])
                 {
                     $exist = true;
+                    $index = $i;
                     break;
                 }
             }
 
             if($exist){
-                $pos = strpos($disclaimerCaseloads[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos < 0) {
-                    $adminNames = $disclaimerCaseloads[$i]["adminName"].", ".$KeyFigure["admin0"];
-                    $disclaimerCaseloads[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                $pos = str_contains($disclaimerCaseloads[$index]["adminName"],$adminNameTmp);
+                if (str_contains($disclaimerCaseloads[$index]["adminName"],$adminNameTmp)==0) {
+                    $adminNames = $disclaimerCaseloads[$index]["adminName"]." ".$adminNameTmp;
+                    $disclaimerCaseloads[$index] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
             }else{
-                array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+                array_push($disclaimerCaseloads, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
             }
         }
 
@@ -801,27 +805,30 @@
         //récupération des disclaimer
         $datetmp=date_create($KeyFigure["date"]);
         $moisAnneeTmp = date_format($datetmp,"F Y");
+
+        $adminNameTmp = $KeyFigure["admin0"].",";
         
         if(count($disclaimerNutrition_SAM)==0){
-            array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
         }else{
             $exist = false;
+            $index = null;
             for ($i=0; $i < count($disclaimerNutrition_SAM) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerNutrition_SAM[$i]["Mois"])
                 {
                     $exist = true;
+                    $index = $i;
                     break;
                 }
             }
 
             if($exist){
-                $pos = strpos($disclaimerNutrition_SAM[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos < 0) {
-                    $adminNames = $disclaimerNutrition_SAM[$i]["adminName"].", ".$KeyFigure["admin0"];
+                if (str_contains($disclaimerNutrition_SAM[$index]["adminName"],$adminNameTmp)==0) {
+                    $adminNames = $disclaimerNutrition_SAM[$index]["adminName"]." ".$adminNameTmp;
                     $disclaimerNutrition_SAM[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
             }else{
-                array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+                array_push($disclaimerNutrition_SAM, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
             }
         }
 
@@ -1060,82 +1067,89 @@
         //récupération des disclaimer idps
         $datetmp=date_create($KeyFigure["idp_date"]);
         $moisAnneeTmp = date_format($datetmp,"F Y");
+        $adminNameTmp = $KeyFigure["admin0"].",";
         
         if(count($disclaimerDisplacement_idp)==0){
-            array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
         }else{
             $exist = false;
+            $index = null;
             for ($i=0; $i < count($disclaimerDisplacement_idp) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerDisplacement_idp[$i]["Mois"])
                 {
                     $exist = true;
+                    $index = $i;
                     break;
                 }
             }
 
             if($exist){
-                $pos = strpos($disclaimerDisplacement_idp[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos < 0) {
-                    $adminNames = $disclaimerDisplacement_idp[$i]["adminName"].", ".$KeyFigure["admin0"];
-                    $disclaimerDisplacement_idp[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                if (str_contains($disclaimerDisplacement_idp[$index]["adminName"],$adminNameTmp)==0) {
+                    $adminNames = $disclaimerDisplacement_idp[$index]["adminName"]." ".$adminNameTmp;
+                    $disclaimerDisplacement_idp[$index] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
             }else{
-                array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+                array_push($disclaimerDisplacement_idp, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
             }
         }
 
         //récupération des disclaimer refugees
         $datetmp=date_create($KeyFigure["refugees_date"]);
         $moisAnneeTmp = date_format($datetmp,"F Y");
-        
+        $adminNameTmp = $KeyFigure["admin0"].",";
+
         if(count($disclaimerDisplacement_ref)==0){
-            array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
         }else{
             $exist = false;
+            $index = null;
             for ($i=0; $i < count($disclaimerDisplacement_ref) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerDisplacement_ref[$i]["Mois"])
                 {
                     $exist = true;
+                    $index = $i;
                     break;
                 }
             }
 
             if($exist){
-                $pos = strpos($disclaimerDisplacement_ref[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos < 0) {
-                    $adminNames = $disclaimerDisplacement_ref[$i]["adminName"].", ".$KeyFigure["admin0"];
-                    $disclaimerDisplacement_ref[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                if (str_contains($disclaimerDisplacement_ref[$index]["adminName"],$adminNameTmp)==0) {
+                    $adminNames = $disclaimerDisplacement_ref[$index]["adminName"]." ".$adminNameTmp;
+                    $disclaimerDisplacement_ref[$index] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
             }else{
-                array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+                array_push($disclaimerDisplacement_ref, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
             }
         }
 
         //récupération des disclaimer returnees
         $datetmp=date_create($KeyFigure["returnees_date"]);
         $moisAnneeTmp = date_format($datetmp,"F Y");
-        
+        $adminNameTmp = $KeyFigure["admin0"].",";
+
         if(count($disclaimerDisplacement_ret)==0){
-            array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+            array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
         }else{
             $exist = false;
+            $index = null;
+            
             for ($i=0; $i < count($disclaimerDisplacement_ret) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerDisplacement_ret[$i]["Mois"])
                 {
                     $exist = true;
+                    $index = $i;
                     break;
                 }
             }
 
             if($exist){
-                $pos = strpos($disclaimerDisplacement_ret[$i]["adminName"],$KeyFigure["admin0"]);
-                if ($pos < 0) {
-                    $adminNames = $disclaimerDisplacement_ret[$i]["adminName"].", ".$KeyFigure["admin0"];
-                    $disclaimerDisplacement_ret[$i] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
+                if (str_contains($disclaimerDisplacement_ret[$index]["adminName"],$adminNameTmp)==0) {
+                    $adminNames = $disclaimerDisplacement_ret[$index]["adminName"].", ".$adminNameTmp;
+                    $disclaimerDisplacement_ret[$index] = array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNames);
                 }
                 
             }else{
-                array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$KeyFigure["admin0"]));
+                array_push($disclaimerDisplacement_ret, array("Mois"=>$moisAnneeTmp,"adminName"=>$adminNameTmp));
             }
         }
     }
