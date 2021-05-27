@@ -137,7 +137,7 @@
 
             .loading {
                 text-align: center;
-                width: 100%;
+                width: 99%;
                 height: 2000px;
                 background-color: #fff;
                 opacity: 0.7;
@@ -149,36 +149,39 @@
     
     </head>
     <body >
-        <div class="row " style="background-color:#418fde;">
-            <ul class="nav justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/database">Filter</a>
-                </li>
-               
-                @if (request()->session()->get('authenticated')!=null)
+        <div class="container-fluid">
+            <div class="row " style="background-color:#418fde;">
+                <ul class="nav justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/import">Import</a>
+                        <a class="nav-link text-white" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/managezones">Manage crisis zones</a>
+                        <a class="nav-link text-white" href="/database">Filter</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/logout">Logout</a>
-                    </li>
-                @else
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/accessimport">login</a>
-                    </li>
-                @endif
-            </ul>
-        </div>
-        <div class="row">
-            <div class="col">
-                @yield('content')
+                
+                    @if (request()->session()->get('authenticated')!=null)
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/import">Import</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/managezones">Manage crisis zones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/logout">Logout</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/accessimport">login</a>
+                        </li>
+                    @endif
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @yield('content')
+                </div>
             </div>
         </div>
+        
     </body>
 </html>

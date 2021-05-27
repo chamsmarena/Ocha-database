@@ -44,7 +44,6 @@
         
         
         foreach ($dates as $date){
-            
             $arrayTemp = $arrayModel;
             if ($arrayTemp["year"]==0) {
                 $arrayTemp["year"] = $date;
@@ -70,7 +69,6 @@
                 }
                 $arrayTemp[$location] = $lastValue;
             }
-            
             array_push($trendsData,$arrayTemp);
         }
         return $trendsData;
@@ -449,7 +447,7 @@
 
 
 
-/*
+    /*
     function getMapDataOld($datas,$dataFieldName){
         $mapData = array();
         foreach ($datas as $data){
@@ -511,12 +509,15 @@
     $trendCh_Current = array();
     $trendCh_Current2 = array();
     $ch_CurrentColumns = array();
+    $disclaimer_ch_mois_current = "";
 
     $trendCh_Projected_Raw = array();
     $trendCh_Projected2_Raw = array();
     $trendCh_Projected = array();
     $trendCh_Projected2 = array();
     $ch_ProjectedColumns = array();
+    $disclaimer_ch_mois_projected = "";
+    $disclaimer_ch_year = "";
 
     $caseloadColumns = array();
     
@@ -626,7 +627,9 @@
     //cadre harmonisé
     $cadre_harmonises=$datas[0]["cadre_harmonises"];
     $KeyFigureCHByAdminCurrent = array();
+    $KeyFigureCHByAdmin2Current = array();
     $KeyFigureCHByAdminProjeted = array();
+    $KeyFigureCHByAdmin2Projeted = array();
     $adminName = "";
     $KeyFigureCHCurrent = array("month"=>"","ch_phase1"=>0,"ch_phase2"=>0,"ch_phase3"=>0,"ch_phase35"=>0,"ch_phase4"=>0,"ch_phase5"=>0);
     $KeyFigureCHProjeted = array("month"=>"","ch_phase1"=>0,"ch_phase2"=>0,"ch_phase3"=>0,"ch_phase35"=>0,"ch_phase4"=>0,"ch_phase5"=>0);
@@ -639,6 +642,8 @@
             $adminName = $ch->ch_admin1_name;
             $adminPcode = $ch->ch_admin1_pcode_iso3;
         }
+        $admin2Pcode = $ch->ch_admin2_pcode_iso3;
+        $admin2Name = $ch->ch_admin2_name;
 
         
         if($adminPcode !=null){
@@ -654,6 +659,28 @@
                 }
                 //traitement trend fin 
     
+                //for map
+                if(array_key_exists($admin2Pcode,$KeyFigureCHByAdmin2Current)){
+                    if ($KeyFigureCHByAdmin2Current[$admin2Pcode]["date"]==$ch->ch_date) {
+                        $KeyFigureCHByAdmin2Current[$admin2Pcode] = array( 
+                            "adminName"=>$admin2Name,
+                            "adminPcode"=>$admin2Pcode,
+                            "admin0"=>$ch->ch_country,
+                            "month"=>$ch->ch_exercise_month, 
+                            "year"=>$ch->ch_exercise_year, 
+                            "date"=>$ch->ch_date,
+                            "ch_ipc_level"=>$ch->ch_ipc_level,
+                        );
+                    }else{
+                        if ($KeyFigureCHByAdmin2Current[$admin2Pcode]["date"]<$ch->ch_date) {
+                            $KeyFigureCHByAdmin2Current[$admin2Pcode] = array("adminName"=>$admin2Name,"adminPcode"=>$admin2Pcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,"ch_ipc_level"=>$ch->ch_ipc_level);
+                        }
+                    }
+                }else{
+                    $KeyFigureCHByAdmin2Current = array_push_assoc($KeyFigureCHByAdmin2Current, $admin2Pcode, array("adminName"=>$admin2Name,"adminPcode"=>$admin2Pcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_ipc_level"=>$ch->ch_ipc_level));
+                }
+                //for map end
+
                 //current
                 if(array_key_exists($adminName,$KeyFigureCHByAdminCurrent)){
                     if ($KeyFigureCHByAdminCurrent[$adminName]["date"]==$ch->ch_date) {
@@ -693,6 +720,29 @@
                 }
                 //traitement trend fin
     
+                //for map
+                if(array_key_exists($admin2Pcode,$KeyFigureCHByAdmin2Projeted)){
+                    if ($KeyFigureCHByAdmin2Projeted[$admin2Pcode]["date"]==$ch->ch_date) {
+                        $KeyFigureCHByAdmin2Projeted[$admin2Pcode] = array( 
+                            "adminName"=>$admin2Name,
+                            "adminPcode"=>$admin2Pcode,
+                            "admin0"=>$ch->ch_country,
+                            "month"=>$ch->ch_exercise_month, 
+                            "year"=>$ch->ch_exercise_year, 
+                            "date"=>$ch->ch_date,
+                            "ch_ipc_level"=>$ch->ch_ipc_level,
+                        );
+                    }else{
+                        if ($KeyFigureCHByAdmin2Projeted[$admin2Pcode]["date"]<$ch->ch_date) {
+                            $KeyFigureCHByAdmin2Projeted[$admin2Pcode] = array("adminName"=>$admin2Name,"adminPcode"=>$admin2Pcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date,"ch_ipc_level"=>$ch->ch_ipc_level);
+                        }
+                    }
+                }else{
+                    $KeyFigureCHByAdmin2Projeted = array_push_assoc($KeyFigureCHByAdmin2Projeted, $admin2Pcode, array("adminName"=>$admin2Name,"adminPcode"=>$admin2Pcode,"admin0"=>$ch->ch_country, "month"=>$ch->ch_exercise_month,"year"=>$ch->ch_exercise_year,"date"=>$ch->ch_date, "ch_ipc_level"=>$ch->ch_ipc_level));
+                }
+                //for map end
+
+
                 if(array_key_exists($adminName,$KeyFigureCHByAdminProjeted)){
                     if ($KeyFigureCHByAdminProjeted[$adminName]["date"]==$ch->ch_date) {
                         $KeyFigureCHByAdminProjeted[$adminName] = array( 
@@ -726,6 +776,9 @@
     $trendCh_Current2 = getTrendDataCh($trendCh_Current2_Raw);
     $trendCh_Projected = getTrendData($trendCh_Projected_Raw);
     $trendCh_Projected2 = getTrendDataCh($trendCh_Projected2_Raw);
+
+    $mapCH_current = getMapData($KeyFigureCHByAdmin2Current,"ch_ipc_level");
+    $mapCH_projected = getMapData($KeyFigureCHByAdmin2Projeted,"ch_ipc_level");
 	
     foreach ($KeyFigureCHByAdminCurrent as $KeyFigure){
         $KeyFigureCHCurrent["ch_phase1"] = $KeyFigureCHCurrent["ch_phase1"] + $KeyFigure["ch_phase1"];
@@ -734,6 +787,9 @@
         $KeyFigureCHCurrent["ch_phase35"] = $KeyFigureCHCurrent["ch_phase35"] + $KeyFigure["ch_phase35"];
         $KeyFigureCHCurrent["ch_phase4"] = $KeyFigureCHCurrent["ch_phase4"] + $KeyFigure["ch_phase4"];
         $KeyFigureCHCurrent["ch_phase5"] = $KeyFigureCHCurrent["ch_phase5"] + $KeyFigure["ch_phase5"];
+
+        $disclaimer_ch_mois_current = $KeyFigure["month"];
+        $disclaimer_ch_year = $KeyFigure["year"];
     }
 
     foreach ($KeyFigureCHByAdminProjeted as $KeyFigure){
@@ -743,6 +799,8 @@
         $KeyFigureCHProjeted["ch_phase35"] = $KeyFigureCHProjeted["ch_phase35"] + $KeyFigure["ch_phase35"];
         $KeyFigureCHProjeted["ch_phase4"] = $KeyFigureCHProjeted["ch_phase4"] + $KeyFigure["ch_phase4"];
         $KeyFigureCHProjeted["ch_phase5"] = $KeyFigureCHProjeted["ch_phase5"] + $KeyFigure["ch_phase5"];
+
+        $disclaimer_ch_mois_projected = $KeyFigure["month"];
     }
 
 
@@ -837,7 +895,6 @@
         {
             array_push($nutritionSource, $KeyFigure["source"]);
         }
-        
     }
 
 
@@ -1132,7 +1189,7 @@
         }else{
             $exist = false;
             $index = null;
-            
+
             for ($i=0; $i < count($disclaimerDisplacement_ret) ; $i++) { 
                 if ($moisAnneeTmp==$disclaimerDisplacement_ret[$i]["Mois"])
                 {
@@ -1162,24 +1219,23 @@
   
 
 ?>
-<div class="loading" id="loading" style="text-align:center;">
-    <div class="col">
-        <img src="{{asset('images/loading.gif')}}" alt="..." class="img-fluid" style="height:50px;">
-    </div>
+<div class="col-12 loading" id="loading" style="text-align:center;">
+    <img src="{{asset('images/loading.gif')}}" alt="..." class="img-fluid" style="height:50px;">
+
 </div>
 
-<div class='col-12 pt-3'>
-    <div class="row mb-3" >
+<div class='col-12 pt-3' >
+    <div class="row mb-3">
         <div class="col">
             Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br> 
         </div>
         <div class="col d-flex justify-content-center" id='buttonOk'>
             @if ($adminLevel == "admin0")
                 <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin0" class="btn text-white" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 0</a>
-                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-black" style="background-color:none;border:none;" id="buttonDone">Admin 1</a>
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-black ms-2" style="background-color:none;border:none;" id="buttonDone">Admin 1</a>
             @else
                 <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin0" class="btn text-black" style="background-color:none;border:none;" id="buttonDone">Admin 0</a>
-                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-white" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 1</a>
+                <a href="/filterV2/{{$category}}/{{$items}}/{{$periodFrom}}/{{$periodTo}}/admin1" class="btn text-white ms-2" style="background-color:#E56A54;border:none;" id="buttonDone">Admin 1</a>
             @endif
         </div>
         <div class="col text-end">
@@ -1187,11 +1243,8 @@
             <img src="{{asset('images/excel.svg')}}" class="exportImage me-3" onclick="ExportExcel()" style="height:40px;"  alt="Exporter vers Excel"/> 
         </div>
     </div>
-    
-    
 
-
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-3 keyFigure-card cards-selected rounded me-1 ms-1" id="keyFigure-caseloads" onclick="showData('caseloads')">
             <p>Caseloads</p>
             <div class="row">
@@ -1325,34 +1378,44 @@
             </div>
             <div class="row">
                 <div class='col disclaimer'>
-                    <strong>Source</strong> : Cadre Harmonisé November 2020 Exercise - (Jun - Aug 2021)
+                    @if ($disclaimer_ch_mois_current != $disclaimer_ch_mois_projected)
+                        <strong>Source</strong> : Cadre Harmonisé Current : {{$disclaimer_ch_mois_current}}, Projected : {{$disclaimer_ch_mois_projected}} {{$disclaimer_ch_year}}
+                    @else
+                        <strong>Source</strong> : Cadre Harmonisé {{$disclaimer_ch_mois_current}} {{$disclaimer_ch_year}}
+                    @endif
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12 bloc-data" id="bloc-data-caseloads" style = "displayf:none;">
+    <div class="row white-blocs">
+        <div class="col-12 bloc-data" id="bloc-data-caseloads">
             <div class="row">
                 <div class="col-8">
-                    <a href="#" class="btn-link" onclick="downloadMap('caseloads')"><em>download map</em></a>
-                    <div class="map-caseloads" id="map-caseloads" style="width:auto;height:500px;">
+                    <div class="row">
+                        <div class="col">
+                            <p>People in need by {{$adminLevel}}</p>
+                            <a href="#" class="btn-link" onclick="downloadMap('caseloads')"><em>download map</em></a>
+                            <div class="map-caseloads mb-2" id="map-caseloads" style="width:auto;height:500px;">
+                            </div>
+                        </div>
                     </div>
+                    
+                    
                 </div>
                 <div class="col-4">
-                    <div class="row">
-                        <div class="col-12 white-blocs rounded m-1">
+                    <div class="row m-1">
+                        <div class="col-12 mb-3">
                             <p>Trend by year</p>
                             <!--a href="#" class="btn-link" onclick="downloadTrend('caseloads')"><em>image</em></a-->
                             <div class="trend-caseloads" id="trend-caseloads">
                             </div>
-
-
                         </div>
-                        <div class="col-12 white-blocs rounded m-1">
+                        <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('caseloads')"><em>excel</em></a>
-                            <table class="table">
+                            <table class="table" style="font-size:12px;">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1477,26 +1540,33 @@
             </div>
         </div>
 
-        <div class="col-12 bloc-data" id="bloc-data-disp" style = "displayff:none;">
+        <div class="col-12 bloc-data" id="bloc-data-disp" >
             <div class="row">
                 <div class="col-8">
-                    <a href="#" class="btn-link" onclick="downloadMap('displacements')"><em>download map</em></a>
-                    <div class="map-displacements" id="map-displacements"  style="width:auto;height:500px;">
+                    <div class="row">
+                        <div class="col">
+                            <p># of Internally Displaced Persons by {{$adminLevel}}</p>
+                            <a href="#" class="btn-link" onclick="downloadMap('displacements')"><em>download map</em></a>
+                            <div class="map-displacements" id="map-displacements"  style="width:auto;height:500px;"></div>
+                        </div>
                     </div>
                 </div>
+                
+
+                
                 <div class="col-4">
-                    <div class="row">
-                        <div class="col-12 white-blocs rounded m-1">
+                    <div class="row m-1">
+                        <div class="col-12 mb-3">
                             <p>Trend by year</p>
                             <!--a href="#" class="btn-link" onclick="downloadTrend('displacements')"><em>image</em></a-->
                             <div class="trend-displacements" id="trend-displacements">
                             </div>
 
                         </div>
-                        <div class="col-12 white-blocs rounded m-1">
+                        <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('displacements')"><em>Excel</em></a>
-                            <table class="table">
+                            <table class="table" style="font-size:12px;">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1613,25 +1683,29 @@
             </div>
         </div>
 
-        <div class="col-12 bloc-data" id="bloc-data-nutrition" style = "displayff:none;">
+        <div class="col-12 bloc-data" id="bloc-data-nutrition" >
             <div class="row">
                 <div class="col-8">
-                    <a href="#" class="btn-link" onclick="downloadMap('nutrition')"><em>download map</em></a>
-                    <div class="map-nutrition" id="map-nutrition"  style="width:auto;height:500px;">
+                    <div class="row">
+                        <div class="col">
+                            <p># of Severe Acuted Malnourished children by {{$adminLevel}}</p>
+                            <a href="#" class="btn-link" onclick="downloadMap('nutrition')"><em>download map</em></a>
+                            <div class="map-nutrition" id="map-nutrition"  style="width:auto;height:500px;"> </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="row">
-                        <div class="col-12 white-blocs rounded m-1">
+                    <div class="row m-1">
+                        <div class="col-12 mb-3">
                             <p>Trend by year</p>
                             <!--a href="#" class="btn-link" onclick="downloadTrend('nutrition')"><em>image</em></a-->
                             <div class="trend-nutrition" id="trend-nutrition">
                             </div>
                         </div>
-                        <div class="col-12 white-blocs rounded m-1">
+                        <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('nutrition')"><em>excel</em></a>
-                            <table class="table">
+                            <table class="table" style="font-size:12px;">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1760,365 +1834,381 @@
             </div>
         </div>
 
-        <div class="col-12 bloc-data" id="bloc-data-foodSecurity" style = "display:none;">
-            <!-- CURRENT -->
+        <div class="col-12 bloc-data" id="bloc-data-foodSecurity" >
             <div class="row">
-                <h5>Current</h5>
+                <!-- CURRENT -->
                 <div class="col">
-                    <div class="map-ch" id="map-ch-current"  style="width:auto;height:500px;"></div>
-                </div>
-                <div class="col  white-blocs rounded m-1">
-                    <p>Trend by year</p>
-                    <!--a href="#" class="btn-link" onclick="downloadTrend('ch-current')"><em>image</em></a-->
-                    <div class="trend-ch" id="trend-ch-current"></div>
-                </div>
-                <div class="col white-blocs rounded m-1">
-                    <p>Key figures by country</p>
-                    <a href="#" class="btn-link" onclick="downloadData('ch-current')"><em>excel</em></a>
-                    <table class="table">
-                        <?php 
-                            $totalChP1= 0;
-                            $totalChP2= 0;
-                            $totalChP3= 0;
-                            $totalChP35= 0;
-                            $totalChP4= 0;
-                            $totalChP5= 0;
-                        ?>
-                        <thead>
-                            <tr>
-                                @if ($adminLevel == "admin0")
-                                                <th scope="col">Country</th>
-                                @else
-                                    <th scope="col">Country</th>
-                                    <th scope="col">Admin1</th>
-                                @endif
-                                <th scope="col">Year</th>
-                                <th scope="col">Month</th>
-                                <th scope="col">Phase 1</th>
-                                <th scope="col">Phase 2</th>
-                                <th scope="col">Phase 3</th>
-                                <th scope="col">Phase 3+</th>
-                                <th scope="col">Phase 4</th>
-                                <th scope="col">Phase 5</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
-                                <tr>
-                                    @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                    @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
-                                    @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["month"]}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase2"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase3"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase35"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
-                                </tr>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="row">
+                                <div class="col">
+                                    <p>Current Food Insecure by admin 2</p>
+                                    <a href="#" class="btn-link" onclick="downloadMap('ch-current')"><em>download map</em></a>
+                                    <div class="map-ch" id="map-ch-current"  style="width:auto;height:500px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <p>Trend by year</p>
+                            <div class="trend-ch" id="trend-ch-current"></div>
+                        </div>
+                        <div class="col-12">
+                            <p>Key figures by country</p>
+                            <a href="#" class="btn-link" onclick="downloadData('ch-current')"><em>excel</em></a>
+                            <table class="table" style="font-size:12px;">
                                 <?php 
-                                    $totalChP1+= $foodSec["ch_phase1"];
-                                    $totalChP2+= $foodSec["ch_phase2"];
-                                    $totalChP3+= $foodSec["ch_phase3"];
-                                    $totalChP35+= $foodSec["ch_phase35"];
-                                    $totalChP4+= $foodSec["ch_phase4"];
-                                    $totalChP5+= $foodSec["ch_phase5"];
+                                    $totalChP1= 0;
+                                    $totalChP2= 0;
+                                    $totalChP3= 0;
+                                    $totalChP35= 0;
+                                    $totalChP4= 0;
+                                    $totalChP5= 0;
                                 ?>
+                                <thead>
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="col">Country</th>
+                                        @else
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Admin1</th>
+                                        @endif
+                                        <th scope="col">Year</th>
+                                        <th scope="col">Month</th>
+                                        <th scope="col">Phase 1</th>
+                                        <th scope="col">Phase 2</th>
+                                        <th scope="col">Phase 3</th>
+                                        <th scope="col">Phase 3+</th>
+                                        <th scope="col">Phase 4</th>
+                                        <th scope="col">Phase 5</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["month"]}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase2"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase3"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase35"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
+                                        </tr>
+                                        <?php 
+                                            $totalChP1+= $foodSec["ch_phase1"];
+                                            $totalChP2+= $foodSec["ch_phase2"];
+                                            $totalChP3+= $foodSec["ch_phase3"];
+                                            $totalChP35+= $foodSec["ch_phase35"];
+                                            $totalChP4+= $foodSec["ch_phase4"];
+                                            $totalChP5+= $foodSec["ch_phase5"];
+                                        ?>
 
-                            @endforeach
+                                    @endforeach
 
-                            <tr>
-                                @if ($adminLevel == "admin0")
-                                    <th scope="row">Total</th>
-                                @else
-                                    <th scope="row">Total</th>
-                                    <th scope="col"></th>
-                                @endif
-                                <td> </td>
-                                <td> </td>
-                                <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="row">Total</th>
+                                        @else
+                                            <th scope="row">Total</th>
+                                            <th scope="col"></th>
+                                        @endif
+                                        <td> </td>
+                                        <td> </td>
+                                        <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                    <table class="table" id="keyFigure-data-ch-current"  style="display:none;">
-                        <thead>
-                            <tr>
-                            @if ($adminLevel == "admin0")
-                                <th scope="col">Country</th>
-                            @else
-                                <th scope="col">Country</th>
-                                <th scope="col">Admin1</th>
-                            @endif
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Phase_1 </th>
-                            <th scope="col">Phase_2 </th>
-                            <th scope="col">Phase_3 </th>
-                            <th scope="col">Phase_3+</th>
-                            <th scope="col">Phase_4 </th>
-                            <th scope="col">Phase_5 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
-                                <tr>
+                            <table class="table" id="keyFigure-data-ch-current"  style="display:none;">
+                                <thead>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="col">Country</th>
                                     @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
                                     @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["month"]}}</td>
-                                    <td>{{$foodSec["ch_phase1"]}}</td>
-                                    <td>{{$foodSec["ch_phase2"]}}</td>
-                                    <td>{{$foodSec["ch_phase3"]}}</td>
-                                    <td>{{$foodSec["ch_phase35"]}}</td>
-                                    <td>{{$foodSec["ch_phase4"]}}</td>
-                                    <td>{{$foodSec["ch_phase5"]}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Month</th>
+                                    <th scope="col">Phase_1 </th>
+                                    <th scope="col">Phase_2 </th>
+                                    <th scope="col">Phase_3 </th>
+                                    <th scope="col">Phase_3+</th>
+                                    <th scope="col">Phase_4 </th>
+                                    <th scope="col">Phase_5 </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($KeyFigureCHByAdminCurrent as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["month"]}}</td>
+                                            <td>{{$foodSec["ch_phase1"]}}</td>
+                                            <td>{{$foodSec["ch_phase2"]}}</td>
+                                            <td>{{$foodSec["ch_phase3"]}}</td>
+                                            <td>{{$foodSec["ch_phase35"]}}</td>
+                                            <td>{{$foodSec["ch_phase4"]}}</td>
+                                            <td>{{$foodSec["ch_phase5"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
-                    
-                    <table class="table" id="trend-data-ch-current"  style="display:none;">
-                        <thead>
-                            <tr>
-                            @if ($adminLevel == "admin0")
-                                <th scope="col">Country</th>
-                            @else
-                                <th scope="col">Country</th>
-                                <th scope="col">Admin1</th>
-                            @endif
-                            <th scope="col">Year</th>
-                            <th scope="col">Phase_1 </th>
-                            <th scope="col">Phase_2 </th>
-                            <th scope="col">Phase_3 </th>
-                            <th scope="col">Phase_3+</th>
-                            <th scope="col">Phase_4 </th>
-                            <th scope="col">Phase_5 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($trendCh_Current2 as $foodSec)
-                                <tr>
-                                    @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                    @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
-                                    @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["ch1"]}}</td>
-                                    <td>{{$foodSec["ch2"]}}</td>
-                                    <td>{{$foodSec["ch3"]}}</td>
-                                    <td>{{$foodSec["ch35"]}}</td>
-                                    <td>{{$foodSec["ch4"]}}</td>
-                                    <td>{{$foodSec["ch5"]}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-            <!-- PROJECTED -->
-            <div class="row">
-                <h5>Projected</h5>
-                <div class="col">
-                    <div class="map-ch" id="map-ch-projected"  style="width:auto;height:500px;"></div>
-                </div>
-                <div class="col  white-blocs rounded m-1">
-                    <p>Trend by year</p>
-                    <!--a href="#" class="btn-link" onclick="downloadTrend('ch-projected')"><em>image</em></a-->
-                    <div class="trend-ch" id="trend-ch-projected"></div>
-                </div>
-                <div class="col white-blocs rounded m-1">
-                    <p>Key figures by country</p>
-                    <a href="#" class="btn-link" onclick="downloadData('ch-projected')"><em>excel</em></a>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                            @if ($adminLevel == "admin0")
-                                <th scope="col">Country</th>
-                            @else
-                                <th scope="col">Country</th>
-                                <th scope="col">Admin1</th>
-                            @endif
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Phase 1</th>
-                            <th scope="col">Phase 2</th>
-                            <th scope="col">Phase 3</th>
-                            <th scope="col">Phase 3+</th>
-                            <th scope="col">Phase 4</th>
-                            <th scope="col">Phase 5</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                                $totalChP1= 0;
-                                $totalChP2= 0;
-                                $totalChP3= 0;
-                                $totalChP35= 0;
-                                $totalChP4= 0;
-                                $totalChP5= 0;
-                            ?>
-                            @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
-                                <tr>
-                                    @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                    @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
-                                    @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["month"]}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase2"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase3"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase35"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
-                                    <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
-                                </tr>
-                                
-                                <?php 
-                                    $totalChP1+= $foodSec["ch_phase1"];
-                                    $totalChP2+= $foodSec["ch_phase2"];
-                                    $totalChP3+= $foodSec["ch_phase3"];
-                                    $totalChP35+= $foodSec["ch_phase35"];
-                                    $totalChP4+= $foodSec["ch_phase4"];
-                                    $totalChP5+= $foodSec["ch_phase5"];
-                                ?>
-                            @endforeach
-                            <tr>
-                                @if ($adminLevel == "admin0")
-                                    <th scope="row">Total</th>
-                                @else
-                                    <th scope="row">Total</th>
-                                    <th scope="col"></th>
-                                @endif
-                                <td> </td>
-                                <td> </td>
-                                <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
-                                <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table" id="keyFigure-data-ch-projected"  style="display:none;">
-                        <thead>
-                            <tr>
-                            @if ($adminLevel == "admin0")
-                                <th scope="col">Country</th>
-                            @else
-                                <th scope="col">Country</th>
-                                <th scope="col">Admin1</th>
-                            @endif
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Phase_1 </th>
-                            <th scope="col">Phase_2 </th>
-                            <th scope="col">Phase_3 </th>
-                            <th scope="col">Phase_3+</th>
-                            <th scope="col">Phase_4 </th>
-                            <th scope="col">Phase_5 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
                             
-                            @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
-                                <tr>
+                            <table class="table" id="trend-data-ch-current"  style="display:none;">
+                                <thead>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="col">Country</th>
                                     @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
                                     @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["month"]}}</td>
-                                    <td>{{$foodSec["ch_phase1"]}}</td>
-                                    <td>{{$foodSec["ch_phase2"]}}</td>
-                                    <td>{{$foodSec["ch_phase3"]}}</td>
-                                    <td>{{$foodSec["ch_phase35"]}}</td>
-                                    <td>{{$foodSec["ch_phase4"]}}</td>
-                                    <td>{{$foodSec["ch_phase5"]}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Phase_1 </th>
+                                    <th scope="col">Phase_2 </th>
+                                    <th scope="col">Phase_3 </th>
+                                    <th scope="col">Phase_3+</th>
+                                    <th scope="col">Phase_4 </th>
+                                    <th scope="col">Phase_5 </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trendCh_Current2 as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["ch1"]}}</td>
+                                            <td>{{$foodSec["ch2"]}}</td>
+                                            <td>{{$foodSec["ch3"]}}</td>
+                                            <td>{{$foodSec["ch35"]}}</td>
+                                            <td>{{$foodSec["ch4"]}}</td>
+                                            <td>{{$foodSec["ch5"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
-                    
-                    <table class="table" id="trend-data-ch-projected"  style="display:none;">
-                        <thead>
-                            <tr>
-                            @if ($adminLevel == "admin0")
-                                <th scope="col">Country</th>
-                            @else
-                                <th scope="col">Country</th>
-                                <th scope="col">Admin1</th>
-                            @endif
-                            <th scope="col">Year</th>
-                            <th scope="col">Phase_1 </th>
-                            <th scope="col">Phase_2 </th>
-                            <th scope="col">Phase_3 </th>
-                            <th scope="col">Phase_3+</th>
-                            <th scope="col">Phase_4 </th>
-                            <th scope="col">Phase_5 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($trendCh_Projected2 as $foodSec)
-                                <tr>
+                            
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- PROJECTED -->
+                <div class="col">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="row">
+                                <div class="col">
+                                    <p>Projected Food Insecure by admin 2</p>
+                                    <a href="#" class="btn-link" onclick="downloadMap('ch-projected')"><em>download map</em></a>
+                                    <div class="map-ch" id="map-ch-projected"  style="width:auto;height:500px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <p>Trend by year</p>
+                            <div class="trend-ch" id="trend-ch-projected"></div>
+                        </div>
+                        <div class="col-12 ">
+                            <p>Key figures by country</p>
+                            <a href="#" class="btn-link" onclick="downloadData('ch-projected')"><em>excel</em></a>
+                            <table class="table" style="font-size:12px;">
+                                <thead>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
+                                        <th scope="col">Country</th>
                                     @else
-                                        <th scope="row">{{$foodSec["admin0"]}}</th>
-                                        <th scope="row">{{$foodSec["adminName"]}}</th>
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
                                     @endif
-                                    <td>{{$foodSec["year"]}}</td>
-                                    <td>{{$foodSec["ch1"]}}</td>
-                                    <td>{{$foodSec["ch2"]}}</td>
-                                    <td>{{$foodSec["ch3"]}}</td>
-                                    <td>{{$foodSec["ch35"]}}</td>
-                                    <td>{{$foodSec["ch4"]}}</td>
-                                    <td>{{$foodSec["ch5"]}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Month</th>
+                                    <th scope="col">Phase 1</th>
+                                    <th scope="col">Phase 2</th>
+                                    <th scope="col">Phase 3</th>
+                                    <th scope="col">Phase 3+</th>
+                                    <th scope="col">Phase 4</th>
+                                    <th scope="col">Phase 5</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $totalChP1= 0;
+                                        $totalChP2= 0;
+                                        $totalChP3= 0;
+                                        $totalChP35= 0;
+                                        $totalChP4= 0;
+                                        $totalChP5= 0;
+                                    ?>
+                                    @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["month"]}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase1"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase2"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase3"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase35"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase4"],1)}}</td>
+                                            <td>{{convertToUnit($foodSec["ch_phase5"],1)}}</td>
+                                        </tr>
+                                        
+                                        <?php 
+                                            $totalChP1+= $foodSec["ch_phase1"];
+                                            $totalChP2+= $foodSec["ch_phase2"];
+                                            $totalChP3+= $foodSec["ch_phase3"];
+                                            $totalChP35+= $foodSec["ch_phase35"];
+                                            $totalChP4+= $foodSec["ch_phase4"];
+                                            $totalChP5+= $foodSec["ch_phase5"];
+                                        ?>
+                                    @endforeach
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <th scope="row">Total</th>
+                                        @else
+                                            <th scope="row">Total</th>
+                                            <th scope="col"></th>
+                                        @endif
+                                        <td> </td>
+                                        <td> </td>
+                                        <th scope="row">{{convertToUnit($totalChP1,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP2,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP3,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP35,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP4,1)}}</th>
+                                        <th scope="row">{{convertToUnit($totalChP5,1)}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
 
+                            <table class="table" id="keyFigure-data-ch-projected"  style="display:none;">
+                                <thead>
+                                    <tr>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="col">Country</th>
+                                    @else
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
+                                    @endif
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Month</th>
+                                    <th scope="col">Phase_1 </th>
+                                    <th scope="col">Phase_2 </th>
+                                    <th scope="col">Phase_3 </th>
+                                    <th scope="col">Phase_3+</th>
+                                    <th scope="col">Phase_4 </th>
+                                    <th scope="col">Phase_5 </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    @foreach ($KeyFigureCHByAdminProjeted as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["month"]}}</td>
+                                            <td>{{$foodSec["ch_phase1"]}}</td>
+                                            <td>{{$foodSec["ch_phase2"]}}</td>
+                                            <td>{{$foodSec["ch_phase3"]}}</td>
+                                            <td>{{$foodSec["ch_phase35"]}}</td>
+                                            <td>{{$foodSec["ch_phase4"]}}</td>
+                                            <td>{{$foodSec["ch_phase5"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            <table class="table" id="trend-data-ch-projected"  style="display:none;">
+                                <thead>
+                                    <tr>
+                                    @if ($adminLevel == "admin0")
+                                        <th scope="col">Country</th>
+                                    @else
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Admin1</th>
+                                    @endif
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Phase_1 </th>
+                                    <th scope="col">Phase_2 </th>
+                                    <th scope="col">Phase_3 </th>
+                                    <th scope="col">Phase_3+</th>
+                                    <th scope="col">Phase_4 </th>
+                                    <th scope="col">Phase_5 </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trendCh_Projected2 as $foodSec)
+                                        <tr>
+                                            @if ($adminLevel == "admin0")
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                            @else
+                                                <th scope="row">{{$foodSec["admin0"]}}</th>
+                                                <th scope="row">{{$foodSec["adminName"]}}</th>
+                                            @endif
+                                            <td>{{$foodSec["year"]}}</td>
+                                            <td>{{$foodSec["ch1"]}}</td>
+                                            <td>{{$foodSec["ch2"]}}</td>
+                                            <td>{{$foodSec["ch3"]}}</td>
+                                            <td>{{$foodSec["ch35"]}}</td>
+                                            <td>{{$foodSec["ch4"]}}</td>
+                                            <td>{{$foodSec["ch5"]}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
+           
         </div>
     </div>
 </div>
 
-<div id='chart'></div>
-<canvas id="myCanvas" width="240" height="297"
+<div id='status'></div>
+<!--canvas id="myCanvas" width="240" height="297"
 style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.
-</canvas>
+</canvas-->
 
-<div class="col-12">
+<!--div class="col-12">
     <div id='chart-test' style="width:800px;height:500px;">jjj</div>
-</div>
+</div-->
+
 <script>
 $(document).ready(function(){
 
@@ -2148,6 +2238,8 @@ $(document).ready(function(){
     mapCaseloads_PIN = {!! json_encode($mapCaseloads_PIN) !!};
     mapDisplacement_IDP = {!! json_encode($mapDisplacement_IDP) !!};
     mapNutrition_SAM = {!! json_encode($mapNutrition_SAM) !!};
+    mapCH_current = {!! json_encode($mapCH_current) !!};
+    mapCH_projected = {!! json_encode($mapCH_projected) !!};
 
     //trends call functions
     AddChart(trendCaseloads_pin,"trend-caseloads",zoneName+": People in need")
@@ -2160,7 +2252,7 @@ $(document).ready(function(){
 
 
     //map call functions
-   // AddCaseloadPinMap(mapCaseloads_PIN)
+    // AddCaseloadPinMap(mapCaseloads_PIN)
 
     //addTestMap("map-caseloads",zoneCode,adminLevel,mapCaseloads_PIN,"People in need")
     //addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
@@ -2174,21 +2266,34 @@ $(document).ready(function(){
     nbMapWriten = 0;
     d3.json(adminCoordinatesFile).then(function(adminCoordinatesTemp){
         admin_coordinates = adminCoordinatesTemp
-        addMap2(adminLevel,mapCaseloads_PIN,"map-caseloads")
-        addMap2(adminLevel,mapDisplacement_IDP,"map-displacements")
-        addMap2(adminLevel,mapNutrition_SAM,"map-nutrition")
+        addMap2(adminLevel,mapCaseloads_PIN,"map-caseloads","1")
+        addMap2(adminLevel,mapDisplacement_IDP,"map-displacements","2")
+        addMap2(adminLevel,mapNutrition_SAM,"map-nutrition","3")
         
     });
     image1= 0;
 
     window.setTimeout( stopLoading, 5000 );
+
+    addChMap(mapCH_current,"map-ch-current","4")
+    addChMap(mapCH_projected,"map-ch-projected","5")
     //addMap2(adminLevel,mapCaseloads_PIN,"chart-test");
 });
 
 function stopLoading(){
     $('#loading').hide();
-    showData("caseloads");
+    //showData("caseloads");
 };
+
+function UpdateStatus(nb){
+    tmpContent = $('#status').html();
+    tmpContent+=nb;
+    $('#status').html(tmpContent);
+    console.log(tmpContent)
+    if(tmpContent.length == 5){
+        showData("caseloads");
+    }
+}
 
 function ExportExcel() {
     tablesToExcel(
@@ -2240,6 +2345,39 @@ function getColor(adminPcode,mapData, grades) {
     return couleur;
 }
 
+function getColorCH(adminPcode,mapData) {
+
+    dcc= mapData
+    d=0;
+    for(var i = 0; i < dcc.length; i++){
+        arrayAdmin = dcc[i][0].split("*")
+        if(adminPcode==arrayAdmin[1]){
+            d=dcc[i][1]
+        }
+    }
+
+    switch (d) {
+        case "1":
+            return "#cdfacd";
+            break;
+        case "2":
+            return "#fae61e";
+            break;
+        case "3":
+            return "#e67800";
+            break;
+        case "4":
+            return "#c80000";
+            break;
+        case "5":
+            return "#640000";
+            break;
+        default:
+            return "#ffffff";
+            break;
+    }
+}
+
 function stylekk(feature) {
     return {
         fillColor: getColor(feature.properties.adminName),
@@ -2264,8 +2402,21 @@ function filter(feature) {
     return include;
 }
 
+function filterCH(feature) {
+    include = false;
+    for(var i = 0; i < mapCH_current.length; i++){
+        arrayAdmin = mapCH_current[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+            //console.log(feature.properties.adminPcode+" ==== "+arrayAdmin[0])
+        }
+    }
+    return include;
+}
 
-function addMap2(adminLevel,dataMap,place){
+
+function addMap2(adminLevel,dataMap,place,numMap){
     geoJsonFile = "/maps/wca_admin1.json"
     if (adminLevel=="admin0") {
         geoJsonFile = "/maps/wca_admin0.json"
@@ -2275,7 +2426,7 @@ function addMap2(adminLevel,dataMap,place){
         d3.json(geoJsonFile).then(function(us){
         
             var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
-            var map = L.map(place).setView([37.8, -96], 4);
+            var map = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
             grades2  =GetGrades(dataMap)
         
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
@@ -2313,8 +2464,8 @@ function addMap2(adminLevel,dataMap,place){
             legend.addTo(map);
             
             //labels
-            console.log(admin_coordinates)
-            console.log(dataMap)
+            //console.log(admin_coordinates)
+            //console.log(dataMap)
             var markers = new L.FeatureGroup();
             for (var i = 0; i < dataMap.length; i++) {
                 for (var j = 0; j < admin_coordinates.length; j++) {
@@ -2333,14 +2484,48 @@ function addMap2(adminLevel,dataMap,place){
             
 
             map.addLayer(markers);
-
-
             area.addTo(map);
             map.fitBounds(area.getBounds());
 
     
-            nbMapWriten++;
+            UpdateStatus(numMap);
         });
+    
+   
+}
+
+function addChMap(dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin2.json"
+    
+    d3.json(geoJsonFile).then(function(us){
+    
+    console.log(us)
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        var map = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map);
+        area  = new L.geoJSON(us, {
+            style: function (feature) {
+                return {
+                    fillColor: getColorCH(feature.properties.adminPcode,dataMap),
+                    weight: 1,
+                    opacity: 1,
+                    color: '#ccc',
+                    dashArray: '3',
+                    fillOpacity: 1
+                    };
+                },
+                filter: filterCH})
+
+        area.addTo(map);
+        map.fitBounds(area.getBounds());
+        UpdateStatus(numMap);
+    });
     
    
 }
@@ -2353,6 +2538,7 @@ function addMap3(adminLevel,dataMap,place){
 
     d3.json(geoJsonFile).then(function(us){
       
+      console.log(us)
         var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
         var map2 = L.map(place).setView([37.8, -96], 4);
         grades2  =GetGrades(dataMap)
@@ -2688,6 +2874,8 @@ function getColors(numberOfColors){
     }
     return palette
 }
+
+
 function getColorsAt(index){
     colors = [
         /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
