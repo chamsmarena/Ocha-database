@@ -76,7 +76,7 @@ class zoneController extends Controller
             ]);
     }
 
-    public function show_view_filter($category,$items)
+    public function show_view_filter_old($category,$items)
     {
         $countriesList = array();
         $dataByZone = array();

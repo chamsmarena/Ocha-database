@@ -473,7 +473,6 @@
     
     $zone=$datas[0]["zone"];
 
-
     //caseloads
     $caseloads=$datas[0]["caseloads"];
     $KeyFigureCaseLoadsByAdmin = array();
@@ -486,6 +485,7 @@
     $trendCaseloads_Raw = array();
     $disclaimerCaseloads = array();
     $sourcesCaseloads = array();
+    $disclaimerCaseload_text = "";
 
     
     $trendDisplacement_IDP_Raw = array();
@@ -495,6 +495,7 @@
     $disclaimerDisplacement_ref = array();
     $disclaimerDisplacement_ret = array();
     $sourceDisplacements = array();
+    $disclaimerDisplacement_text = "";
     
 
     $trendNutrition_SAM_Raw = array();
@@ -503,6 +504,7 @@
     $nutritionColumns = array();
     $disclaimerNutrition_SAM = array();
     $nutritionSource = array();
+    $disclaimerNutrition_text = "";
 
     $trendCh_Current_Raw = array();
     $trendCh_Current2_Raw = array();
@@ -518,10 +520,19 @@
     $ch_ProjectedColumns = array();
     $disclaimer_ch_mois_projected = "";
     $disclaimer_ch_year = "";
+    $disclaimerCh_text = "";
 
     $caseloadColumns = array();
     
     $displacementColumns = array();
+    $pays = "";
+
+
+    //liste localités
+    foreach ($datas[0]["localites"] as $localite){
+        $pays .= $localite->local_name.", ";
+    }
+
 
     //caseloads
     foreach ($caseloads as $caseload){
@@ -1216,7 +1227,7 @@
     $trendDisplacement = getTrendDataDisplacement($trendDisplacement_Raw);
     $mapDisplacement_IDP = getMapData($KeyFigureDisplacementsByAdmin,"idp");
 
-  
+
 
 ?>
 <div class="col-12 loading" id="loading" style="text-align:center;">
@@ -1227,7 +1238,11 @@
 <div class='col-12 pt-3' >
     <div class="row mb-3">
         <div class="col">
-            Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br> 
+            @if ($zone->zone_code== "WCA")
+                Datas for the <strong>{{$pays}}</strong> <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br>
+            @else
+                Datas for the <strong>{{$zone->zone_name}}</strong>, <em>by {{$adminLevel}} from {{$periodFrom}} to {{$periodTo}}</em><br>
+            @endif
         </div>
         <div class="col d-flex justify-content-center" id='buttonOk'>
             @if ($adminLevel == "admin0")
@@ -1272,18 +1287,29 @@
             </div>
             <div class="row">
                 <div class='col disclaimer'>
+                    <?php
+                        $disclaimerCaseload_text = "People in need, Targeted and Reached as of ";
+                    ?>
                     <strong>People in need, Targeted and Reached</strong> as of 
                     @foreach ($disclaimerCaseloads as $disclaimer)
-                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                        {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                        <?php
+                            $disclaimerCaseload_text .= $disclaimer["Mois"]." ".$disclaimer["adminName"];
+                        ?>
                     @endforeach
                     <br/><strong>Sources</strong> : 
+                    <?php
+                        $disclaimerCaseload_text .= " | Sources : ";
+                    ?>
                     @foreach ($sourcesCaseloads as $source)
-                         {{$source}},
+                        <?php
+                            $disclaimerCaseload_text .= $source.", ";
+                        ?>
+                        {{$source}},
                     @endforeach 
                 </div>
             </div>
         </div>
-
         <div class="col-3 keyFigure-card cards rounded me-1 ms-1"  id="keyFigure-disp" onclick="showData('disp')">
             <p>Displacements</p>
             <div class="row">
@@ -1311,23 +1337,45 @@
             </div>
             <div class="row">
                 <div class='col disclaimer'>
+                    <?php $disclaimerDisplacement_text = "IDPs as of "; ?>
                     <strong>IDPs</strong> as of
                     @foreach ($disclaimerDisplacement_idp as $disclaimer)
                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})  
+                        <?php
+                            $disclaimerDisplacement_text .= $disclaimer["Mois"]." ".$disclaimer["adminName"];
+                        ?>
                     @endforeach |
 
                     <strong>Refugees</strong> as of
+                    <?php 
+                        $disclaimerDisplacement_text .= " | Refugees as of "; 
+                    ?>
                     @foreach ($disclaimerDisplacement_ref as $disclaimer)
                          {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                         <?php
+                            $disclaimerDisplacement_text .= $disclaimer["Mois"]." ".$disclaimer["adminName"];
+                        ?>
                     @endforeach
                      | 
-                     <strong>Returnees</strong> as of
+                    <strong>Returnees</strong> as of
+                    <?php 
+                        $disclaimerDisplacement_text .= " | Returnees as of "; 
+                    ?>
                     @foreach ($disclaimerDisplacement_ret as $disclaimer)
                          {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                         <?php
+                            $disclaimerDisplacement_text .= $disclaimer["Mois"]." ".$disclaimer["adminName"];
+                        ?>
                     @endforeach 
                      <br/><strong>Sources</strong> : 
+                     <?php
+                        $disclaimerDisplacement_text .= " | Sources : ";
+                    ?>
                     @foreach ($sourceDisplacements as $source)
-                         {{$source}},
+                        {{$source}},
+                        <?php
+                            $disclaimerDisplacement_text .= $source.", ";
+                        ?>
                     @endforeach 
                 </div>
             </div>
@@ -1346,13 +1394,25 @@
             </div>
             <div class="row">
                 <div class='col disclaimer'>
-                    <strong>SAM</strong> as of
+                    <strong></strong> as of
+                    <?php 
+                        $disclaimerNutrition_text = "SAM, MAM, GAM as of "; 
+                    ?>
                     @foreach ($disclaimerNutrition_SAM as $disclaimer)
-                         {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                        {{$disclaimer["Mois"]}} ({{$disclaimer["adminName"]}})
+                        <?php
+                            $disclaimerNutrition_text .= $disclaimer["Mois"]." ".$disclaimer["adminName"];
+                        ?>
                     @endforeach
                     <br/><strong>Sources</strong> : 
+                    <?php
+                        $disclaimerNutrition_text .= " | Sources : ";
+                    ?>
                     @foreach ($nutritionSource as $source)
-                         {{$source}},
+                        {{$source}},
+                        <?php
+                            $disclaimerNutrition_text .= $source.", ";
+                        ?>
                     @endforeach 
                 </div>
             </div>
@@ -1379,9 +1439,15 @@
             <div class="row">
                 <div class='col disclaimer'>
                     @if ($disclaimer_ch_mois_current != $disclaimer_ch_mois_projected)
+                        <?php 
+                            $disclaimerCh_text = "Source  : Cadre Harmonisé Current : ".$disclaimer_ch_mois_current.", Projected : ".$disclaimer_ch_mois_projected." ".$disclaimer_ch_year ; 
+                        ?>
                         <strong>Source</strong> : Cadre Harmonisé Current : {{$disclaimer_ch_mois_current}}, Projected : {{$disclaimer_ch_mois_projected}} {{$disclaimer_ch_year}}
                     @else
                         <strong>Source</strong> : Cadre Harmonisé {{$disclaimer_ch_mois_current}} {{$disclaimer_ch_year}}
+                        <?php 
+                            $disclaimerCh_text = "Source  : Cadre Harmonisé Current : ".$disclaimer_ch_mois_current." ".$disclaimer_ch_year ; 
+                        ?>
                     @endif
                     
                 </div>
@@ -1401,8 +1467,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
                 </div>
                 <div class="col-4">
                     <div class="row m-1">
@@ -1471,6 +1535,13 @@
 
                             <table class="table" id="keyFigure-data-caseloads" style="display:none;">
                                 <thead>
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <td colspan="4">Disclaimer : {{$disclaimerCaseload_text}}</td>
+                                        @else
+                                            <td colspan="5">Disclaimer : {{$disclaimerCaseload_text}}</td>
+                                        @endif
+                                    </tr>
                                     <tr>
                                         @if ($adminLevel == "admin0")
                                             <th scope="col">Country</th>
@@ -1623,6 +1694,13 @@
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
+                                            <td colspan="4">Disclaimer : {{$disclaimerDisplacement_text}}</td>
+                                        @else
+                                            <td colspan="5">Disclaimer : {{$disclaimerDisplacement_text}}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
+                                        @if ($adminLevel == "admin0")
                                             <th scope="col">Country</th>
                                         @else
                                             <th scope="col">Country</th>
@@ -1761,6 +1839,13 @@
                             <table class="table" id="keyFigure-data-nutrition" style="display:none;">
                                 <thead>
                                     <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <td colspan="4">Disclaimer : {{$disclaimerNutrition_text}}</td>
+                                        @else
+                                            <td colspan="5">Disclaimer : {{$disclaimerNutrition_text}}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
                                             <th scope="col">Country</th>
                                     @else
@@ -1825,9 +1910,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-
-
-                            
                         </div>
                     </div>
                 </div>
@@ -1933,6 +2015,13 @@
                             <table class="table" id="keyFigure-data-ch-current"  style="display:none;">
                                 <thead>
                                     <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <td colspan="9">Disclaimer : {{$disclaimerCh_text}}</td>
+                                        @else
+                                            <td colspan="10">Disclaimer : {{$disclaimerCh_text}}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
                                         <th scope="col">Country</th>
                                     @else
@@ -2023,8 +2112,11 @@
                         <div class="col-12 mb-3">
                             <div class="row">
                                 <div class="col">
-                                    <p>Projected Food Insecure by admin 2</p>
-                                    <a href="#" class="btn-link" onclick="downloadMap('ch-projected')"><em>download map</em></a>
+                                    <p>
+                                        Projected Food Insecure by admin 2 <br/>
+                                        <a href="#" class="btn-link" onclick="downloadMap('ch-projected')"><em>download map</em></a>
+                                    </p>
+                                    
                                     <div class="map-ch" id="map-ch-projected"  style="width:auto;height:500px;"></div>
                                 </div>
                             </div>
@@ -2113,6 +2205,13 @@
                             <table class="table" id="keyFigure-data-ch-projected"  style="display:none;">
                                 <thead>
                                     <tr>
+                                        @if ($adminLevel == "admin0")
+                                            <td colspan="9">Disclaimer : {{$disclaimerCh_text}}</td>
+                                        @else
+                                            <td colspan="10">Disclaimer : {{$disclaimerCh_text}}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
                                     @if ($adminLevel == "admin0")
                                         <th scope="col">Country</th>
                                     @else
@@ -2200,19 +2299,22 @@
 </div>
 
 <div id='status'></div>
-<!--canvas id="myCanvas" width="240" height="297"
-style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.
-</canvas-->
 
-<!--div class="col-12">
-    <div id='chart-test' style="width:800px;height:500px;">jjj</div>
-</div-->
 
 <script>
 $(document).ready(function(){
+    map_caseload = null;
+    map_displacement = null;
+    map_nutrition = null;
+    map_ch_Current = null;
+    map_ch_projected = null;
 
+    disclaimerCaseload_text = {!! json_encode($disclaimerCaseload_text) !!};
+    disclaimerDisplacement_text = {!! json_encode($disclaimerDisplacement_text) !!};
+    disclaimerNutrition_text = {!! json_encode($disclaimerNutrition_text) !!};
+    disclaimerCh_text = {!! json_encode($disclaimerCh_text) !!};
     adminLevel = {!! json_encode($adminLevel) !!};
+    pays = {!! json_encode($pays) !!};
     zoneCode = {!! json_encode($zone->zone_code) !!};
     zoneName = {!! json_encode($zone->zone_name) !!};
     //trend data
@@ -2230,9 +2332,11 @@ $(document).ready(function(){
 
     trendCh_Current = {!! json_encode($trendCh_Current) !!};
     ch_CurrentColumns = {!! json_encode($ch_CurrentColumns) !!};
+    KeyFigureCHCurrent = {!! json_encode($KeyFigureCHCurrent) !!};
 
     trendCh_Projected = {!! json_encode($trendCh_Projected) !!};
     ch_ProjectedColumns = {!! json_encode($ch_ProjectedColumns) !!};
+    KeyFigureCHProjeted = {!! json_encode($KeyFigureCHProjeted) !!};
 
     //maps data
     mapCaseloads_PIN = {!! json_encode($mapCaseloads_PIN) !!};
@@ -2248,40 +2352,39 @@ $(document).ready(function(){
     AddChart(trendCh_Current,"trend-ch-current",zoneName+": Current food insecure")
     AddChart(trendCh_Projected,"trend-ch-projected",zoneName+": Projected food insecure")
 
-    //console.log(trendNutrition_SAM);
-
-
-    //map call functions
-    // AddCaseloadPinMap(mapCaseloads_PIN)
-
-    //addTestMap("map-caseloads",zoneCode,adminLevel,mapCaseloads_PIN,"People in need")
-    //addTestMap("map-displacements",zoneCode,adminLevel,mapDisplacement_IDP,"Internally displaced persons")
-    //addTestMap("map-nutrition",zoneCode,adminLevel,mapNutrition_SAM,"Save Acute Malnourished")
     adminCoordinatesFile = "/maps/admin1_coordinates.json"
     if (adminLevel=="admin0") {
         adminCoordinatesFile = "/maps/admin0_coordinates.json"
     }
+
+    if(zoneCode=="WCA"){
+        zoneName = pays
+    }
     
     admin_coordinates = []
-    nbMapWriten = 0;
+
     d3.json(adminCoordinatesFile).then(function(adminCoordinatesTemp){
         admin_coordinates = adminCoordinatesTemp
-        addMap2(adminLevel,mapCaseloads_PIN,"map-caseloads","1")
-        addMap2(adminLevel,mapDisplacement_IDP,"map-displacements","2")
-        addMap2(adminLevel,mapNutrition_SAM,"map-nutrition","3")
+        addMap_caseload(adminLevel,mapCaseloads_PIN,"map-caseloads","1")
+        addMap_displacement(adminLevel,mapDisplacement_IDP,"map-displacements","2")
+        addMap_nutrition(adminLevel,mapNutrition_SAM,"map-nutrition","3")
         
     });
     image1= 0;
 
-    window.setTimeout( stopLoading, 5000 );
-
-    addChMap(mapCH_current,"map-ch-current","4")
-    addChMap(mapCH_projected,"map-ch-projected","5")
+    addChMap_current(mapCH_current,"map-ch-current","4")
+    addChMap_projected(mapCH_projected,"map-ch-projected","5")
     //addMap2(adminLevel,mapCaseloads_PIN,"chart-test");
 });
 
+//other functions
 function stopLoading(){
     $('#loading').hide();
+    //showData("caseloads");
+};
+
+function showLoading(){
+    $('#loading').show();
     //showData("caseloads");
 };
 
@@ -2291,38 +2394,50 @@ function UpdateStatus(nb){
     $('#status').html(tmpContent);
     console.log(tmpContent)
     if(tmpContent.length == 5){
+        window.setTimeout( stopLoading, 2000 );
         showData("caseloads");
     }
 }
 
-function ExportExcel() {
-    tablesToExcel(
-        [
-            'keyFigure-data-caseloads',
-            'keyFigure-data-displacements',
-            'keyFigure-data-nutrition',
-            'keyFigure-data-ch-current',
-            'keyFigure-data-ch-projected',
-            'trend-data-caseloads',
-            'trend-data-displacements',
-            'trend-data-nutrition',
-            'trend-data-ch-current',
-            'trend-data-ch-projected',
-        ], 
-        [
-            'KF caseloads',
-            'KF displacements',
-            'KF nutrition',
-            'KF ch-current',
-            'KF ch-projected',
-            'Trend by year caseloads',
-            'Trend by year displacements',
-            'Trend by year nutrition',
-            'Trend by year ch-current',
-            'Trend by year ch-projected',
-        ], 'export.xls', 'Excel')
+function convertToUnit(val,decimal){
+    result = "";
+    if(val<1000){
+        result = val;
+    }else{
+        if(val<1000000){
+            calc = val/1000
+            result = calc.toFixed(decimal)+"K";
+        }else{
+            if(val<1000000000){
+                calc = val/1000000
+                result = calc.toFixed(decimal)+"M";
+            }else{
+                calc = val/1000000000
+                result = calc.toFixed(decimal)+"B";
+            }
+        }
+    }
+    return result;
 }
 
+function showData(bloc) {
+    $(".bloc-data").hide();
+    blocName = "#bloc-data-"+bloc;
+    cardId = "#keyFigure-"+bloc;
+    
+    $(".keyFigure-card").removeClass("cards-selected");
+    $(".keyFigure-card").removeClass("cards");
+    $(".keyFigure-card").addClass("cards");
+    $(cardId).removeClass("cards");
+    $(cardId).addClass("cards-selected");
+    $(blocName).show();
+}
+
+
+
+
+
+//map functions
 function getColor(adminPcode,mapData, grades) {
 
     dcc= mapData
@@ -2378,28 +2493,19 @@ function getColorCH(adminPcode,mapData) {
     }
 }
 
-function stylekk(feature) {
-    return {
-        fillColor: getColor(feature.properties.adminName),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity: 0.7
-    };
-}
+function getColorsAt(index){
+    colors = [
+        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
+        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
+        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
+        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
+        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
+        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
+        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
+        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
+    ]
 
-function filter(feature) {
-    include = false;
-    for(var i = 0; i < mapCaseloads_PIN.length; i++){
-        arrayAdmin = mapCaseloads_PIN[i][0].split("*")
-        
-        if(feature.properties.adminPcode==arrayAdmin[1]){
-            include = true
-            //console.log(feature.properties.adminPcode+" ==== "+arrayAdmin[0])
-        }
-    }
-    return include;
+    return colors[index]
 }
 
 function filterCH(feature) {
@@ -2415,100 +2521,334 @@ function filterCH(feature) {
     return include;
 }
 
+function filter(feature) {
+    include = false;
+    for(var i = 0; i < mapCaseloads_PIN.length; i++){
+        arrayAdmin = mapCaseloads_PIN[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+            //console.log(feature.properties.adminPcode+" ==== "+arrayAdmin[0])
+        }
+    }
+    return include;
+}
+
+function filter_caseload(feature) {
+    include = false;
+    for(var i = 0; i < mapCaseloads_PIN.length; i++){
+        arrayAdmin = mapCaseloads_PIN[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+        }
+    }
+    return include;
+}
+function filter_displacement(feature) {
+    include = false;
+    for(var i = 0; i < mapDisplacement_IDP.length; i++){
+        arrayAdmin = mapDisplacement_IDP[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+        }
+    }
+    return include;
+}
+function filter_nutrition(feature) {
+    include = false;
+    for(var i = 0; i < mapNutrition_SAM.length; i++){
+        arrayAdmin = mapNutrition_SAM[i][0].split("*")
+        
+        if(feature.properties.adminPcode==arrayAdmin[1]){
+            include = true
+        }
+    }
+    return include;
+}
 
 function addMap2(adminLevel,dataMap,place,numMap){
     geoJsonFile = "/maps/wca_admin1.json"
     if (adminLevel=="admin0") {
         geoJsonFile = "/maps/wca_admin0.json"
     }
-
-    
-        d3.json(geoJsonFile).then(function(us){
-        
-            var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
-            var map = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
-            grades2  =GetGrades(dataMap)
-        
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
-                id: 'mapbox/light-v9',
-                tileSize: 512,
-                zoomOffset: -1
-            }).addTo(map);
-            area  = new L.geoJSON(us, {
-                style: function (feature) {
-                    return {
-                        fillColor: getColor(feature.properties.adminPcode,dataMap,grades2),
-                        weight: 1,
-                        opacity: 1,
-                        color: '#ccc',
-                        dashArray: '3',
-                        fillOpacity: 1};
-                    },
-                filter: filter})
-
-            //légende
-            var legend = L.control({position: 'bottomright'});
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'info legend'),
-                    grades = GetGrades(dataMap),
-                    labels = [];
-                    
-                // loop through our density intervals and generate a label with a colored square for each interval
-                for (var i = 0; i < grades.length; i++) {
-                    div.innerHTML +=
-                        '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
-                        convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
-                }
-                return div;
-            };
-            legend.addTo(map);
-            
-            //labels
-            //console.log(admin_coordinates)
-            //console.log(dataMap)
-            var markers = new L.FeatureGroup();
-            for (var i = 0; i < dataMap.length; i++) {
-                for (var j = 0; j < admin_coordinates.length; j++) {
-                    arrayAdmin = dataMap[i][0].split("*")
-                    if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
-                        var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
-                        // you can set .my-div-icon styles in CSS
-                        markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
-
-                        //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
-                        markers.addLayer(markerTemp);
-                    }
-                }
-            }
-
-            
-
-            map.addLayer(markers);
-            area.addTo(map);
-            map.fitBounds(area.getBounds());
-
-    
-            UpdateStatus(numMap);
-        });
-    
-   
-}
-
-function addChMap(dataMap,place,numMap){
-    geoJsonFile = "/maps/wca_admin2.json"
     
     d3.json(geoJsonFile).then(function(us){
     
-    console.log(us)
         var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
         var map = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
-
+        grades2  =GetGrades(dataMap)
     
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
             id: 'mapbox/light-v9',
             tileSize: 512,
             zoomOffset: -1
         }).addTo(map);
+        
+        switch (place) {
+            case "map-caseloads":
+                area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_caseload})
+                break;
+            case "map-displacements":
+                area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_displacement})
+                break;
+            case "map-nutrition":
+                area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_nutrition})
+                break;
+            default:
+                break;
+        }
+        
+        //légende
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = GetGrades(dataMap),
+                labels = [];
+                
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                    convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(map);
+        
+        //labels
+        var markers = new L.FeatureGroup();
+        for (var i = 0; i < dataMap.length; i++) {
+            for (var j = 0; j < admin_coordinates.length; j++) {
+                arrayAdmin = dataMap[i][0].split("*")
+                if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
+                    var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
+                    // you can set .my-div-icon styles in CSS
+                    markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
+
+                    //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
+                    markers.addLayer(markerTemp);
+                }
+            }
+        }
+
+        
+
+        map.addLayer(markers);
+        area.addTo(map);
+        map.fitBounds(area.getBounds());
+
+
+        UpdateStatus(numMap);
+    });
+    
+   
+}
+
+function addMap_caseload(adminLevel,dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin1.json"
+    if (adminLevel=="admin0") {
+        geoJsonFile = "/maps/wca_admin0.json"
+    }
+    
+    d3.json(geoJsonFile).then(function(us){
+    
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        map_caseload = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+        grades2  = GetGrades(dataMap)
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map_caseload);
+        
+        area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_caseload})
+
+        
+        //légende
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = GetGrades(dataMap),
+                labels = [];
+                
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                    convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(map_caseload);
+        
+        //labels
+        var markers = new L.FeatureGroup();
+        for (var i = 0; i < dataMap.length; i++) {
+            for (var j = 0; j < admin_coordinates.length; j++) {
+                arrayAdmin = dataMap[i][0].split("*")
+                if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
+                    var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
+                    // you can set .my-div-icon styles in CSS
+                    markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
+
+                    //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
+                    markers.addLayer(markerTemp);
+                }
+            }
+        }
+
+        map_caseload.addLayer(markers);
+        area.addTo(map_caseload);
+        map_caseload.fitBounds(area.getBounds());
+
+
+        UpdateStatus(numMap);
+    });
+}
+
+function addMap_displacement(adminLevel,dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin1.json"
+    if (adminLevel=="admin0") {
+        geoJsonFile = "/maps/wca_admin0.json"
+    }
+    
+    d3.json(geoJsonFile).then(function(us){
+    
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        map_caseload = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+        grades2  = GetGrades(dataMap)
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map_caseload);
+        
+        area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_displacement})
+
+        
+        //légende
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = GetGrades(dataMap),
+                labels = [];
+                
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                    convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(map_caseload);
+        
+        //labels
+        var markers = new L.FeatureGroup();
+        for (var i = 0; i < dataMap.length; i++) {
+            for (var j = 0; j < admin_coordinates.length; j++) {
+                arrayAdmin = dataMap[i][0].split("*")
+                if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
+                    var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
+                    // you can set .my-div-icon styles in CSS
+                    markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
+
+                    //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
+                    markers.addLayer(markerTemp);
+                }
+            }
+        }
+
+        map_caseload.addLayer(markers);
+        area.addTo(map_caseload);
+        map_caseload.fitBounds(area.getBounds());
+
+
+        UpdateStatus(numMap);
+    });
+}
+
+function addMap_nutrition(adminLevel,dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin1.json"
+    if (adminLevel=="admin0") {
+        geoJsonFile = "/maps/wca_admin0.json"
+    }
+    
+    d3.json(geoJsonFile).then(function(us){
+    
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        map_nutrition = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+        grades2  = GetGrades(dataMap)
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map_nutrition);
+        
+        area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_nutrition})
+
+        
+        //légende
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = GetGrades(dataMap),
+                labels = [];
+                
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span style="display:block;height: 21px;"><i style="background:' + getColorsAt(i) + ';border:1px solid #ccc;"></i> ' +
+                    convertToUnit(grades[i],0) + (grades[i + 1] ? '&ndash;' + convertToUnit(grades[i + 1],0) + '</span>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(map_nutrition);
+        
+        //labels
+        var markers = new L.FeatureGroup();
+        for (var i = 0; i < dataMap.length; i++) {
+            for (var j = 0; j < admin_coordinates.length; j++) {
+                arrayAdmin = dataMap[i][0].split("*")
+                if (admin_coordinates[j].adminPcod==arrayAdmin[1]) {
+                    var myIcon = L.divIcon({className: 'labelCarte',html: convertToUnit(dataMap[i][1],1),iconAnchor: [2, 0]});
+                    // you can set .my-div-icon styles in CSS
+                    markerTemp = L.marker([admin_coordinates[j].Lat,admin_coordinates[j].Long], { icon: myIcon });
+
+                    //var markerTemp = L.marker([admin0_coordinates[j].lat,admin0_coordinates[j].Long],{opacity:0.5}).bindPopup(convertToUnit(dataMap[i][1],1)).openPopup();
+                    markers.addLayer(markerTemp);
+                }
+            }
+        }
+
+        map_nutrition.addLayer(markers);
+        area.addTo(map_nutrition);
+        map_nutrition.fitBounds(area.getBounds());
+
+
+        UpdateStatus(numMap);
+    });
+}
+
+function addChMap_projected(dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin2.json"
+    
+    d3.json(geoJsonFile).then(function(us){
+
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        map_ch_projected = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map_ch_projected);
         area  = new L.geoJSON(us, {
             style: function (feature) {
                 return {
@@ -2522,15 +2862,385 @@ function addChMap(dataMap,place,numMap){
                 },
                 filter: filterCH})
 
-        area.addTo(map);
-        map.fitBounds(area.getBounds());
+        area.addTo(map_ch_projected);
+        map_ch_projected.fitBounds(area.getBounds());
         UpdateStatus(numMap);
     });
     
    
 }
 
-function addMap3(adminLevel,dataMap,place){
+function addChMap_current(dataMap,place,numMap){
+    geoJsonFile = "/maps/wca_admin2.json"
+    
+    d3.json(geoJsonFile).then(function(us){
+ 
+        var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
+        map_ch_Current = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 0);
+
+    
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map_ch_Current);
+        area  = new L.geoJSON(us, {
+            style: function (feature) {
+                return {
+                    fillColor: getColorCH(feature.properties.adminPcode,dataMap),
+                    weight: 1,
+                    opacity: 1,
+                    color: '#ccc',
+                    dashArray: '3',
+                    fillOpacity: 1
+                    };
+                },
+                filter: filterCH})
+
+        area.addTo(map_ch_Current);
+        map_ch_Current.fitBounds(area.getBounds());
+
+        UpdateStatus(numMap);
+    });
+}
+
+function GetGrades(dataGrades){
+    var dataArray = []
+    for (var i = 0; i < dataGrades.length; i++) {
+        dataArray.push(dataGrades[i][1]);
+    }
+
+    nbGrades = 4;
+    minVal = d3.min(dataArray)
+    maxVal = d3.max(dataArray)
+    gradeStepTmp = Math.round((maxVal - minVal)/(nbGrades - 1)).toString()
+    
+    gradeStep = gradeStepTmp.substring(0, 1);
+    for (var i = 0; i < (gradeStepTmp.length-1); i++) {
+        gradeStep+="0"
+    }
+
+    minRange = gradeStep
+    maxRange = gradeStep*nbGrades
+
+    grades = d3.range(0,maxRange,gradeStep)
+
+
+
+    return grades
+}
+
+function downloadMap(categ){
+    var mapName = "#map-"+categ
+    id="map-"+categ
+    width = $(mapName).width()
+    height = $(mapName).height()
+
+    domtoimage.toJpeg(document.getElementById(id), { quality: 1,height:height,width:width }).then(function (dataUrl) {
+        var link = document.createElement('a');
+        link.download = 'map_'+categ;
+        link.href = dataUrl;
+        link.click();
+    });
+}
+
+
+
+
+
+//trend functions
+function downloadTrend(categ){
+   
+    mapName = "#trend-"+categ
+    html2canvas(document.querySelector(mapName)).then(function(canvas) {
+        saveAs(canvas.toDataURL(), 'file-name.png');
+    });
+}
+
+function getColors(numberOfColors){
+    colors = [
+        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
+        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
+        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
+        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
+        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
+        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
+        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
+        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
+    ]
+
+    palette = []
+
+    for (let index = 0; index < numberOfColors; index++) {
+        if(index>colors.length){
+            palette.push("#418fde");
+        }else{
+            palette.push(colors[index]);
+        }
+        
+    }
+    return palette
+}
+
+function AddChart(series,element,title){
+    array_color = getColors(series.length)
+
+    var options = {
+        zoom: {
+            enabled: false,
+        },
+          series: series,
+          chart: {
+          type: 'area',
+          height: 350,
+          stacked: true,
+          events: {
+            selection: function (chart, e) {
+              //console.log(new Date(e.xaxis.min))
+            }
+          },
+        },
+        colors: array_color,
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        fill: {
+          type: 'solid',
+          opacity: 1,
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left'
+        },
+        xaxis: {
+          type: 'category'
+        },
+        yaxis: {
+            show: true,
+            labels: {
+                formatter: (value) => { return convertToUnit(value,0) },
+            },
+        },
+    };
+
+    blocId = "#"+element;
+    var chart = new ApexCharts(document.querySelector(blocId), options);
+    chart.render();
+}
+
+
+
+
+
+//export functions
+function ExportExcel() {
+    var utc = new Date().toJSON().slice(0,10).replace(/-/g,' ');
+    showLoading();
+    tablesToExcel(
+        [
+            'keyFigure-data-caseloads',
+            'keyFigure-data-displacements',
+            'keyFigure-data-nutrition',
+            'keyFigure-data-ch-current',
+            'keyFigure-data-ch-projected',
+            'trend-data-caseloads',
+            'trend-data-displacements',
+            'trend-data-nutrition',
+            'trend-data-ch-current',
+            'trend-data-ch-projected',
+        ], 
+        [
+            'KF caseloads',
+            'KF displacements',
+            'KF nutrition',
+            'KF ch-current',
+            'KF ch-projected',
+            'Trend by year caseloads',
+            'Trend by year displacements',
+            'Trend by year nutrition',
+            'Trend by year ch-current',
+            'Trend by year ch-projected',
+        ], 'Database Export of all data as of '+utc+'.xls', 'Excel')
+        stopLoading();
+}
+
+function ExportPowerPoint(){
+    showLoading();
+    $(".bloc-data").show();
+
+    //DIMENSIONS OF TRENDS
+    width_CL = $("#trend-caseloads").width()
+    height_CL = $("#trend-caseloads").height()
+
+    width_DI = $("#trend-displacements").width()
+    height_DI = $("#trend-displacements").height()
+
+    width_NU = $("#trend-nutrition").width()
+    height_NU = $("#trend-nutrition").height()
+
+    width_CC = $("#trend-ch-current").width()
+    height_CC = $("#trend-ch-current").height()
+
+    width_CP = $("#trend-ch-projected").width()
+    height_CP = $("#trend-ch-projected").height()
+
+    //DIMENSIONS OF MAPS
+    width_m_CL = $("#map-caseloads").width()
+    height_m_CL = $("#map-caseloads").height()
+
+    width_m_DI = $("#map-displacements").width()
+    height_m_DI = $("#map-displacements").height()
+
+    width_m_NU = $("#map-nutrition").width()
+    height_m_NU = $("#map-nutrition").height()
+
+    width_m_CHc = $("#map-ch-current").width()
+    height_m_CHc = $("#map-ch-current").height()
+
+    width_m_CHp = $("#map-ch-projected").width()
+    height_m_CHp = $("#map-ch-projected").height()
+
+
+    domtoimage.toJpeg(document.getElementById("map-caseloads"), { quality: 1,height:height_m_CL,width:width_m_CL,bgcolor:'#ffffff'}).then(function (caseloadMap) {
+        domtoimage.toJpeg(document.getElementById("map-displacements"), { quality: 1,height:height_m_DI,width:width_m_DI,bgcolor:'#ffffff' }).then(function (displacementsMap) {
+            domtoimage.toJpeg(document.getElementById("map-nutrition"), { quality: 1,height:height_m_NU,width:width_m_NU ,bgcolor:'#ffffff'}).then(function (nutritionMap) {
+                domtoimage.toJpeg(document.getElementById("map-ch-current"), { quality: 1,height:height_m_CHc,width:width_m_CHc ,bgcolor:'#ffffff'}).then(function (chCurrentMap) {
+                    domtoimage.toJpeg(document.getElementById("map-ch-projected"), { quality: 1,height:height_m_CHp,width:width_m_CHp ,bgcolor:'#ffffff'}).then(function (chProjectedMap) {
+                        domtoimage.toJpeg(document.getElementById("trend-caseloads"), { quality: 1,height:height_CL,width:width_CL,bgcolor:'#ffffff'}).then(function (caseloadImage) {
+                            domtoimage.toJpeg(document.getElementById("trend-displacements"), { quality: 1,height:height_DI,width:width_DI,bgcolor:'#ffffff' }).then(function (displacementsImage) {
+                                domtoimage.toJpeg(document.getElementById("trend-nutrition"), { quality: 1,height:height_NU,width:width_NU ,bgcolor:'#ffffff'}).then(function (nutritionImage) {
+                                    domtoimage.toJpeg(document.getElementById("trend-ch-current"), { quality: 1,height:height_CC,width:width_CC ,bgcolor:'#ffffff'}).then(function (chCurrentImage) {
+                                        domtoimage.toJpeg(document.getElementById("trend-ch-projected"), { quality: 1,height:height_CP,width:width_CP,bgcolor:'#ffffff' }).then(function (chProjectedImage) {
+
+
+                                            var pptx = new PptxGenJS();
+
+                                            // STEP 2: Add a new Slide to the Presentation
+                                            var slide = pptx.addSlide();
+                                            var slide_caseLoad = pptx.addSlide();
+                                            var slide_disp = pptx.addSlide();
+                                            var slide_nutrition = pptx.addSlide();
+                                            var slide_foodSecCurrent = pptx.addSlide();
+                                            var slide_foodSecProjected = pptx.addSlide();
+
+                                            slide.addText('Presentation for', { x:0.5, y:1.44, fontSize:18, color:'418fde' });
+                                            slide.addText(zoneName, { x:0.5, y:1.86, fontSize:18, color:'418fde' });
+
+                                            //CASELOADS
+                                            slide_caseLoad.addText('Caseloads', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                                            slide_caseLoad.addText('People in need', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                                            slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pin,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                                            slide_caseLoad.addText('People targeted', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pt,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_caseLoad.addText('People reached', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pr,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_caseLoad.addImage({ path: "/images/People-in-need.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                                            slide_caseLoad.addImage({ path: "/images/People-targeted.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                                            slide_caseLoad.addImage({ path: "/images/Person-2.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
+                                            slide_caseLoad.addImage({ data: caseloadImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                                            slide_caseLoad.addImage({ data: caseloadMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
+                                            slide_caseLoad.addText('Disclaimer : ' + disclaimerCaseload_text, { x:0.12, y:5.04, fontSize:9, color:'999999' });
+
+
+                                            //DISPLACEMENTS
+                                            slide_disp.addText('Displacements', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                                            slide_disp.addText('IDPs', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                                            slide_disp.addText(convertToUnit(KeyFigureDisplacements.idp,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                                            slide_disp.addText('Refugees', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_disp.addText(convertToUnit(KeyFigureDisplacements.refugees,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_disp.addText('Returnees', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_disp.addText(convertToUnit(KeyFigureDisplacements.returnees,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_disp.addImage({ path: "/images/Internally-displaced.svg", x: 0.58,y: 0.86,  w: 0.31, h: 0.26 });
+                                            slide_disp.addImage({ path: "/images/Refugee.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
+                                            slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.31, h: 0.26 });
+                                            slide_disp.addImage({ data: displacementsImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                                            slide_disp.addImage({ data: displacementsMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
+                                            slide_disp.addText('Disclaimer : ' + disclaimerDisplacement_text, { x:0.12, y:5.19, w: 9.66, fontSize:9, color:'999999' });
+
+                                            //NUTRITION
+                                            slide_nutrition.addText('Nutrition', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                                            slide_nutrition.addText('SAM', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
+                                            slide_nutrition.addText(convertToUnit(KeyFigurenutritions.sam,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
+                                            slide_nutrition.addText('MAM', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_nutrition.addText(convertToUnit(KeyFigurenutritions.mam,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_nutrition.addText('GAM', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
+                                            slide_nutrition.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_nutrition.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.2, h: 0.26 });
+                                            slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.2, h: 0.26 });
+                                            slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.2, h: 0.26 });
+                                            slide_nutrition.addImage({ data: nutritionImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
+                                            slide_nutrition.addImage({ data: nutritionMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
+                                            slide_nutrition.addText('Disclaimer : ' + disclaimerNutrition_text, { x:0.12, y:5.04, fontSize:9, color:'999999' });
+                                            
+                                            //CH CURRENT
+                                            slide_foodSecCurrent.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                                            slide_foodSecCurrent.addText('Current Food Insecure (phase 3+)', { x:0.47,y:1.25, fontSize:11, color:'999999'});
+                                            slide_foodSecCurrent.addText(convertToUnit(KeyFigureCHCurrent.ch_phase35,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_foodSecCurrent.addImage({ path: "/images/Food-Security.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                                            slide_foodSecCurrent.addImage({ data: chCurrentImage,x: 5.07,y: 1.87,  w: 4.71, h: 2.27 });
+                                            slide_foodSecCurrent.addImage({ data: chCurrentMap,x: 0.22,y: 1.87,  w: 4.74, h: 3.23 });
+                                            slide_foodSecCurrent.addText('Disclaimer : ' + disclaimerCh_text, { x:0.12, y:5.26, fontSize:9, color:'999999' });
+                                            
+                                
+                                            //CH PROJECTED
+                                            slide_foodSecProjected.addText('Cadre harmonirsé projected', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
+                                            slide_foodSecProjected.addText('Projected Food Insecure (phase 3+)', { x:0.47,y:1.25, fontSize:11, color:'999999'});
+                                            slide_foodSecProjected.addText(convertToUnit(KeyFigureCHProjeted.ch_phase35,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_foodSecProjected.addImage({ path: "/images/Food-Security.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
+                                            slide_foodSecProjected.addImage({ data: chProjectedImage,x: 5.07,y: 1.87,  w: 4.71, h: 2.27 });
+                                            slide_foodSecProjected.addImage({ data: chProjectedMap,x: 0.22,y: 1.87,  w: 4.74, h: 3.23 });
+                                            slide_foodSecProjected.addText('Disclaimer : ' + disclaimerCh_text, { x:0.12, y:5.26, fontSize:9, color:'999999' });
+
+                                
+                                        
+
+                                            // STEP 4: Send the PPTX Presentation to the user, using your choice of file name
+                                            
+                                            //pptx.writeFile('PptxGenJs-Basic-Slide-Demo');
+
+                                            var utc = new Date().toJSON().slice(0,10).replace(/-/g,' ');
+
+                                            pptx.writeFile({ fileName: 'Database Presentation export for '+zoneName+' as of '+utc })
+                                            .then(fileName => {
+                                                window.setTimeout( stopLoading, 15000 );
+                                                $(".bloc-data").hide();
+                                                showData("caseloads");
+                                                stopLoading();
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+
+
+
+
+
+
+
+
+function stylekk_old(feature) {
+    return {
+        fillColor: getColor(feature.properties.adminName),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+function addMap3Old(adminLevel,dataMap,place){
     geoJsonFile = "/maps/wca_admin1.json"
     if (adminLevel=="admin0") {
         geoJsonFile = "/maps/wca_admin0.json"
@@ -2584,226 +3294,21 @@ function addMap3(adminLevel,dataMap,place){
    
 }
 
-function GetGrades(dataGrades){
-    var dataArray = []
-    for (var i = 0; i < dataGrades.length; i++) {
-        dataArray.push(dataGrades[i][1]);
-    }
-
-    nbGrades = 4;
-    minVal = d3.min(dataArray)
-    maxVal = d3.max(dataArray)
-    gradeStepTmp = Math.round((maxVal - minVal)/(nbGrades - 1)).toString()
-    
-    gradeStep = gradeStepTmp.substring(0, 1);
-    for (var i = 0; i < (gradeStepTmp.length-1); i++) {
-        gradeStep+="0"
-    }
-
-    minRange = gradeStep
-    maxRange = gradeStep*nbGrades
-
-    grades = d3.range(minRange,maxRange,gradeStep)
-
-
-
-    return grades
-}
-
-
-
-function ExportPowerPoint(){
-    $(".bloc-data").show();
-    umg = "";
-
-    //DIMENSIONS OF TRENDS
-    width_CL = $("#trend-caseloads").width()
-    height_CL = $("#trend-caseloads").height()
-
-    width_DI = $("#trend-displacements").width()
-    height_DI = $("#trend-displacements").height()
-
-    width_NU = $("#trend-nutrition").width()
-    height_NU = $("#trend-nutrition").height()
-
-    width_CC = $("#trend-ch-current").width()
-    height_CC = $("#trend-ch-current").height()
-
-    width_CP = $("#trend-ch-projected").width()
-    height_CP = $("#trend-ch-projected").height()
-
-    //DIMENSIONS OF MAPS
-    width_m_CL = $("#map-caseloads").width()
-    height_m_CL = $("#map-caseloads").height()
-
-    width_m_DI = $("#map-displacements").width()
-    height_m_DI = $("#map-displacements").height()
-
-    width_m_NU = $("#map-nutrition").width()
-    height_m_NU = $("#map-nutrition").height()
-
-
-    domtoimage.toJpeg(document.getElementById("map-caseloads"), { quality: 1,height:height_m_CL,width:width_m_CL,bgcolor:'#ffffff'}).then(function (caseloadMap) {
-        domtoimage.toJpeg(document.getElementById("map-displacements"), { quality: 1,height:height_m_DI,width:width_m_DI,bgcolor:'#ffffff' }).then(function (displacementsMap) {
-            domtoimage.toJpeg(document.getElementById("map-nutrition"), { quality: 1,height:height_m_NU,width:width_m_NU ,bgcolor:'#ffffff'}).then(function (nutritionMap) {
-                domtoimage.toJpeg(document.getElementById("trend-caseloads"), { quality: 1,height:height_CL,width:width_CL,bgcolor:'#ffffff'}).then(function (caseloadImage) {
-                    domtoimage.toJpeg(document.getElementById("trend-displacements"), { quality: 1,height:height_DI,width:width_DI,bgcolor:'#ffffff' }).then(function (displacementsImage) {
-                        domtoimage.toJpeg(document.getElementById("trend-nutrition"), { quality: 1,height:height_NU,width:width_NU ,bgcolor:'#ffffff'}).then(function (nutritionImage) {
-                            domtoimage.toJpeg(document.getElementById("trend-ch-current"), { quality: 1,height:width_CC,width:width_CC ,bgcolor:'#ffffff'}).then(function (chCurrentImage) {
-                                domtoimage.toJpeg(document.getElementById("trend-ch-projected"), { quality: 1,height:height_CP,width:width_CP,bgcolor:'#ffffff' }).then(function (chProjectedImage) {
-
-
-                        var pptx = new PptxGenJS();
-
-                        // STEP 2: Add a new Slide to the Presentation
-                        var slide = pptx.addSlide();
-                        var slide_caseLoad = pptx.addSlide();
-                        var slide_disp = pptx.addSlide();
-                        var slide_nutrition = pptx.addSlide();
-                        var slide_foodSecCurrent = pptx.addSlide();
-                        var slide_foodSecProjected = pptx.addSlide();
-
-                        slide.addText('Presentation for', { x:3.8, y:1.44, fontSize:18, color:'418fde' });
-                        slide.addText(zoneName, { x:3.8, y:1.86, fontSize:18, color:'418fde' });
-
-                        //CASELOADS
-                        slide_caseLoad.addText('Caseloads', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
-                        slide_caseLoad.addText('People in need', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
-                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pin,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
-                        slide_caseLoad.addText('People targeted', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pt,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_caseLoad.addText('People reached', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_caseLoad.addText(convertToUnit(KeyFigureCaseLoads.pr,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_caseLoad.addImage({ path: "/images/People-in-need.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
-                        slide_caseLoad.addImage({ path: "/images/People-targeted.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
-                        slide_caseLoad.addImage({ path: "/images/Person-2.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_caseLoad.addImage({ data: caseloadImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
-                        slide_caseLoad.addImage({ data: caseloadMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
-
-
-                        //DISPLACEMENTS
-                        slide_disp.addText('Displacements', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
-                        slide_disp.addText('IDPs', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
-                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.idp,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
-                        slide_disp.addText('Refugees', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.refugees,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_disp.addText('Returnees', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_disp.addText(convertToUnit(KeyFigureDisplacements.returnees,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_disp.addImage({ path: "/images/Internally-displaced.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
-                        slide_disp.addImage({ path: "/images/Refugee.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
-                        slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_disp.addImage({ data: displacementsImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
-                        slide_disp.addImage({ data: displacementsMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
-
-                        //NUTRITION
-                        slide_nutrition.addText('Nutrition', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
-                        slide_nutrition.addText('SAM', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
-                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.sam,1), { x:0.95,y:0.98, fontSize:14, color:'418fde', w: 1.30});
-                        slide_nutrition.addText('MAM', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.mam,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_nutrition.addText('GAM', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                        slide_nutrition.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
-                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
-                        slide_nutrition.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_nutrition.addImage({ data: nutritionImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
-                        slide_nutrition.addImage({ data: nutritionMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
-                        
-                        //CH CURRENT
-                        slide_foodSecCurrent.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
-                        slide_foodSecCurrent.addText('Current Food Insecure', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
-                        slide_foodSecCurrent.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
-                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
-                        slide_foodSecCurrent.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_foodSecCurrent.addImage({ data: chCurrentImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
-
-              
-                        //CH PROJECTED
-                        slide_foodSecProjected.addText('Cadre harmonirsé current', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
-                        slide_foodSecProjected.addText('Current Food Insecure', { x:0.47,y:1.25, fontSize:11, color:'999999', w: 1.30});
-                        slide_foodSecProjected.addText(convertToUnit(KeyFigurenutritions.gam,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
-                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", x: 0.58,y: 0.86,  w: 0.37, h: 0.26 });
-                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
-                        slide_foodSecProjected.addImage({ path: "/images/Nutrition.svg", y: 0.86,x: 3.93,  w: 0.14, h: 0.26 });
-                        slide_foodSecProjected.addImage({ data: chProjectedImage,x: 5.87,y: 1.87,  w: 4.00, h: 3.00 });
-
-              
-                      
-
-                        // STEP 4: Send the PPTX Presentation to the user, using your choice of file name
-                        pptx.writeFile('PptxGenJs-Basic-Slide-Demo');
-                        $(".bloc-data").hide();
-                        showData("caseloads");
-
-
-                                });
-                            });
-                        });
-
-                    });
-                });
-            });
-        });
-    });
-
-
-                        
-
-
-
-    
 
 
 
 
-    
-        
-       
 
 
-       //saveAs(canvas.toDataURL(), 'file-name.png');
-  
 
 
-   
-}
 
-function showData(bloc) {
-    $(".bloc-data").hide();
-    blocName = "#bloc-data-"+bloc;
-    cardId = "#keyFigure-"+bloc;
-    
-    $(".keyFigure-card").removeClass("cards-selected");
-    $(".keyFigure-card").removeClass("cards");
-    $(".keyFigure-card").addClass("cards");
-    $(cardId).removeClass("cards");
-    $(cardId).addClass("cards-selected");
-    $(blocName).show();
-}
 
-function downloadMap(categ){
-    var mapName = "#map-"+categ
-    id="map-"+categ
-    width = $(mapName).width()
-    height = $(mapName).height()
 
-    domtoimage.toJpeg(document.getElementById(id), { quality: 1,height:height,width:width }).then(function (dataUrl) {
-        var link = document.createElement('a');
-        link.download = 'map_'+categ;
-        link.href = dataUrl;
-        link.click();
-    });
-}
 
-function downloadTrend(categ){
-   
-    mapName = "#trend-"+categ
-    html2canvas(document.querySelector(mapName)).then(function(canvas) {
-        saveAs(canvas.toDataURL(), 'file-name.png');
-    });
-}
 
+
+/*
 function saveAs(uri, filename) {
 
     var link = document.createElement('a');
@@ -2829,129 +3334,7 @@ function saveAs(uri, filename) {
     }
 }
 
-function convertToUnit(val,decimal){
-        result = "";
-        if(val<1000){
-            result = val;
-        }else{
-            if(val<1000000){
-                calc = val/1000
-                result = calc.toFixed(decimal)+"K";
-            }else{
-                if(val<1000000000){
-                    calc = val/1000000
-                    result = calc.toFixed(decimal)+"M";
-                }else{
-                    calc = val/1000000000
-                    result = calc.toFixed(decimal)+"B";
-                }
-            }
-        }
-        return result;
-    }
 
-function getColors(numberOfColors){
-    colors = [
-        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
-        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
-        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
-        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
-        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
-        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
-        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
-        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
-    ]
-
-    palette = []
-
-    for (let index = 0; index < numberOfColors; index++) {
-        if(index>colors.length){
-            palette.push("#418fde");
-        }else{
-            palette.push(colors[index]);
-        }
-        
-    }
-    return palette
-}
-
-
-function getColorsAt(index){
-    colors = [
-        /* UN Blue */"#E9F2FB", "#D4E5F7", "#82B5E9", "#418FDE", "#1F69B3", "#144372", "#0B2641",
-        /* Purple */"#F1ECF9", "#E4D8F3", "#B99DE0", "#9063CD", "#6937AC", "#462472", "#23133A",
-        /* Turquoise */"#EBFAF9", "#D6F5F3", "#AEEAE6", "#71DBD4", "#34CCC1", "#248F88", "#0F3D3A",
-        /* Salmon */"#FCECE9", "#F8D8D3", "#EFA497", "#E56A54", "#CD3A1F", "#8B2715", "#42130A",
-        /* Orange */"#FCF2E8", "#FAE6D1", "#F4C799", "#ECA154", "#DB7B18",  "#965410", "#452707",
-        /* Yellow */"#FBFCE9","#F7F8D3","#EFF2AA","#E2E868","#D5DE26","#989F18","#40420A",
-        /* Green */"#F4FAEB","#E8F5D6","#C6E69B","#A4D65E","#7FB92F","#557C1F","#2A3D10",
-        /* Brown */"#F8F4EC","#F1E9DA","#E8DCC4","#D3BC8D","#BE9C56","#907337","#372C15",
-    ]
-
-    return colors[index]
-}
-function AddChart(series,element,title){
-    array_color = getColors(series.length)
-
-    var options = {
-        zoom: {
-            enabled: false,
-        },
-        title: {
-            text: title,
-            align: 'left',
-            margin: 10,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-            fontSize:  '14px',
-            fontWeight:  'bold',
-            fontFamily:  undefined,
-            color:  '#263238'
-            },
-        },
-          series: series,
-          chart: {
-          type: 'area',
-          height: 350,
-          stacked: true,
-          events: {
-            selection: function (chart, e) {
-              //console.log(new Date(e.xaxis.min))
-            }
-          },
-        },
-        colors: array_color,
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        fill: {
-          type: 'solid',
-          opacity: 1,
-        },
-        legend: {
-          position: 'top',
-          horizontalAlign: 'left'
-        },
-        xaxis: {
-          type: 'category'
-        },
-        yaxis: {
-            show: true,
-            labels: {
-                formatter: (value) => { return convertToUnit(value,0) },
-            },
-        },
-    };
-
-    blocId = "#"+element;
-    var chart = new ApexCharts(document.querySelector(blocId), options);
-    chart.render();
-}
 
 function addTestMap(bloc,layerName,adminLevel,mapCaseloads_PIN ,title) {
 
@@ -3321,20 +3704,20 @@ function AddCaseloadPinMap(data) {
 
  //test
 
- function legend({
-  color,
-  title,
-  tickSize = 6,
-  width = 320, 
-  height = 44 + tickSize,
-  marginTop = 18,
-  marginRight = 0,
-  marginBottom = 16 + tickSize,
-  marginLeft = 0,
-  ticks = width / 64,
-  tickFormat,
-  tickValues
-} = {}) {
+function legend({
+    color,
+    title,
+    tickSize = 6,
+    width = 320, 
+    height = 44 + tickSize,
+    marginTop = 18,
+    marginRight = 0,
+    marginBottom = 16 + tickSize,
+    marginLeft = 0,
+    ticks = width / 64,
+    tickFormat,
+    tickValues
+    } = {}) {
 
   const svg = d3.create("svg")
       .attr("width", width)
@@ -3458,69 +3841,69 @@ function AddCaseloadPinMap(data) {
 }
 
 function swatches({
-  color,
-  columns = null,
-  format = x => x,
-  swatchSize = 15,
-  swatchWidth = swatchSize,
-  swatchHeight = swatchSize,
-  marginLeft = 0
-}) {
+    color,
+    columns = null,
+    format = x => x,
+    swatchSize = 15,
+    swatchWidth = swatchSize,
+    swatchHeight = swatchSize,
+    marginLeft = 0
+    }) {
   const id = DOM.uid().id;
 
   if (columns !== null) return html`<div style="display: flex; align-items: center; margin-left: ${+marginLeft}px; min-height: 33px; font: 10px sans-serif;">
   <style>
 
-.${id}-item {
-  break-inside: avoid;
-  display: flex;
-  align-items: center;
-  padding-bottom: 1px;
-}
+    .${id}-item {
+    break-inside: avoid;
+    display: flex;
+    align-items: center;
+    padding-bottom: 1px;
+    }
 
-.${id}-label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - ${+swatchWidth}px - 0.5em);
-}
+    .${id}-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - ${+swatchWidth}px - 0.5em);
+    }
 
-.${id}-swatch {
-  width: ${+swatchWidth}px;
-  height: ${+swatchHeight}px;
-  margin: 0 0.5em 0 0;
-}
+    .${id}-swatch {
+    width: ${+swatchWidth}px;
+    height: ${+swatchHeight}px;
+    margin: 0 0.5em 0 0;
+    }
 
-  </style>
-  <div style="width: 100%; columns: ${columns};">${color.domain().map(value => {
-    const label = format(value);
-    return html`<div class="${id}-item">
-      <div class="${id}-swatch" style="background:${color(value)};"></div>
-      <div class="${id}-label" title="${label.replace(/["&]/g, entity)}">${document.createTextNode(label)}</div>
+    </style>
+    <div style="width: 100%; columns: ${columns};">${color.domain().map(value => {
+        const label = format(value);
+        return html`<div class="${id}-item">
+        <div class="${id}-swatch" style="background:${color(value)};"></div>
+        <div class="${id}-label" title="${label.replace(/["&]/g, entity)}">${document.createTextNode(label)}</div>
+        </div>`;
+    })}
+    </div>
     </div>`;
-  })}
-  </div>
-</div>`;
 
-  return html`<div style="display: flex; align-items: center; min-height: 33px; margin-left: ${+marginLeft}px; font: 10px sans-serif;">
-  <style>
+    return html`<div style="display: flex; align-items: center; min-height: 33px; margin-left: ${+marginLeft}px; font: 10px sans-serif;">
+    <style>
 
-.${id} {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 1em;
-}
+    .${id} {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 1em;
+    }
 
-.${id}::before {
-  content: "";
-  width: ${+swatchWidth}px;
-  height: ${+swatchHeight}px;
-  margin-right: 0.5em;
-  background: var(--color);
-}
+    .${id}::before {
+    content: "";
+    width: ${+swatchWidth}px;
+    height: ${+swatchHeight}px;
+    margin-right: 0.5em;
+    background: var(--color);
+    }
 
-  </style>
-  <div>${color.domain().map(value => html`<span class="${id}" style="--color: ${color(value)}">${document.createTextNode(format(value))}</span>`)}</div>`;
+    </style>
+    <div>${color.domain().map(value => html`<span class="${id}" style="--color: ${color(value)}">${document.createTextNode(format(value))}</span>`)}</div>`;
 }
 
 function entity(character) {
@@ -3536,6 +3919,7 @@ function ramp(color, n = 256) {
   }
   return canvas;
 }
+*/
 
 function downloadData(typeData){
     tableName = "keyFigure-data-"+typeData

@@ -103,6 +103,8 @@
             .legend {
                 line-height: 18px;
                 color: #555;
+                background-color:#fff;
+                padding:5px;
             }
             .legend i {
                 width: 18px;
