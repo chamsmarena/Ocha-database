@@ -1479,7 +1479,7 @@
                         <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('caseloads')"><em>excel</em></a>
-                            <table class="table" style="font-size:12px;">
+                            <table class="table" style="font-size:12px;" id="caseload-table">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1637,7 +1637,7 @@
                         <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('displacements')"><em>Excel</em></a>
-                            <table class="table" style="font-size:12px;">
+                            <table class="table" style="font-size:12px;" id="displacement-table">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1783,7 +1783,7 @@
                         <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('nutrition')"><em>excel</em></a>
-                            <table class="table" style="font-size:12px;">
+                            <table class="table" style="font-size:12px;" id="nutrition-table">
                                 <thead>
                                     <tr>
                                         @if ($adminLevel == "admin0")
@@ -1937,7 +1937,7 @@
                         <div class="col-12">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('ch-current')"><em>excel</em></a>
-                            <table class="table" style="font-size:12px;">
+                            <table class="table" style="font-size:12px;" id="chCurrent-table">
                                 <?php 
                                     $totalChP1= 0;
                                     $totalChP2= 0;
@@ -2128,7 +2128,7 @@
                         <div class="col-12 ">
                             <p>Key figures by country</p>
                             <a href="#" class="btn-link" onclick="downloadData('ch-projected')"><em>excel</em></a>
-                            <table class="table" style="font-size:12px;">
+                            <table class="table" style="font-size:12px;" id="chProjected-table">
                                 <thead>
                                     <tr>
                                     @if ($adminLevel == "admin0")
@@ -2368,7 +2368,6 @@ $(document).ready(function(){
         addMap_caseload(adminLevel,mapCaseloads_PIN,"map-caseloads","1")
         addMap_displacement(adminLevel,mapDisplacement_IDP,"map-displacements","2")
         addMap_nutrition(adminLevel,mapNutrition_SAM,"map-nutrition","3")
-        
     });
     image1= 0;
 
@@ -2545,6 +2544,7 @@ function filter_caseload(feature) {
     }
     return include;
 }
+
 function filter_displacement(feature) {
     include = false;
     for(var i = 0; i < mapDisplacement_IDP.length; i++){
@@ -2718,14 +2718,14 @@ function addMap_displacement(adminLevel,dataMap,place,numMap){
     d3.json(geoJsonFile).then(function(us){
     
         var mapboxAccessToken = 'pk.eyJ1Ijoib2NoYXJvd2NhIiwiYSI6ImNrYncwenh5aTBiZWgycnA3N29jZmx2ZnoifQ.yCtQthC-Ft81ojuRTNoY1g';
-        map_caseload = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
+        map_displacement = L.map(place, { scrollWheelZoom: false }).setView([37.8, -96], 4);
         grades2  = GetGrades(dataMap)
     
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
             id: 'mapbox/light-v9',
             tileSize: 512,
             zoomOffset: -1
-        }).addTo(map_caseload);
+        }).addTo(map_displacement);
         
         area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_displacement})
 
@@ -2745,7 +2745,7 @@ function addMap_displacement(adminLevel,dataMap,place,numMap){
             }
             return div;
         };
-        legend.addTo(map_caseload);
+        legend.addTo(map_displacement);
         
         //labels
         var markers = new L.FeatureGroup();
@@ -2763,10 +2763,9 @@ function addMap_displacement(adminLevel,dataMap,place,numMap){
             }
         }
 
-        map_caseload.addLayer(markers);
-        area.addTo(map_caseload);
-        map_caseload.fitBounds(area.getBounds());
-
+        map_displacement.addLayer(markers);
+        area.addTo(map_displacement);
+        map_displacement.fitBounds(area.getBounds(),4);
 
         UpdateStatus(numMap);
     });
@@ -3071,6 +3070,14 @@ function ExportPowerPoint(){
     showLoading();
     $(".bloc-data").show();
 
+    //centrer la carte
+    //map_caseload.fitBounds(area.getBounds());
+    //map_displacement.fitBounds(area.getBounds());
+    //map_nutrition.fitBounds(area.getBounds());
+    //map_ch_projected.fitBounds(area.getBounds());
+    //map_ch_Current.fitBounds(area.getBounds());
+
+
     //DIMENSIONS OF TRENDS
     width_CL = $("#trend-caseloads").width()
     height_CL = $("#trend-caseloads").height()
@@ -3121,10 +3128,15 @@ function ExportPowerPoint(){
                                             // STEP 2: Add a new Slide to the Presentation
                                             var slide = pptx.addSlide();
                                             var slide_caseLoad = pptx.addSlide();
+                                            pptx.tableToSlides("caseload-table");
                                             var slide_disp = pptx.addSlide();
+                                            pptx.tableToSlides("displacement-table");
                                             var slide_nutrition = pptx.addSlide();
+                                            pptx.tableToSlides("nutrition-table");
                                             var slide_foodSecCurrent = pptx.addSlide();
+                                            pptx.tableToSlides("chCurrent-table");
                                             var slide_foodSecProjected = pptx.addSlide();
+                                            pptx.tableToSlides("chProjected-table");
 
                                             slide.addText('Presentation for', { x:0.5, y:1.44, fontSize:18, color:'418fde' });
                                             slide.addText(zoneName, { x:0.5, y:1.86, fontSize:18, color:'418fde' });
@@ -3144,6 +3156,7 @@ function ExportPowerPoint(){
                                             slide_caseLoad.addImage({ data: caseloadMap,x: 0.22,y: 1.87,  w: 5.53, h: 3.00 });
                                             slide_caseLoad.addText('Disclaimer : ' + disclaimerCaseload_text, { x:0.12, y:5.04, fontSize:9, color:'999999' });
 
+                                            
 
                                             //DISPLACEMENTS
                                             slide_disp.addText('Displacements', { x:0.47, y:0.42, fontSize:18, color:'418fde' });
@@ -3152,7 +3165,7 @@ function ExportPowerPoint(){
                                             slide_disp.addText('Refugees', { x:2.12, y:1.25, fontSize:11, color:'999999', w: 1.30 });
                                             slide_disp.addText(convertToUnit(KeyFigureDisplacements.refugees,1), { x:2.52, y:0.98, fontSize:14, color:'418fde', w: 1.30 });
                                             slide_disp.addText('Returnees', { x:3.76,y:1.25, fontSize:11, color:'999999', w: 1.30 });
-                                            slide_disp.addText(convertToUnit(KeyFigureDisplacements.returnees,1), { x:4.07,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
+                                            slide_disp.addText(convertToUnit(KeyFigureDisplacements.returnees,1), { x:4.28,y:0.98, fontSize:14, color:'418fde', w: 1.30 });
                                             slide_disp.addImage({ path: "/images/Internally-displaced.svg", x: 0.58,y: 0.86,  w: 0.31, h: 0.26 });
                                             slide_disp.addImage({ path: "/images/Refugee.svg", y: 0.86,x: 2.26,  w: 0.26, h: 0.26 });
                                             slide_disp.addImage({ path: "/images/Population-return.svg", y: 0.86,x: 3.93,  w: 0.31, h: 0.26 });
@@ -3205,10 +3218,9 @@ function ExportPowerPoint(){
 
                                             pptx.writeFile({ fileName: 'Database Presentation export for '+zoneName+' as of '+utc })
                                             .then(fileName => {
-                                                window.setTimeout( stopLoading, 15000 );
-                                                $(".bloc-data").hide();
-                                                showData("caseloads");
-                                                stopLoading();
+                                                window.setTimeout( stopLoading, 5000 );
+                                                //$(".bloc-data").hide();
+                                                //showData("caseloads");
                                             });
                                         });
                                     });
@@ -3222,6 +3234,17 @@ function ExportPowerPoint(){
     });
 }
 
+function downloadData(typeData){
+    tableName = "keyFigure-data-"+typeData
+    var tableToExport = TableExport(document.getElementById(tableName));
+
+    var exportData = tableToExport.getExportData(); 
+
+    var xlsxData = exportData[tableName].xlsx; 
+
+    tableToExport.export2file(xlsxData.data, xlsxData.mimeType, typeData, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, typeData)
+
+}
 
 
 
@@ -3921,17 +3944,6 @@ function ramp(color, n = 256) {
 }
 */
 
-function downloadData(typeData){
-    tableName = "keyFigure-data-"+typeData
-    var tableToExport = TableExport(document.getElementById(tableName));
-
-    var exportData = tableToExport.getExportData(); 
-
-    var xlsxData = exportData[tableName].xlsx; 
-
-    tableToExport.export2file(xlsxData.data, xlsxData.mimeType, typeData, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, typeData)
-
-}
 
 
 
