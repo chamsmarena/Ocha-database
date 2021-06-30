@@ -11,13 +11,13 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
-        <link href="{{asset('bootstrap-5.0.0/css/bootstrap.min.css')}}" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link href="{{URL::asset('bootstrap-5.0.0/css/bootstrap.min.css')}}" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
-        <script src="{{asset('js/popper.min.js.js')}}"></script>
-        <script src="{{asset('js/jquery-3.3.1.slim.min.js')}}" ></script>
-        <script src="{{asset('js/bootstrap.bundle.min.js')}}" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script src="{{URL::asset('js/popper.min.js.js')}}"></script>
+        <script src="{{URL::asset('js/jquery-3.3.1.slim.min.js')}}" ></script>
+        <script src="{{URL::asset('js/bootstrap.bundle.min.js')}}" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 
-        <script src="{{asset('js/echarts.min.js')}}" ></script>
+        <script src="{{URL::asset('js/echarts.min.js')}}" ></script>
     
     
     </head>
