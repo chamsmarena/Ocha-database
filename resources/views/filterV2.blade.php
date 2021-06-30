@@ -15,7 +15,7 @@
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
         
         <script src="{{ URL::asset('js/jquery-3.6.0.min.js') }}" ></script>
-        <script src="{{ URL::asset('js/popper.min.js.js')}}"></script>
+        <script src="{{ URL::asset('js/popper.min.js')}}"></script>
         <script src="{{ URL::asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
         <script src="{{ URL::asset('d3/d3.min.js') }}" ></script>
         <script src="{{ URL::asset('leaflet/leaflet.js') }}" ></script>

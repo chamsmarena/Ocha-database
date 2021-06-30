@@ -13,7 +13,7 @@
         <!-- Styles -->
         <link href="{{URL::asset('bootstrap-5.0.0/css/bootstrap.min.css')}}" rel="stylesheet" >
 
-        <script src="{{URL::asset('js/popper.min.js.js')}}"></script>
+        <script src="{{URL::asset('js/popper.min.js')}}"></script>
         <script src="{{URL::asset('js/jquery-3.3.1.slim.min.js')}}" ></script>
         <script src="{{URL::asset('js/bootstrap.bundle.min.js')}}"></script>
 
