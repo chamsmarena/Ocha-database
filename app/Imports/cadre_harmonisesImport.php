@@ -19,42 +19,66 @@ class cadre_harmonisesImport implements ToModel,WithBatchInserts
 
     public function model (array $row)
     {
-        if (!isset($row[0])) {
+        if ($row[0]=="Country") {
             return null;
-        }else{
+        }
+        
+        return new cadre_harmonise([
+            'ch_id' => (string)Uuid::generate(),
+            'ch_country' => $row[0],
+            'ch_adm0_pcode_iso3' => $row[1],
+            'ch_admin1_name' => $row[2],
+            'ch_admin1_pcode_iso3' => $row[3],
+            'ch_admin2_name' => $row[4],
+            'ch_admin2_pcode_iso3' => $row[5],
+            'ch_ipc_level' => $row[6],
+            'ch_phase1' => is_numeric($row[7]) ? floatval($row[7]) : 0 ,
+            'ch_phase2' => is_numeric($row[8]) ? floatval($row[8]) : 0 ,
+            'ch_phase3' => is_numeric($row[9]) ? floatval($row[9]) : 0 ,
+            'ch_phase4' => is_numeric($row[10]) ? floatval($row[10]) : 0 ,
+            'ch_phase5' => is_numeric($row[11]) ? floatval($row[12]) : 0 ,
+            'ch_phase35' => is_numeric($row[12]) ? floatval($row[12]) : 0 ,
+            'ch_exercise_month' => $row[13],
+            'ch_exercise_year' => $row[14],
+            'ch_situation' => $row[15],
+            'ch_date' => gmdate("Y/m/d", ($row[16] - 25569) * 86400),
+            'ch_source' => isset($row[17]) ? $row[17] : null,
+        ]);
+        
+        /*
+        else{
             if($row[0]!="Country"){
-                $UNIX_DATE = ($row[16] - 25569) * 86400;
+                $UNIX_DATE = ;
                 $date = gmdate("Y/m/d", $UNIX_DATE);
 
                 $cadre_harmonise = new cadre_harmonise;
                 $cadre_harmonise->ch_id = (string)Uuid::generate();
                 $cadre_harmonise->ch_country=$row[0];
-                $cadre_harmonise->ch_adm0_pcode_iso3=$row[1];
-                $cadre_harmonise->ch_admin1_name=$row[2];
-                $cadre_harmonise->ch_admin1_pcode_iso3=$row[3];
-                $cadre_harmonise->ch_admin2_name=$row[4];
-                $cadre_harmonise->ch_admin2_pcode_iso3=$row[5];
-                $cadre_harmonise->ch_ipc_level=$row[6];
-                $cadre_harmonise->ch_phase1=floatval($row[7]);
-                $cadre_harmonise->ch_phase2=floatval($row[8]);
-                $cadre_harmonise->ch_phase3=floatval($row[9]);
-                $cadre_harmonise->ch_phase4=floatval($row[10]);
-                $cadre_harmonise->ch_phase5=floatval($row[11]);
-                $cadre_harmonise->ch_phase35=floatval($row[12]);
-                $cadre_harmonise->ch_exercise_month=$row[13];
-                $cadre_harmonise->ch_exercise_year=$row[14];
-                $cadre_harmonise->ch_situation=$row[15];
-                $cadre_harmonise->ch_date=$date;
-                $cadre_harmonise->ch_source=isset($row[17]) ? $row[17] : null;
+                $cadre_harmonise->;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=;
+                $cadre_harmonise->=
+                $cadre_harmonise->=
 
                 $cadre_harmonise->save();
             }
-        }
+        }*/
     }
 
     public function batchSize(): int
     {
-        return 1000;
+        return 100;
     }
-
 }
