@@ -8,7 +8,7 @@ use Webpatser\Uuid\Uuid;
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 
-class cadre_harmonisesImport implements ToModel
+class cadre_harmonisesImport implements ToModel,WithBatchInserts
 {
     /**
     * @param array $row
@@ -49,6 +49,11 @@ class cadre_harmonisesImport implements ToModel
                 $cadre_harmonise->save();
             }
         }
+    }
+
+    public function batchSize(): int
+    {
+        return 1000;
     }
 
 }
