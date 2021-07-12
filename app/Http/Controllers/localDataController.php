@@ -135,10 +135,9 @@ class localDataController extends Controller
     public function import_nutrition() 
     {
         return "ok";
-/*
+        /*
         try {
-            
-			/***************************/
+
 			
 			DB::statement('TRUNCATE nutrition ');
 
@@ -149,11 +148,12 @@ class localDataController extends Controller
             Excel::import(new nutritionsImport, 'input data/nutrition.xlsx');
             return redirect('/import')->with('success', 'All good!');
 			
-			/***************************/
+		
             return redirect('/import')->with('success', 'All good!');
         } catch (\Throwable $th) {
             return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
-        }*/
+        }
+        */
         
     }
     public function import_cadre_harmonise() 
