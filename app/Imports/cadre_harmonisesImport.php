@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Webpatser\Uuid\Uuid;
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\OnEachRow;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 
 class cadre_harmonisesImport implements ToModel,WithBatchInserts
 {
