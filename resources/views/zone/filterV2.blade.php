@@ -2827,7 +2827,7 @@ function addMap_nutrition(adminLevel,dataMap,place,numMap){
 
         map_nutrition.addLayer(markers);
         area_nut.addTo(map_nutrition);
-        map_nutrition.fitBounds(area_nut.getBounds());
+        //map_nutrition.fitBounds(area_nut.getBounds());
 
 
         UpdateStatus(numMap);
