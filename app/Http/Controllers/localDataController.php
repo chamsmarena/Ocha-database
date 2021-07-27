@@ -134,8 +134,7 @@ class localDataController extends Controller
     }
     public function import_nutrition() 
     {
-        return "ok";
-        /*
+      
         try {
 
 			
@@ -153,7 +152,7 @@ class localDataController extends Controller
         } catch (\Throwable $th) {
             return redirect('/import')->with('error', " , Import discontinued : ".$th->getMessage() );
         }
-        */
+        
         
     }
     public function import_cadre_harmonise() 
