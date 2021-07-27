@@ -24,7 +24,7 @@
                     </div>
                 @endif
 
-                <p class="h1 mb-3">Importation des données (1)</p>
+                <p class="h1 mb-3">Importation des données (2)</p>
                 <form action="/database/guide_import" method="POST" enctype="multipart/form-data" class=" g-3 needs-validation" novalidate>
                     @csrf
                     <div class="mb-3">
