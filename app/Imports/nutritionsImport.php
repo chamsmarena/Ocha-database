@@ -31,9 +31,9 @@ class nutritionsImport implements ToModel
                 $nutrition->nut_admin0_pcode=$row[1];
                 $nutrition->nut_admin1= $row[2];
                 $nutrition->nut_admin1_pcode= $row[3];
-                $nutrition->nut_sam=$row[4];
-                $nutrition->nut_gam=$row[5];
-                $nutrition->nut_mam=$row[6];
+                $nutrition->nut_sam=is_numeric($row[4]) ? floatval($row[4]) : 0;
+                $nutrition->nut_gam=is_numeric($row[5]) ? floatval($row[5]) : 0;
+                $nutrition->nut_mam=is_numeric($row[6]) ? floatval($row[6]) : 0;
                 $nutrition->nut_date=$date;
                 $nutrition->nut_source=isset($row[8]) ? $row[8] : null;
 
