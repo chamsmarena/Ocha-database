@@ -2789,7 +2789,7 @@ function addMap_nutrition(adminLevel,dataMap,place,numMap){
             zoomOffset: -1
         }).addTo(map_nutrition);
         
-        area_nut  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_nutrition})
+        area  = new L.geoJSON(us, { style: function (feature) { return { fillColor: getColor(feature.properties.adminPcode,dataMap,grades2), weight: 1, opacity: 1, color: '#ccc', dashArray: '3', fillOpacity: 1}; }, filter: filter_nutrition})
 
         
         //légende
@@ -2826,8 +2826,8 @@ function addMap_nutrition(adminLevel,dataMap,place,numMap){
         }
 
         map_nutrition.addLayer(markers);
-        area_nut.addTo(map_nutrition);
-        //map_nutrition.fitBounds(area_nut.getBounds());
+        area.addTo(map_nutrition);
+        map_nutrition.fitBounds(area.getBounds());
 
 
         UpdateStatus(numMap);
