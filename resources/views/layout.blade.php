@@ -11,13 +11,13 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
-        <link href="{{URL::asset('bootstrap-5.0.0/css/bootstrap.min.css')}}" rel="stylesheet" >
+        <link href="{{asset('bootstrap-5.0.0/css/bootstrap.min.css')}}" rel="stylesheet" >
 
-        <script src="{{URL::asset('js/popper.min.js')}}"></script>
-        <script src="{{URL::asset('js/jquery-3.3.1.slim.min.js')}}" ></script>
-        <script src="{{URL::asset('js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{asset('js/popper.min.js')}}"></script>
+        <script src="{{asset('js/jquery-3.3.1.slim.min.js')}}" ></script>
+        <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
 
-        <script src="{{URL::asset('js/echarts.min.js')}}" ></script>
+        <script src="{{asset('js/echarts.min.js')}}" ></script>
     
     
     </head>

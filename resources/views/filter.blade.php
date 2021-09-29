@@ -11,12 +11,12 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ URL::asset('bootstrap-5.0.0/css/bootstrap.min.css') }}" >
-        <link rel="stylesheet" type="text/css" href="{{ URL::asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bootstrap-5.0.0/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
         
-        <script src="{{ URL::asset('js/jquery-3.6.0.min.js') }}" ></script>
+        <script src="{{ asset('js/jquery-3.6.0.min.js') }}" ></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" ></script>
-        <script src="{{ URL::asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
+        <script src="{{ asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
   
         
    
