@@ -11,29 +11,29 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ URL::asset('bootstrap-5.0.0/css/bootstrap.min.css') }}" >
-        <link rel="stylesheet" type="text/css" href="{{ URL::asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bootstrap-5.0.0/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-icons/font/bootstrap-icons.css') }}"/>
         
-        <script src="{{ URL::asset('js/jquery-3.6.0.min.js') }}" ></script>
-        <script src="{{ URL::asset('js/popper.min.js')}}"></script>
-        <script src="{{ URL::asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
-        <script src="{{ URL::asset('d3/d3.min.js') }}" ></script>
-        <script src="{{ URL::asset('leaflet/leaflet.js') }}" ></script>
-        <script src="{{ URL::asset('js/html2canvas.js') }}" ></script>
-        <script src="{{ URL::asset('js/dom-to-image.min.js') }}" ></script>
-        <script src="{{ URL::asset('js/FileSaver.min.js') }}" ></script>
+        <script src="{{ asset('js/jquery-3.6.0.min.js') }}" ></script>
+        <script src="{{ asset('js/popper.min.js')}}"></script>
+        <script src="{{ asset('bootstrap-5.0.0/js/bootstrap.min.js') }}" ></script>
+        <script src="{{ asset('d3/d3.min.js') }}" ></script>
+        <script src="{{ asset('leaflet/leaflet.js') }}" ></script>
+        <script src="{{ asset('js/html2canvas.js') }}" ></script>
+        <script src="{{ asset('js/dom-to-image.min.js') }}" ></script>
+        <script src="{{ asset('js/FileSaver.min.js') }}" ></script>
         <script src="https://d3js.org/d3-array.v2.min.js"></script>
         <script src="https://unpkg.com/topojson-client@3"></script>
         <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
   
-        <script src="{{ URL::asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
-        <script src="{{ URL::asset('js/tableExport/js/tableexport.js') }}"></script>
-        <script src="{{ URL::asset('js/exportToExcel.js') }}"></script>
+        <script src="{{ asset('js/Sheetjs/xlsx.core.min.js') }}"></script>
+        <script src="{{ asset('js/tableExport/js/tableexport.js') }}"></script>
+        <script src="{{ asset('js/exportToExcel.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
         <!-- html to powerpoint -->
-        <script src="{{ URL::asset('pptxgen/jszip.min.js') }}"></script>
-        <script src="{{ URL::asset('pptxgen/pptxgen.min.js') }}"></script>  
+        <script src="{{ asset('pptxgen/jszip.min.js') }}"></script>
+        <script src="{{ asset('pptxgen/pptxgen.min.js') }}"></script>  
    
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
